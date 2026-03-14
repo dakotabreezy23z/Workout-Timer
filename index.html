@@ -587,7 +587,20 @@ function openNamesScreen(){syncExerciseNames();const list=document.getElementByI
 
 function saveWorkout(){syncExerciseNames();const workout={name:document.getElementById('create-name').value||'Workout',exercises:createSettings.exercises,rounds:createSettings.rounds,work:createSettings.work,rest:createSettings.rest,roundRest:createSettings.roundRest,exerciseNames:[...createExerciseNames]};if(activeWorkoutIndex>=0)savedWorkouts[activeWorkoutIndex]=workout;else savedWorkouts.push(workout);localStorage.setItem('workouts',JSON.stringify(savedWorkouts));renderLibrary();showScreen('library-screen');}
 
-function renderLibrary(){const container=document.getElementById('saved-workouts-list');container.innerHTML='';if(savedWorkouts.length===0){container.innerHTML='<div class="empty-state"><span>No saved workouts yet</span></div>';return;}const sorted=[...savedWorkouts.map((w,i)=>({...w,_i:i}))].sort((a,b)=>a.name.localeCompare(b.name));sorted.forEach(({_i:i,...w})=>{const btn=document.createElement('button');btn.className='workout-card';btn.innerHTML=`<div class="workout-card-info"><span class="workout-card-name">${w.name}</span><span class="workout-card-meta">${w.rounds} rounds · ${w.exercises} exercises · ${w.work}s work</span></div><svg class="workout-card-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>`;btn.onclick=()=>openReview(i);container.appendChild(btn);});}
+function renderLibrary(){
+  const container=document.getElementById('saved-workouts-list');
+  container.innerHTML='';
+  if(savedWorkouts.length===0){container.innerHTML='<div class="empty-state"><span>No saved workouts yet</span></div>';return;}
+  const indexed=savedWorkouts.map((w,i)=>({w,i}));
+  indexed.sort((a,b)=>a.w.name.localeCompare(b.w.name));
+  indexed.forEach(({w,i})=>{
+    const btn=document.createElement('button');
+    btn.className='workout-card';
+    btn.innerHTML=`<div class="workout-card-info"><span class="workout-card-name">${w.name}</span><span class="workout-card-meta">${w.rounds} rounds · ${w.exercises} exercises · ${w.work}s work</span></div><svg class="workout-card-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>`;
+    btn.onclick=()=>openReview(i);
+    container.appendChild(btn);
+  });
+}
 
 function openReview(index){activeWorkoutIndex=index;const w=savedWorkouts[index];document.getElementById('review-title').textContent=w.name;document.getElementById('review-total-preview').textContent='Total: '+fmtTime(calcTotalSeconds(w));const meta=document.getElementById('review-meta');meta.innerHTML=`<div class="review-meta-row"><span class="review-meta-label">Rounds</span><span class="review-meta-val">${w.rounds}</span></div><div class="review-meta-row"><span class="review-meta-label">Exercises</span><span class="review-meta-val">${w.exercises}</span></div><div class="review-meta-row"><span class="review-meta-label">Work time</span><span class="review-meta-val">${w.work}s</span></div><div class="review-meta-row"><span class="review-meta-label">Rest</span><span class="review-meta-val">${w.rest}s</span></div><div class="review-meta-row"><span class="review-meta-label">Round rest</span><span class="review-meta-val">${w.roundRest}s</span></div>`;const exList=document.getElementById('review-exercises');exList.innerHTML='';w.exerciseNames.forEach((name,i)=>{const div=document.createElement('div');div.className='review-exercise-item';div.innerHTML=`<span class="review-exercise-num">${i+1}</span><span class="review-exercise-name">${name||'Exercise '+(i+1)}</span>`;exList.appendChild(div);});showScreen('review-screen');}
 
