@@ -208,27 +208,27 @@
       <div class="setting-row">
         <label>Exercises per round</label>
         <div class="slider-val" id="val-exercises">3</div>
-        <input type="range" min="1" max="10" value="3" step="1" oninput="updateSlider('exercises',this.value);updateHomePreview()">
+        <input type="range" min="1" max="10" value="3" step="1" oninput="updateSlider('exercises',this.value);updateHomePreview();sliderClick()">
       </div>
       <div class="setting-row">
         <label>Rounds</label>
         <div class="slider-val" id="val-rounds">3</div>
-        <input type="range" min="1" max="10" value="3" step="1" oninput="updateSlider('rounds',this.value);updateHomePreview()">
+        <input type="range" min="1" max="10" value="3" step="1" oninput="updateSlider('rounds',this.value);updateHomePreview();sliderClick()">
       </div>
       <div class="setting-row">
         <label>Workout time</label>
         <div class="slider-val" id="val-work">40s</div>
-        <input type="range" min="10" max="120" value="40" step="5" oninput="updateSlider('work',this.value);updateHomePreview()">
+        <input type="range" min="10" max="120" value="40" step="5" oninput="updateSlider('work',this.value);updateHomePreview();sliderClick()">
       </div>
       <div class="setting-row">
         <label>Rest between exercises</label>
         <div class="slider-val" id="val-rest">20s</div>
-        <input type="range" min="5" max="60" value="20" step="5" oninput="updateSlider('rest',this.value);updateHomePreview()">
+        <input type="range" min="5" max="60" value="20" step="5" oninput="updateSlider('rest',this.value);updateHomePreview();sliderClick()">
       </div>
       <div class="setting-row">
         <label>Rest between rounds</label>
         <div class="slider-val" id="val-roundRest">60s</div>
-        <input type="range" min="5" max="60" value="60" step="5" oninput="updateSlider('roundRest',this.value);updateHomePreview()">
+        <input type="range" min="5" max="60" value="60" step="5" oninput="updateSlider('roundRest',this.value);updateHomePreview();sliderClick()">
       </div>
     </div>
     <div class="home-btns">
@@ -304,27 +304,27 @@
       <div class="setting-row">
         <label>Exercises per round</label>
         <div class="slider-val" id="create-val-exercises">3</div>
-        <input type="range" min="1" max="10" value="3" step="1" oninput="updateCreateSlider('exercises',this.value)">
+        <input type="range" min="1" max="10" value="3" step="1" oninput="updateCreateSlider('exercises',this.value);sliderClick()">
       </div>
       <div class="setting-row">
         <label>Rounds</label>
         <div class="slider-val" id="create-val-rounds">3</div>
-        <input type="range" min="1" max="10" value="3" step="1" oninput="updateCreateSlider('rounds',this.value)">
+        <input type="range" min="1" max="10" value="3" step="1" oninput="updateCreateSlider('rounds',this.value);sliderClick()">
       </div>
       <div class="setting-row">
         <label>Workout time</label>
         <div class="slider-val" id="create-val-work">40s</div>
-        <input type="range" min="10" max="120" value="40" step="5" oninput="updateCreateSlider('work',this.value)">
+        <input type="range" min="10" max="120" value="40" step="5" oninput="updateCreateSlider('work',this.value);sliderClick()">
       </div>
       <div class="setting-row">
         <label>Rest between exercises</label>
         <div class="slider-val" id="create-val-rest">20s</div>
-        <input type="range" min="5" max="60" value="20" step="5" oninput="updateCreateSlider('rest',this.value)">
+        <input type="range" min="5" max="60" value="20" step="5" oninput="updateCreateSlider('rest',this.value);sliderClick()">
       </div>
       <div class="setting-row">
         <label>Rest between rounds</label>
         <div class="slider-val" id="create-val-roundRest">60s</div>
-        <input type="range" min="5" max="60" value="60" step="5" oninput="updateCreateSlider('roundRest',this.value)">
+        <input type="range" min="5" max="60" value="60" step="5" oninput="updateCreateSlider('roundRest',this.value);sliderClick()">
       </div>
     </div>
     <div class="create-btns">
@@ -380,7 +380,7 @@
       <div class="setting-row" style="width:100%;">
         <label>Minutes</label>
         <div class="slider-val" id="emom-val-minutes">10</div>
-        <input type="range" min="1" max="60" value="10" step="1" oninput="updateEmom(this.value)">
+        <input type="range" min="1" max="60" value="10" step="1" oninput="updateEmom(this.value);sliderClick()">
       </div>
       <div class="emom-total-preview" id="emom-preview">Total: 10:00</div>
     </div>
@@ -405,7 +405,7 @@
       <div class="setting-row" style="width:100%;">
         <label>Sets</label>
         <div class="slider-val" id="tabata-val-sets">1</div>
-        <input type="range" min="1" max="10" value="1" step="1" oninput="updateTabata(this.value)">
+        <input type="range" min="1" max="10" value="1" step="1" oninput="updateTabata(this.value);sliderClick()">
       </div>
       <div class="emom-total-preview" id="tabata-preview">Total: 4:00</div>
     </div>
@@ -427,7 +427,7 @@
       <div class="setting-row" style="width:100%;">
         <label>Minutes</label>
         <div class="slider-val" id="amrap-val-minutes">10</div>
-        <input type="range" min="1" max="60" value="10" step="1" oninput="updateAmrap(this.value)">
+        <input type="range" min="1" max="60" value="10" step="1" oninput="updateAmrap(this.value);sliderClick()">
       </div>
       <div class="amrap-total-preview" id="amrap-preview">Total: 10:00</div>
     </div>
@@ -587,7 +587,7 @@ function openNamesScreen(){syncExerciseNames();const list=document.getElementByI
 
 function saveWorkout(){syncExerciseNames();const workout={name:document.getElementById('create-name').value||'Workout',exercises:createSettings.exercises,rounds:createSettings.rounds,work:createSettings.work,rest:createSettings.rest,roundRest:createSettings.roundRest,exerciseNames:[...createExerciseNames]};if(activeWorkoutIndex>=0)savedWorkouts[activeWorkoutIndex]=workout;else savedWorkouts.push(workout);localStorage.setItem('workouts',JSON.stringify(savedWorkouts));renderLibrary();showScreen('library-screen');}
 
-function renderLibrary(){const container=document.getElementById('saved-workouts-list');container.innerHTML='';if(savedWorkouts.length===0){container.innerHTML='<div class="empty-state"><span>No saved workouts yet</span></div>';return;}savedWorkouts.forEach((w,i)=>{const btn=document.createElement('button');btn.className='workout-card';btn.innerHTML=`<div class="workout-card-info"><span class="workout-card-name">${w.name}</span><span class="workout-card-meta">${w.rounds} rounds · ${w.exercises} exercises · ${w.work}s work</span></div><svg class="workout-card-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>`;btn.onclick=()=>openReview(i);container.appendChild(btn);});}
+function renderLibrary(){const container=document.getElementById('saved-workouts-list');container.innerHTML='';if(savedWorkouts.length===0){container.innerHTML='<div class="empty-state"><span>No saved workouts yet</span></div>';return;}const sorted=[...savedWorkouts.map((w,i)=>({...w,_i:i}))].sort((a,b)=>a.name.localeCompare(b.name));sorted.forEach(({_i:i,...w})=>{const btn=document.createElement('button');btn.className='workout-card';btn.innerHTML=`<div class="workout-card-info"><span class="workout-card-name">${w.name}</span><span class="workout-card-meta">${w.rounds} rounds · ${w.exercises} exercises · ${w.work}s work</span></div><svg class="workout-card-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>`;btn.onclick=()=>openReview(i);container.appendChild(btn);});}
 
 function openReview(index){activeWorkoutIndex=index;const w=savedWorkouts[index];document.getElementById('review-title').textContent=w.name;document.getElementById('review-total-preview').textContent='Total: '+fmtTime(calcTotalSeconds(w));const meta=document.getElementById('review-meta');meta.innerHTML=`<div class="review-meta-row"><span class="review-meta-label">Rounds</span><span class="review-meta-val">${w.rounds}</span></div><div class="review-meta-row"><span class="review-meta-label">Exercises</span><span class="review-meta-val">${w.exercises}</span></div><div class="review-meta-row"><span class="review-meta-label">Work time</span><span class="review-meta-val">${w.work}s</span></div><div class="review-meta-row"><span class="review-meta-label">Rest</span><span class="review-meta-val">${w.rest}s</span></div><div class="review-meta-row"><span class="review-meta-label">Round rest</span><span class="review-meta-val">${w.roundRest}s</span></div>`;const exList=document.getElementById('review-exercises');exList.innerHTML='';w.exerciseNames.forEach((name,i)=>{const div=document.createElement('div');div.className='review-exercise-item';div.innerHTML=`<span class="review-exercise-num">${i+1}</span><span class="review-exercise-name">${name||'Exercise '+(i+1)}</span>`;exList.appendChild(div);});showScreen('review-screen');}
 
@@ -597,6 +597,22 @@ function deleteFromReview(){if(!confirm('Delete "'+savedWorkouts[activeWorkoutIn
 
 // AUDIO
 function initAudio(){if(audioCtx)return;audioCtx=new(window.AudioContext||window.webkitAudioContext)();const buf=audioCtx.createBuffer(1,1,22050);const src=audioCtx.createBufferSource();src.buffer=buf;src.connect(audioCtx.destination);src.start(0);}
+
+function sliderClick(){
+  try {
+    if(!audioCtx) return;
+    if(audioCtx.state==='suspended') audioCtx.resume();
+    const o=audioCtx.createOscillator();
+    const g=audioCtx.createGain();
+    o.connect(g); g.connect(audioCtx.destination);
+    o.type='sine'; o.frequency.value=1200;
+    const t=audioCtx.currentTime;
+    g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime(0.08,t+0.005);
+    g.gain.exponentialRampToValueAtTime(0.001,t+0.04);
+    o.start(t); o.stop(t+0.05);
+  } catch(e){}
+}
 function beep(freq, dur, delay) {
   try {
     if (!audioCtx) return;
@@ -709,6 +725,9 @@ function finishAmrap(){clearInterval(amrapTicker);document.getElementById('done-
 
 function restart(){showScreen('home-screen');}
 
+document.querySelectorAll('input[type=range]').forEach(s=>{
+  s.addEventListener('touchstart',()=>{if(!audioCtx)initAudio();},{passive:true});
+});
 renderLibrary();
 updateHomePreview();
 showScreen('home-screen');
