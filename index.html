@@ -368,7 +368,7 @@
       <h2>Tabata</h2>
       <div style="width:34px"></div>
     </div>
-    <div style="flex:1;display:flex;flex-direction:column;padding:1.5rem;justify-content:center;padding-bottom:20%;gap:12px;">
+    <div style="flex:1;display:flex;flex-direction:column;padding:1.5rem;gap:12px;overflow-y:auto;">
       <div class="workout-title-row">
         <input type="text" class="workout-title-input" id="save-tabata-name" value="Tabata 1">
         <button class="pencil-btn" onclick="document.getElementById('save-tabata-name').focus()">
@@ -387,8 +387,13 @@
         <span class="tabata-opt-rounds">6 rounds</span>
         <span class="tabata-opt-detail">30s work / 10s rest</span>
       </button>
+      <div class="setting-row" style="width:100%;margin-top:0.5rem;">
+        <label>Sets</label>
+        <div class="slider-val" id="save-tabata-sets-val">1</div>
+        <input type="range" min="1" max="10" value="1" step="1" oninput="updateSaveTabataSets(this.value)">
+      </div>
     </div>
-    <div style="padding:0 1.5rem 2rem;">
+    <div style="padding:0 1.5rem 2rem;display:flex;flex-direction:column;gap:10px;">
       <button class="btn-save" onclick="saveTypedWorkout('tabata')">Save</button>
     </div>
   </div>
@@ -549,6 +554,12 @@
           <span class="tabata-opt-detail">23s work / 7s rest</span>
         </button>
       </div>
+      <div class="setting-row" style="width:100%;margin-top:1rem;">
+        <label>Sets</label>
+        <div class="slider-val" id="tabata-sets-val">1</div>
+        <input type="range" min="1" max="10" value="1" step="1" oninput="updateTabataSetsSlider(this.value)">
+      </div>
+      <div class="emom-total-preview" id="tabata-preview">Total: 1:30</div>
     </div>
     <div class="tabata-btns">
       <button class="btn-primary" onclick="startCountdown('tabata')">Start</button>
@@ -728,13 +739,18 @@ function setArcEl(id,remaining,total){const el=document.getElementById(id);if(el
 function updateSlider(key,val){settings[key]=parseInt(val);document.getElementById('val-'+key).textContent=(key==='work'||key==='rest'||key==='roundRest')?val+'s':val;}
 function updateHomePreview(){document.getElementById('home-total-preview').textContent='Total: '+fmtTime(calcTotalSeconds(settings));}
 function updateEmom(val){emomMinutes=parseInt(val);document.getElementById('emom-val-minutes').textContent=val;document.getElementById('emom-preview').textContent='Total: '+fmtTime(emomMinutes*60);}
+function updateTabataSetsSlider(val){
+  tabataSetsCount=parseInt(val);
+  document.getElementById('tabata-sets-val').textContent=val;
+  document.getElementById('tabata-preview').textContent='Total: '+fmtTime(tabataSetsCount*tabataTotalRounds*(tabataWork+tabataRest));
+}
 function selectTabata(rounds, work, rest){
   tabataTotalRounds=rounds; tabataWork=work; tabataRest=rest;
   const screen=document.getElementById('tabata-screen');
   if(screen) screen.querySelectorAll('.tabata-option-card').forEach(c=>c.classList.remove('selected'));
   const el=document.getElementById('tabata-opt-'+rounds);
   if(el) el.classList.add('selected');
-  document.getElementById('tabata-preview').textContent='Total: '+fmtTime(rounds*(work+rest));
+  document.getElementById('tabata-preview').textContent='Total: '+fmtTime(tabataSetsCount*rounds*(work+rest));
 }
 function updateAmrap(val){amrapMinutes=parseInt(val);document.getElementById('amrap-val-minutes').textContent=val;document.getElementById('amrap-preview').textContent='Total: '+fmtTime(amrapMinutes*60);}
 
@@ -755,7 +771,7 @@ function saveWorkout(){syncExerciseNames();const workout={name:document.getEleme
 
 
 let selectedWorkoutType = 'interval';
-let saveTabataRounds = 8, saveTabataWork = 23, saveTabataRest = 7;
+let saveTabataRounds = 8, saveTabataWork = 23, saveTabataRest = 7, saveTabataSetsCount = 1;
 
 function selectType(type) {
   selectedWorkoutType = type;
@@ -780,6 +796,13 @@ function goToCreateType(type) {
   }
 }
 
+function updateSaveTabataSets(val){
+  document.getElementById('save-tabata-sets-val').textContent=val;
+}
+function updateSaveTabataSets(val){
+  saveTabataSetsCount=parseInt(val);
+  document.getElementById('save-tabata-sets-val').textContent=val;
+}
 function selectSaveTabata(rounds, work, rest) {
   saveTabataRounds = rounds; saveTabataWork = work; saveTabataRest = rest;
   const screen = document.getElementById('save-tabata-screen');
@@ -795,7 +818,8 @@ function saveTypedWorkout(type) {
     workout.minutes = parseInt(document.getElementById('save-emom-val').textContent);
   } else if (type === 'tabata') {
     workout.name = document.getElementById('save-tabata-name').value || 'Tabata 1';
-    workout.rounds = saveTabataRounds; workout.work = saveTabataWork; workout.rest = saveTabataRest;
+    workout.rounds = saveTabataRounds; workout.work = saveTabataWork; workout.rest = saveTabataRest; workout.sets = saveTabataSetsCount;
+    workout.sets = parseInt(document.getElementById('save-tabata-sets-val').textContent) || 1;
   } else if (type === 'amrap') {
     workout.name = document.getElementById('save-amrap-name').value || 'A.M.R.A.P. 1';
     workout.minutes = parseInt(document.getElementById('save-amrap-val').textContent);
@@ -844,15 +868,40 @@ function renderLibrary(){
 function openReview(index){
   activeWorkoutIndex=index;
   const w=savedWorkouts[index];
-  // Route non-interval types directly to their workout
-  if(w.type==='emom'){emomMinutes=w.minutes;document.getElementById('emom-val-minutes').textContent=w.minutes;document.getElementById('emom-preview').textContent='Total: '+fmtTime(w.minutes*60);startCountdown('emom');return;}
-  if(w.type==='tabata'){tabataTotalRounds=w.rounds;tabataWork=w.work;tabataRest=w.rest;selectTabata(w.rounds,w.work,w.rest);startCountdown('tabata');return;}
-  if(w.type==='amrap'){amrapMinutes=w.minutes;document.getElementById('amrap-val-minutes').textContent=w.minutes;document.getElementById('amrap-preview').textContent='Total: '+fmtTime(w.minutes*60);startCountdown('amrap');return;}
   document.getElementById('review-title').textContent=w.name;
-  document.getElementById('review-total-preview').textContent='Total: '+fmtTime(calcTotalSeconds(w));const meta=document.getElementById('review-meta');meta.innerHTML=`<div class="review-meta-row"><span class="review-meta-label">Rounds</span><span class="review-meta-val">${w.rounds}</span></div><div class="review-meta-row"><span class="review-meta-label">Exercises</span><span class="review-meta-val">${w.exercises}</span></div><div class="review-meta-row"><span class="review-meta-label">Work time</span><span class="review-meta-val">${w.work}s</span></div><div class="review-meta-row"><span class="review-meta-label">Rest</span><span class="review-meta-val">${w.rest}s</span></div><div class="review-meta-row"><span class="review-meta-label">Round rest</span><span class="review-meta-val">${w.roundRest}s</span></div>`;const exList=document.getElementById('review-exercises');exList.innerHTML='';w.exerciseNames.forEach((name,i)=>{const div=document.createElement('div');div.className='review-exercise-item';div.innerHTML=`<span class="review-exercise-num">${i+1}</span><span class="review-exercise-name">${name||'Exercise '+(i+1)}</span>`;exList.appendChild(div);});showScreen('review-screen');}
+  const meta=document.getElementById('review-meta');
+  const exList=document.getElementById('review-exercises');
+  exList.innerHTML='';
 
-function startFromReview(){const w=savedWorkouts[activeWorkoutIndex];settings.exercises=w.exercises;settings.rounds=w.rounds;settings.work=w.work;settings.rest=w.rest;settings.roundRest=w.roundRest;currentExerciseNames=w.exerciseNames.map((n,i)=>n||'Exercise '+(i+1));startCountdown('interval');}
-function editFromReview(){openCreate(activeWorkoutIndex);}
+  if(w.type==='emom'){
+    document.getElementById('review-total-preview').textContent='Total: '+fmtTime(w.minutes*60);
+    meta.innerHTML=`<div class="review-meta-row"><span class="review-meta-label">Type</span><span class="review-meta-val">E.M.O.M.</span></div><div class="review-meta-row"><span class="review-meta-label">Duration</span><span class="review-meta-val">${w.minutes} min</span></div>`;
+  } else if(w.type==='tabata'){
+    document.getElementById('review-total-preview').textContent='Total: '+fmtTime(w.rounds*(w.work+w.rest));
+    meta.innerHTML=`<div class="review-meta-row"><span class="review-meta-label">Type</span><span class="review-meta-val">Tabata</span></div><div class="review-meta-row"><span class="review-meta-label">Rounds</span><span class="review-meta-val">${w.rounds}</span></div><div class="review-meta-row"><span class="review-meta-label">Sets</span><span class="review-meta-val">${w.sets||1}</span></div><div class="review-meta-row"><span class="review-meta-label">Work</span><span class="review-meta-val">${w.work}s</span></div><div class="review-meta-row"><span class="review-meta-label">Rest</span><span class="review-meta-val">${w.rest}s</span></div>`;
+  } else if(w.type==='amrap'){
+    document.getElementById('review-total-preview').textContent='Total: '+fmtTime(w.minutes*60);
+    meta.innerHTML=`<div class="review-meta-row"><span class="review-meta-label">Type</span><span class="review-meta-val">A.M.R.A.P.</span></div><div class="review-meta-row"><span class="review-meta-label">Duration</span><span class="review-meta-val">${w.minutes} min</span></div>`;
+  } else {
+    document.getElementById('review-total-preview').textContent='Total: '+fmtTime(calcTotalSeconds(w));const meta=document.getElementById('review-meta');meta.innerHTML=`<div class="review-meta-row"><span class="review-meta-label">Rounds</span><span class="review-meta-val">${w.rounds}</span></div><div class="review-meta-row"><span class="review-meta-label">Exercises</span><span class="review-meta-val">${w.exercises}</span></div><div class="review-meta-row"><span class="review-meta-label">Work time</span><span class="review-meta-val">${w.work}s</span></div><div class="review-meta-row"><span class="review-meta-label">Rest</span><span class="review-meta-val">${w.rest}s</span></div><div class="review-meta-row"><span class="review-meta-label">Round rest</span><span class="review-meta-val">${w.roundRest}s</span></div>`;const exList=document.getElementById('review-exercises');exList.innerHTML='';w.exerciseNames.forEach((name,i)=>{const div=document.createElement('div');div.className='review-exercise-item';div.innerHTML=`<span class="review-exercise-num">${i+1}</span><span class="review-exercise-name">${name||'Workout '+(i+1)}</span>`;exList.appendChild(div);});
+  }
+  showScreen('review-screen');
+}
+
+function startFromReview(){
+  const w=savedWorkouts[activeWorkoutIndex];
+  if(w.type==='emom'){emomMinutes=w.minutes;document.getElementById('emom-val-minutes').textContent=w.minutes;document.getElementById('emom-preview').textContent='Total: '+fmtTime(w.minutes*60);startCountdown('emom');return;}
+  if(w.type==='tabata'){tabataTotalRounds=w.rounds;tabataWork=w.work;tabataRest=w.rest;tabataSetsCount=w.sets||1;selectTabata(w.rounds,w.work,w.rest);startCountdown('tabata');return;}
+  if(w.type==='amrap'){amrapMinutes=w.minutes;document.getElementById('amrap-val-minutes').textContent=w.minutes;document.getElementById('amrap-preview').textContent='Total: '+fmtTime(w.minutes*60);startCountdown('amrap');return;}
+  settings.exercises=w.exercises;settings.rounds=w.rounds;settings.work=w.work;settings.rest=w.rest;settings.roundRest=w.roundRest;
+  currentExerciseNames=w.exerciseNames.map((n,i)=>n||'Workout '+(i+1));
+  startCountdown('interval');
+}
+function editFromReview(){
+  const w=savedWorkouts[activeWorkoutIndex];
+  if(!w.type||w.type==='interval'){openCreate(activeWorkoutIndex);return;}
+  alert('Editing is only available for Interval workouts right now.');
+}
 function deleteFromReview(){if(!confirm('Delete "'+savedWorkouts[activeWorkoutIndex].name+'"?'))return;savedWorkouts.splice(activeWorkoutIndex,1);localStorage.setItem('workouts',JSON.stringify(savedWorkouts));renderLibrary();showScreen('saved-screen');}
 
 // AUDIO
@@ -955,7 +1004,7 @@ function skipInterval(){if(paused)return;ensureAudio();advance();}
 function togglePause(){paused=!paused;document.getElementById('pause-btn').textContent=paused?'Resume':'Pause';}
 function startWorkout(){currentRound=1;currentExercise=1;phase='work';phaseDuration=settings.work;timeLeft=settings.work;totalSecondsRemaining=calcTotalSeconds(settings);paused=false;workoutStart=Date.now();document.getElementById('pause-btn').textContent='Pause';showScreen('workout-screen');updateDisplay();ticker=setInterval(tick,1000);}
 function stopWorkout(){clearInterval(ticker);clearInterval(countdownTicker);stopAudioKeepalive();paused=false;currentExerciseNames=[];showScreen('home-screen');}
-function finishWorkout(){clearInterval(ticker);const elapsed=Math.round((Date.now()-workoutStart)/1000);document.getElementById('done-duration').textContent=fmtTime(elapsed);currentExerciseNames=[];showScreen('done-screen');playFanfare();fireConfetti();setTimeout(fireConfetti,800);}
+function finishWorkout(){clearInterval(ticker);const elapsed=Math.round((Date.now()-workoutStart)/1000);document.getElementById('done-duration').textContent=fmtTime(elapsed);currentExerciseNames=[];showScreen('done-screen');playFanfare();}
 
 // EMOM
 function startEmomWorkout(){emomSecondsLeft=60;emomCurrentMinute=1;emomTotalSeconds=emomMinutes*60;emomElapsed=0;emomPaused=false;document.getElementById('emom-pause-btn').textContent='Pause';document.getElementById('emom-workout-screen').style.background='#0a0a0a';showScreen('emom-workout-screen');updateEmomDisplay();emomTicker=setInterval(emomTick,1000);startAudioKeepalive();}
@@ -963,12 +1012,12 @@ function updateEmomDisplay(){document.getElementById('emom-timer-display').textC
 function emomTick(){if(emomPaused)return;emomElapsed++;if(emomElapsed>=emomTotalSeconds){finishEmom();return;}emomSecondsLeft--;if(emomSecondsLeft<=0){emomCurrentMinute++;emomSecondsLeft=60;}if(emomSecondsLeft===3)scheduleBeeps();updateEmomDisplay();}
 function toggleEmomPause(){emomPaused=!emomPaused;document.getElementById('emom-pause-btn').textContent=emomPaused?'Resume':'Pause';}
 function stopEmom(){clearInterval(emomTicker);stopAudioKeepalive();showScreen('home-screen');}
-function finishEmom(){clearInterval(emomTicker);document.getElementById('done-duration').textContent=fmtTime(emomTotalSeconds);showScreen('done-screen');playFanfare();fireConfetti();setTimeout(fireConfetti,800);}
+function finishEmom(){clearInterval(emomTicker);document.getElementById('done-duration').textContent=fmtTime(emomTotalSeconds);showScreen('done-screen');playFanfare();}
 
 // TABATA
 function startTabataWorkout(){
   tabataSecondsLeft=tabataWork;tabataCurrentRound=1;tabataCurrentSet=1;tabataPhase='work';tabataPaused=false;
-  tabataTotalTime=tabataTotalRounds*(tabataWork+tabataRest);tabataElapsedTime=0;
+  tabataTotalTime=tabataSetsCount*tabataTotalRounds*(tabataWork+tabataRest);tabataElapsedTime=0;
   document.getElementById('tabata-pause-btn').textContent='Pause';
   updateTabataDisplay();showScreen('tabata-workout-screen');
   tabataTicker=setInterval(tabataTick,1000);
@@ -989,18 +1038,30 @@ function updateTabataDisplay(){
   document.getElementById('tabata-timer-display').textContent=tabataSecondsLeft;
   document.getElementById('tabata-phase-label').textContent=tabataPhase==='work'?'LETS GO!':'REST';
   document.getElementById('tabata-exercise-name').textContent=tabataPhase==='work'?'Round '+tabataCurrentRound+' of '+tabataTotalRounds:'Rest';
-  document.getElementById('tabata-set-display').textContent=tabataPhase==='work'?tabataWork+'s work':tabataRest+'s rest';
+  document.getElementById('tabata-set-display').textContent=(tabataSetsCount>1?'Set '+tabataCurrentSet+' of '+tabataSetsCount+' · ':'')+( tabataPhase==='work'?tabataWork+'s work':tabataRest+'s rest');
   document.getElementById('tabata-round-display').textContent='';
   document.getElementById('tabata-total-remaining').textContent=fmtTime(Math.max(0,tabataTotalTime-tabataElapsedTime))+' remaining';
   setArcEl('tabata-arc',tabataSecondsLeft,tabataPhase==='work'?tabataWork:tabataRest);
   applyTabataColors();
 }
 function tabataTick(){if(tabataPaused)return;tabataElapsedTime++;if(tabataSecondsLeft<=0){advanceTabata();return;}if(tabataSecondsLeft===3)scheduleBeeps();updateTabataDisplay();tabataSecondsLeft--;}
-function advanceTabata(){if(tabataPhase==='work'){tabataPhase='rest';tabataSecondsLeft=tabataRest;}else{tabataCurrentRound++;if(tabataCurrentRound>tabataTotalRounds){finishTabata();return;}tabataPhase='work';tabataSecondsLeft=tabataWork;}updateTabataDisplay();tabataSecondsLeft--;}
+function advanceTabata(){
+  if(tabataPhase==='work'){tabataPhase='rest';tabataSecondsLeft=tabataRest;}
+  else{
+    tabataCurrentRound++;
+    if(tabataCurrentRound>tabataTotalRounds){
+      tabataCurrentSet++;
+      if(tabataCurrentSet>tabataSetsCount){finishTabata();return;}
+      tabataCurrentRound=1;
+    }
+    tabataPhase='work';tabataSecondsLeft=tabataWork;
+  }
+  updateTabataDisplay();tabataSecondsLeft--;
+}
 function skipTabata(){if(tabataPaused)return;ensureAudio();advanceTabata();}
 function toggleTabataPause(){tabataPaused=!tabataPaused;document.getElementById('tabata-pause-btn').textContent=tabataPaused?'Resume':'Pause';}
 function stopTabata(){clearInterval(tabataTicker);stopAudioKeepalive();showScreen('home-screen');}
-function finishTabata(){clearInterval(tabataTicker);document.getElementById('done-duration').textContent=fmtTime(tabataTotalRounds*60);showScreen('done-screen');playFanfare();fireConfetti();setTimeout(fireConfetti,800);}
+function finishTabata(){clearInterval(tabataTicker);stopAudioKeepalive();document.getElementById('done-duration').textContent=fmtTime(tabataSetsCount*tabataTotalRounds*(tabataWork+tabataRest));showScreen('done-screen');playFanfare();}
 
 // AMRAP
 function startAmrapWorkout(){amrapTotalSeconds=amrapMinutes*60;amrapSecondsLeft=amrapTotalSeconds;amrapRounds=0;amrapPaused=false;document.getElementById('amrap-pause-btn').textContent='Pause';document.getElementById('amrap-rounds-display').textContent='Rounds: 0';showScreen('amrap-workout-screen');updateAmrapDisplay();amrapTicker=setInterval(amrapTick,1000);startAudioKeepalive();}
@@ -1009,7 +1070,7 @@ function amrapTick(){if(amrapPaused)return;if(amrapSecondsLeft===3)scheduleBeeps
 function amrapRound(delta){amrapRounds=Math.max(0,amrapRounds+delta);document.getElementById('amrap-rounds-display').textContent='Rounds: '+amrapRounds;}
 function toggleAmrapPause(){amrapPaused=!amrapPaused;document.getElementById('amrap-pause-btn').textContent=amrapPaused?'Resume':'Pause';}
 function stopAmrap(){clearInterval(amrapTicker);stopAudioKeepalive();showScreen('home-screen');}
-function finishAmrap(){clearInterval(amrapTicker);document.getElementById('done-duration').textContent=fmtTime(amrapTotalSeconds);showScreen('done-screen');playFanfare();fireConfetti();setTimeout(fireConfetti,800);}
+function finishAmrap(){clearInterval(amrapTicker);document.getElementById('done-duration').textContent=fmtTime(amrapTotalSeconds);showScreen('done-screen');playFanfare();}
 
 function restart(){showScreen('home-screen');}
 document.addEventListener('visibilitychange', () => {
