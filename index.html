@@ -205,9 +205,9 @@
 <div id="app">
 
   <!-- HOME -->
-  <div id="home-screen" class="screen" ontouchstart="if(!audioCtx)initAudio()">
+  <div id="home-screen" class="screen">
     <div class="top-bar" style="position:absolute;top:0;right:0;padding:1.25rem 1.5rem;">
-      <button class="icon-btn" onclick="showScreen('menu-screen')">
+      <button class="icon-btn" onclick="ensureAudio();showScreen('menu-screen')">
         <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
     </div>
@@ -241,7 +241,7 @@
     </div>
     <div class="home-btns">
       <div class="total-time-preview" id="home-total-preview"></div>
-      <button class="btn-primary" onclick="startCountdown('interval')">Start</button>
+      <button class="btn-primary" onclick="ensureAudio();startCountdown('interval')">Start</button>
     </div>
   </div>
 
@@ -277,7 +277,7 @@
   <!-- LIBRARY -->
   <div id="saved-screen" class="screen">
     <div class="top-bar">
-      <button class="icon-btn" onclick="showScreen('menu-screen')">
+      <button class="icon-btn" onclick="ensureAudio();showScreen('menu-screen')">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <h2>Saved</h2>
@@ -507,7 +507,7 @@
   <!-- EMOM -->
   <div id="emom-screen" class="screen" style="padding-top: 15%;">
     <div class="top-bar">
-      <button class="icon-btn" onclick="showScreen('menu-screen')">
+      <button class="icon-btn" onclick="ensureAudio();showScreen('menu-screen')">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <h2>E.M.O.M.</h2>
@@ -530,7 +530,7 @@
   <!-- TABATA -->
   <div id="tabata-screen" class="screen" style="padding-top: 15%;">
     <div class="top-bar">
-      <button class="icon-btn" onclick="showScreen('menu-screen')">
+      <button class="icon-btn" onclick="ensureAudio();showScreen('menu-screen')">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <h2>Tabata</h2>
@@ -561,7 +561,7 @@
   <!-- AMRAP -->
   <div id="amrap-screen" class="screen" style="padding-top: 15%;">
     <div class="top-bar">
-      <button class="icon-btn" onclick="showScreen('menu-screen')">
+      <button class="icon-btn" onclick="ensureAudio();showScreen('menu-screen')">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <h2>A.M.R.A.P.</h2>
@@ -934,18 +934,29 @@ function updateDisplay(){
 }
 function tick(){if(paused)return;totalSecondsRemaining--;if(timeLeft<=0){advance();return;}if(timeLeft===3)scheduleBeeps();updateDisplay();timeLeft--;}
 function advance(){const isLastEx=currentExercise>=settings.exercises,isLastRound=currentRound>=settings.rounds;if(phase==='work'){if(isLastEx&&isLastRound){finishWorkout();return;}if(isLastEx){phase='roundRest';phaseDuration=settings.roundRest;timeLeft=settings.roundRest;}else{phase='rest';phaseDuration=settings.rest;timeLeft=settings.rest;}}else if(phase==='rest'){currentExercise++;phase='work';phaseDuration=settings.work;timeLeft=settings.work;}else if(phase==='roundRest'){currentRound++;currentExercise=1;phase='work';phaseDuration=settings.work;timeLeft=settings.work;}updateDisplay();timeLeft--;}
-function skipInterval(){if(paused)return;advance();}
+
+let keepaliveTicker = null;
+function startAudioKeepalive() {
+  stopAudioKeepalive();
+  keepaliveTicker = setInterval(() => {
+    if (audioCtx && audioCtx.state !== 'running') audioCtx.resume();
+  }, 5000);
+}
+function stopAudioKeepalive() {
+  if (keepaliveTicker) { clearInterval(keepaliveTicker); keepaliveTicker = null; }
+}
+function skipInterval(){if(paused)return;ensureAudio();advance();}
 function togglePause(){paused=!paused;document.getElementById('pause-btn').textContent=paused?'Resume':'Pause';}
 function startWorkout(){currentRound=1;currentExercise=1;phase='work';phaseDuration=settings.work;timeLeft=settings.work;totalSecondsRemaining=calcTotalSeconds(settings);paused=false;workoutStart=Date.now();document.getElementById('pause-btn').textContent='Pause';showScreen('workout-screen');updateDisplay();ticker=setInterval(tick,1000);}
-function stopWorkout(){clearInterval(ticker);clearInterval(countdownTicker);paused=false;currentExerciseNames=[];showScreen('home-screen');}
+function stopWorkout(){clearInterval(ticker);clearInterval(countdownTicker);stopAudioKeepalive();paused=false;currentExerciseNames=[];showScreen('home-screen');}
 function finishWorkout(){clearInterval(ticker);const elapsed=Math.round((Date.now()-workoutStart)/1000);document.getElementById('done-duration').textContent=fmtTime(elapsed);currentExerciseNames=[];showScreen('done-screen');playFanfare();fireConfetti();setTimeout(fireConfetti,800);}
 
 // EMOM
-function startEmomWorkout(){emomSecondsLeft=60;emomCurrentMinute=1;emomTotalSeconds=emomMinutes*60;emomElapsed=0;emomPaused=false;document.getElementById('emom-pause-btn').textContent='Pause';document.getElementById('emom-workout-screen').style.background='#0a0a0a';showScreen('emom-workout-screen');updateEmomDisplay();emomTicker=setInterval(emomTick,1000);}
+function startEmomWorkout(){emomSecondsLeft=60;emomCurrentMinute=1;emomTotalSeconds=emomMinutes*60;emomElapsed=0;emomPaused=false;document.getElementById('emom-pause-btn').textContent='Pause';document.getElementById('emom-workout-screen').style.background='#0a0a0a';showScreen('emom-workout-screen');updateEmomDisplay();emomTicker=setInterval(emomTick,1000);startAudioKeepalive();}
 function updateEmomDisplay(){document.getElementById('emom-timer-display').textContent=emomSecondsLeft;document.getElementById('emom-minute-display').textContent='Minute '+emomCurrentMinute+' of '+emomMinutes;document.getElementById('emom-total-remaining').textContent=fmtTime(Math.max(0,emomTotalSeconds-emomElapsed))+' remaining';setArcEl('emom-arc',emomSecondsLeft,60);}
 function emomTick(){if(emomPaused)return;emomElapsed++;if(emomElapsed>=emomTotalSeconds){finishEmom();return;}emomSecondsLeft--;if(emomSecondsLeft<=0){emomCurrentMinute++;emomSecondsLeft=60;}if(emomSecondsLeft===3)scheduleBeeps();updateEmomDisplay();}
 function toggleEmomPause(){emomPaused=!emomPaused;document.getElementById('emom-pause-btn').textContent=emomPaused?'Resume':'Pause';}
-function stopEmom(){clearInterval(emomTicker);showScreen('home-screen');}
+function stopEmom(){clearInterval(emomTicker);stopAudioKeepalive();showScreen('home-screen');}
 function finishEmom(){clearInterval(emomTicker);document.getElementById('done-duration').textContent=fmtTime(emomTotalSeconds);showScreen('done-screen');playFanfare();fireConfetti();setTimeout(fireConfetti,800);}
 
 // TABATA
@@ -955,6 +966,7 @@ function startTabataWorkout(){
   document.getElementById('tabata-pause-btn').textContent='Pause';
   updateTabataDisplay();showScreen('tabata-workout-screen');
   tabataTicker=setInterval(tabataTick,1000);
+  startAudioKeepalive();
 }
 function applyTabataColors(){
   const tws=document.getElementById('tabata-workout-screen');
@@ -979,18 +991,18 @@ function updateTabataDisplay(){
 }
 function tabataTick(){if(tabataPaused)return;tabataElapsedTime++;if(tabataSecondsLeft<=0){advanceTabata();return;}if(tabataSecondsLeft===3)scheduleBeeps();updateTabataDisplay();tabataSecondsLeft--;}
 function advanceTabata(){if(tabataPhase==='work'){tabataPhase='rest';tabataSecondsLeft=tabataRest;}else{tabataCurrentRound++;if(tabataCurrentRound>tabataTotalRounds){finishTabata();return;}tabataPhase='work';tabataSecondsLeft=tabataWork;}updateTabataDisplay();tabataSecondsLeft--;}
-function skipTabata(){if(tabataPaused)return;advanceTabata();}
+function skipTabata(){if(tabataPaused)return;ensureAudio();advanceTabata();}
 function toggleTabataPause(){tabataPaused=!tabataPaused;document.getElementById('tabata-pause-btn').textContent=tabataPaused?'Resume':'Pause';}
-function stopTabata(){clearInterval(tabataTicker);showScreen('home-screen');}
+function stopTabata(){clearInterval(tabataTicker);stopAudioKeepalive();showScreen('home-screen');}
 function finishTabata(){clearInterval(tabataTicker);document.getElementById('done-duration').textContent=fmtTime(tabataTotalRounds*60);showScreen('done-screen');playFanfare();fireConfetti();setTimeout(fireConfetti,800);}
 
 // AMRAP
-function startAmrapWorkout(){amrapTotalSeconds=amrapMinutes*60;amrapSecondsLeft=amrapTotalSeconds;amrapRounds=0;amrapPaused=false;document.getElementById('amrap-pause-btn').textContent='Pause';document.getElementById('amrap-rounds-display').textContent='Rounds: 0';showScreen('amrap-workout-screen');updateAmrapDisplay();amrapTicker=setInterval(amrapTick,1000);}
+function startAmrapWorkout(){amrapTotalSeconds=amrapMinutes*60;amrapSecondsLeft=amrapTotalSeconds;amrapRounds=0;amrapPaused=false;document.getElementById('amrap-pause-btn').textContent='Pause';document.getElementById('amrap-rounds-display').textContent='Rounds: 0';showScreen('amrap-workout-screen');updateAmrapDisplay();amrapTicker=setInterval(amrapTick,1000);startAudioKeepalive();}
 function updateAmrapDisplay(){const m=Math.floor(amrapSecondsLeft/60),s=amrapSecondsLeft%60;document.getElementById('amrap-timer-display').textContent=m+':'+String(s).padStart(2,'0');document.getElementById('amrap-rounds-display').textContent='Rounds: '+amrapRounds;setArcEl('amrap-arc',amrapSecondsLeft,amrapTotalSeconds);}
 function amrapTick(){if(amrapPaused)return;if(amrapSecondsLeft===3)scheduleBeeps();amrapSecondsLeft--;if(amrapSecondsLeft<=0){finishAmrap();return;}updateAmrapDisplay();}
 function amrapRound(delta){amrapRounds=Math.max(0,amrapRounds+delta);document.getElementById('amrap-rounds-display').textContent='Rounds: '+amrapRounds;}
 function toggleAmrapPause(){amrapPaused=!amrapPaused;document.getElementById('amrap-pause-btn').textContent=amrapPaused?'Resume':'Pause';}
-function stopAmrap(){clearInterval(amrapTicker);showScreen('home-screen');}
+function stopAmrap(){clearInterval(amrapTicker);stopAudioKeepalive();showScreen('home-screen');}
 function finishAmrap(){clearInterval(amrapTicker);document.getElementById('done-duration').textContent=fmtTime(amrapTotalSeconds);showScreen('done-screen');playFanfare();fireConfetti();setTimeout(fireConfetti,800);}
 
 function restart(){showScreen('home-screen');}
@@ -999,13 +1011,6 @@ document.addEventListener('visibilitychange', () => {
     audioCtx.resume();
   }
 });
-// Unlock audio on very first touch anywhere
-document.addEventListener('touchstart', function unlock() {
-  if (!audioCtx) initAudio();
-  else if (audioCtx.state !== 'running') audioCtx.resume();
-  document.removeEventListener('touchstart', unlock);
-}, { once: true, passive: true });
-
 renderLibrary();
 updateHomePreview();
 showScreen('home-screen');
