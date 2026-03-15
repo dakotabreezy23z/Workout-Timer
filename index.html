@@ -510,7 +510,7 @@
       <h2>E.M.O.M.</h2>
       <div style="width:34px"></div>
     </div>
-    <p style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:400;color:rgba(255,255,255,0.5);text-align:center;padding:0 1.5rem;margin:1.5rem 0 0;">Every Minute On the Minute — start each exercise at the top of every minute. Rest for whatever time remains.</p>
+    <p style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:400;color:rgba(255,255,255,0.5);text-align:center;padding:0 1.5rem;margin:1.5rem 0 0;">Every Minute On the Minute. When the timer hits zero, start your next rep immediately. Use whatever time is left in the minute to rest. The shorter your effort, the more rest you earn.</p>
     <div class="emom-content">
       <div class="setting-row" style="width:100%;">
         <label>Minutes</label>
@@ -533,7 +533,7 @@
       <h2>Tabata</h2>
       <div style="width:34px"></div>
     </div>
-    <p style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:400;color:rgba(255,255,255,0.5);text-align:center;padding:0 1.5rem;margin:1.5rem 0 0;">Always 4 minutes — 3:1 work to rest.</p>
+    <p style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:400;color:rgba(255,255,255,0.5);text-align:center;padding:0 1.5rem;margin:1.5rem 0 0;">Always 4 minutes per set. Work hard, rest briefly, repeat. Pick a weight you can move fast.</p>
     <div class="tabata-content">
       <div style="display:flex;flex-direction:column;gap:12px;width:100%;">
         <button class="tabata-option-card" id="tabata-opt-4" onclick="selectTabata(4,45,15)">
@@ -564,7 +564,7 @@
       <h2>A.M.R.A.P.</h2>
       <div style="width:34px"></div>
     </div>
-    <p style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:400;color:rgba(255,255,255,0.5);text-align:center;padding:0 1.5rem;margin:1.5rem 0 0;">As Many Rounds As Possible — complete as many full rounds as you can before time runs out.</p>
+    <p style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:400;color:rgba(255,255,255,0.5);text-align:center;padding:0 1.5rem;margin:1.5rem 0 0;">As Many Rounds As Possible. Set your time, then complete as many full rounds of your circuit as you can. Use the + Round button each time you finish a full round. Your score is your total rounds.</p>
     <div class="amrap-content">
       <div class="setting-row" style="width:100%;">
         <label>Minutes</label>
@@ -711,7 +711,7 @@ let timeLeft=0, phaseDuration=0, currentRound=1, currentExercise=1;
 let phase='work', workoutStart=0, paused=false, audioCtx=null;
 let totalSecondsRemaining=0;
 let emomSecondsLeft=60, emomCurrentMinute=1, emomTotalSeconds=0, emomElapsed=0, emomPaused=false;
-let tabataSecondsLeft=23, tabataCurrentRound=1, tabataTotalRounds=8, tabataWork=23, tabataRest=7, tabataPhase='work', tabataPaused=false, tabataTotalTime=0, tabataElapsedTime=0;
+let tabataSecondsLeft=23, tabataCurrentRound=1, tabataCurrentSet=1, tabataTotalRounds=8, tabataWork=23, tabataRest=7, tabataPhase='work', tabataPaused=false, tabataTotalTime=0, tabataElapsedTime=0, tabataSetsCount=1;
 let amrapSecondsLeft=0, amrapTotalSeconds=0, amrapRounds=0, amrapPaused=false;
 
 const CIRCUMFERENCE = 2*Math.PI*126;
@@ -734,6 +734,7 @@ function selectTabata(rounds, work, rest){
   if(screen) screen.querySelectorAll('.tabata-option-card').forEach(c=>c.classList.remove('selected'));
   const el=document.getElementById('tabata-opt-'+rounds);
   if(el) el.classList.add('selected');
+  document.getElementById('tabata-preview').textContent='Total: '+fmtTime(rounds*(work+rest));
 }
 function updateAmrap(val){amrapMinutes=parseInt(val);document.getElementById('amrap-val-minutes').textContent=val;document.getElementById('amrap-preview').textContent='Total: '+fmtTime(amrapMinutes*60);}
 
@@ -840,7 +841,15 @@ function renderLibrary(){
   });
 }
 
-function openReview(index){activeWorkoutIndex=index;const w=savedWorkouts[index];document.getElementById('review-title').textContent=w.name;document.getElementById('review-total-preview').textContent='Total: '+fmtTime(calcTotalSeconds(w));const meta=document.getElementById('review-meta');meta.innerHTML=`<div class="review-meta-row"><span class="review-meta-label">Rounds</span><span class="review-meta-val">${w.rounds}</span></div><div class="review-meta-row"><span class="review-meta-label">Exercises</span><span class="review-meta-val">${w.exercises}</span></div><div class="review-meta-row"><span class="review-meta-label">Work time</span><span class="review-meta-val">${w.work}s</span></div><div class="review-meta-row"><span class="review-meta-label">Rest</span><span class="review-meta-val">${w.rest}s</span></div><div class="review-meta-row"><span class="review-meta-label">Round rest</span><span class="review-meta-val">${w.roundRest}s</span></div>`;const exList=document.getElementById('review-exercises');exList.innerHTML='';w.exerciseNames.forEach((name,i)=>{const div=document.createElement('div');div.className='review-exercise-item';div.innerHTML=`<span class="review-exercise-num">${i+1}</span><span class="review-exercise-name">${name||'Exercise '+(i+1)}</span>`;exList.appendChild(div);});showScreen('review-screen');}
+function openReview(index){
+  activeWorkoutIndex=index;
+  const w=savedWorkouts[index];
+  // Route non-interval types directly to their workout
+  if(w.type==='emom'){emomMinutes=w.minutes;document.getElementById('emom-val-minutes').textContent=w.minutes;document.getElementById('emom-preview').textContent='Total: '+fmtTime(w.minutes*60);startCountdown('emom');return;}
+  if(w.type==='tabata'){tabataTotalRounds=w.rounds;tabataWork=w.work;tabataRest=w.rest;selectTabata(w.rounds,w.work,w.rest);startCountdown('tabata');return;}
+  if(w.type==='amrap'){amrapMinutes=w.minutes;document.getElementById('amrap-val-minutes').textContent=w.minutes;document.getElementById('amrap-preview').textContent='Total: '+fmtTime(w.minutes*60);startCountdown('amrap');return;}
+  document.getElementById('review-title').textContent=w.name;
+  document.getElementById('review-total-preview').textContent='Total: '+fmtTime(calcTotalSeconds(w));const meta=document.getElementById('review-meta');meta.innerHTML=`<div class="review-meta-row"><span class="review-meta-label">Rounds</span><span class="review-meta-val">${w.rounds}</span></div><div class="review-meta-row"><span class="review-meta-label">Exercises</span><span class="review-meta-val">${w.exercises}</span></div><div class="review-meta-row"><span class="review-meta-label">Work time</span><span class="review-meta-val">${w.work}s</span></div><div class="review-meta-row"><span class="review-meta-label">Rest</span><span class="review-meta-val">${w.rest}s</span></div><div class="review-meta-row"><span class="review-meta-label">Round rest</span><span class="review-meta-val">${w.roundRest}s</span></div>`;const exList=document.getElementById('review-exercises');exList.innerHTML='';w.exerciseNames.forEach((name,i)=>{const div=document.createElement('div');div.className='review-exercise-item';div.innerHTML=`<span class="review-exercise-num">${i+1}</span><span class="review-exercise-name">${name||'Exercise '+(i+1)}</span>`;exList.appendChild(div);});showScreen('review-screen');}
 
 function startFromReview(){const w=savedWorkouts[activeWorkoutIndex];settings.exercises=w.exercises;settings.rounds=w.rounds;settings.work=w.work;settings.rest=w.rest;settings.roundRest=w.roundRest;currentExerciseNames=w.exerciseNames.map((n,i)=>n||'Exercise '+(i+1));startCountdown('interval');}
 function editFromReview(){openCreate(activeWorkoutIndex);}
@@ -958,8 +967,8 @@ function finishEmom(){clearInterval(emomTicker);document.getElementById('done-du
 
 // TABATA
 function startTabataWorkout(){
-  tabataSecondsLeft=tabataWork;tabataCurrentRound=1;tabataPhase='work';tabataPaused=false;
-  tabataTotalTime=tabataTotalRounds*60;tabataElapsedTime=0;
+  tabataSecondsLeft=tabataWork;tabataCurrentRound=1;tabataCurrentSet=1;tabataPhase='work';tabataPaused=false;
+  tabataTotalTime=tabataTotalRounds*(tabataWork+tabataRest);tabataElapsedTime=0;
   document.getElementById('tabata-pause-btn').textContent='Pause';
   updateTabataDisplay();showScreen('tabata-workout-screen');
   tabataTicker=setInterval(tabataTick,1000);
@@ -980,7 +989,7 @@ function updateTabataDisplay(){
   document.getElementById('tabata-timer-display').textContent=tabataSecondsLeft;
   document.getElementById('tabata-phase-label').textContent=tabataPhase==='work'?'LETS GO!':'REST';
   document.getElementById('tabata-exercise-name').textContent=tabataPhase==='work'?'Round '+tabataCurrentRound+' of '+tabataTotalRounds:'Rest';
-  document.getElementById('tabata-set-display').textContent=tabataPhase==='work'?'45s work':'15s rest';
+  document.getElementById('tabata-set-display').textContent=tabataPhase==='work'?tabataWork+'s work':tabataRest+'s rest';
   document.getElementById('tabata-round-display').textContent='';
   document.getElementById('tabata-total-remaining').textContent=fmtTime(Math.max(0,tabataTotalTime-tabataElapsedTime))+' remaining';
   setArcEl('tabata-arc',tabataSecondsLeft,tabataPhase==='work'?tabataWork:tabataRest);
