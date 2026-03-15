@@ -737,6 +737,33 @@
 
 </div>
 <script>
+const appSettings = { sound: true, vibration: true, wakeLock: true, countdownDuration: 10 };
+let wakeLockSentinel = null;
+
+function toggleSetting(key) {
+  appSettings[key] = !appSettings[key];
+  document.getElementById('setting-' + key).textContent = appSettings[key] ? 'On' : 'Off';
+  if (key === 'wakeLock') {
+    if (appSettings.wakeLock) requestWakeLock();
+    else releaseWakeLock();
+  }
+}
+
+function setCountdownDuration(val) {
+  appSettings.countdownDuration = val;
+  [5,10,15].forEach(v => {
+    const btn = document.getElementById('cd-'+v);
+    if(btn){ btn.style.background = v===val ? '#fff' : 'transparent'; btn.style.color = v===val ? '#111' : '#fff'; }
+  });
+}
+
+async function requestWakeLock() {
+  try { if ('wakeLock' in navigator) wakeLockSentinel = await navigator.wakeLock.request('screen'); } catch(e) {}
+}
+function releaseWakeLock() {
+  if (wakeLockSentinel) { wakeLockSentinel.release(); wakeLockSentinel = null; }
+}
+
 const settings = { exercises:3, rounds:3, work:40, rest:20, roundRest:60 };
 const createSettings = { exercises:3, rounds:3, work:40, rest:20, roundRest:60 };
 let emomMinutes=10, tabataSets=1, amrapMinutes=10;
@@ -970,7 +997,7 @@ function playStartBeep(){beep(1047,0.3,0);}
 
 
 // COUNTDOWN
-function startCountdown(mode){pendingMode=mode;initAudio();let count=appSettings.countdownDuration;const cdArc=document.getElementById('countdown-arc');cdArc.style.strokeDasharray=CIRCUMFERENCE;cdArc.style.strokeDashoffset=0;document.getElementById('countdown-number').textContent=count;setArcEl('countdown-arc',count,10);
+function startCountdown(mode){pendingMode=mode;initAudio();let count=appSettings.countdownDuration;const cdArc=document.getElementById('countdown-arc');cdArc.style.strokeDasharray=CIRCUMFERENCE;cdArc.style.strokeDashoffset=0;document.getElementById('countdown-number').textContent=count;setArcEl('countdown-arc',count,appSettings.countdownDuration);
   // Show first exercise name
   const firstEx = mode==='interval' ? (currentExerciseNames.length>0&&currentExerciseNames[0] ? currentExerciseNames[0] : (settings.exercises>0?'Exercise 1':'')) : mode==='emom' ? 'Every Minute' : mode==='tabata' ? '20s Work' : mode==='amrap' ? 'As Many Rounds' : '';
   document.getElementById('countdown-next-name').textContent=firstEx;
@@ -1032,7 +1059,7 @@ function stopAudioKeepalive() {
 }
 function skipInterval(){if(paused)return;ensureAudio();advance();}
 function togglePause(){paused=!paused;document.getElementById('pause-btn').textContent=paused?'Resume':'Pause';}
-function startWorkout(){currentRound=1;currentExercise=1;phase='work';phaseDuration=settings.work;timeLeft=settings.work;totalSecondsRemaining=calcTotalSeconds(settings);paused=false;workoutStart=Date.now();document.getElementById('pause-btn').textContent='Pause';showScreen('workout-screen');updateDisplay();ticker=setInterval(tick,1000);}
+function startWorkout(){currentRound=1;currentExercise=1;phase='work';phaseDuration=settings.work;timeLeft=settings.work;totalSecondsRemaining=calcTotalSeconds(settings);paused=false;workoutStart=Date.now();document.getElementById('pause-btn').textContent='Pause';showScreen('workout-screen');updateDisplay();timeLeft--;ticker=setInterval(tick,1000);startAudioKeepalive();if(appSettings.wakeLock)requestWakeLock();}
 function stopWorkout(){clearInterval(ticker);clearInterval(countdownTicker);stopAudioKeepalive();paused=false;currentExerciseNames=[];showScreen('home-screen');}
 function finishWorkout(){clearInterval(ticker);const elapsed=Math.round((Date.now()-workoutStart)/1000);document.getElementById('done-duration').textContent=fmtTime(elapsed);currentExerciseNames=[];showScreen('done-screen');playFanfare();}
 
