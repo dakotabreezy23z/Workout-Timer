@@ -118,13 +118,13 @@
 
   /* EMOM */
   #emom-screen { }
-  .emom-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; padding-bottom: 15%; padding-top: 2rem; }
+  .emom-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; padding-bottom: 5%; padding-top: 0; margin-top: 1rem; }
   .emom-total-preview { font-size: 16px; font-weight: 400; color: rgba(255,255,255,0.4); margin-top: 1rem; font-family: 'Barlow', sans-serif; }
   .emom-btns { padding: 0 1.5rem 2rem; display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
 
   /* TABATA */
   #tabata-screen { }
-  .tabata-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; padding-bottom: 15%; padding-top: 2rem; }
+  .tabata-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; padding-bottom: 5%; padding-top: 0; margin-top: 1rem; }
   .tabata-info { background: rgba(255,255,255,0.06); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 1rem 1.5rem; margin-bottom: 1.5rem; width: 100%; text-align: center; }
   .tabata-info p { font-size: 16px; font-weight: 400; color: rgba(255,255,255,0.5); font-family: 'Barlow', sans-serif; line-height: 1.6; }
   .tabata-info strong { color: rgba(255,255,255,0.85); font-weight: 400; }
@@ -132,7 +132,7 @@
 
   /* AMRAP */
   #amrap-screen { }
-  .amrap-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; padding-bottom: 15%; padding-top: 2rem; }
+  .amrap-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; padding-bottom: 5%; padding-top: 0; margin-top: 1rem; }
   .amrap-total-preview { font-size: 16px; font-weight: 400; color: rgba(255,255,255,0.4); margin-top: 1rem; font-family: 'Barlow', sans-serif; }
   .amrap-btns { padding: 0 1.5rem 2rem; display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
 
@@ -253,7 +253,7 @@
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
       <button class="menu-card" onclick="showScreen('emom-screen')">
-        <span>EMOM</span>
+        <span>E.M.O.M.</span>
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
       <button class="menu-card" onclick="showScreen('tabata-screen')">
@@ -261,7 +261,7 @@
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
       <button class="menu-card" onclick="showScreen('amrap-screen')">
-        <span>AMRAP</span>
+        <span>A.M.R.A.P.</span>
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
     </div>
@@ -372,10 +372,10 @@
       <button class="icon-btn" onclick="showScreen('menu-screen')">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
-      <h2>EMOM</h2>
+      <h2>E.M.O.M.</h2>
       <div style="width:34px"></div>
     </div>
-    <p style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:400;color:rgba(255,255,255,0.5);text-align:center;padding:0 1.5rem;margin:0.5rem 0 0;">Every Minute On the Minute — start each exercise at the top of every minute. Rest for whatever time remains.</p>
+    <p style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:400;color:rgba(255,255,255,0.5);text-align:center;padding:0 1.5rem;margin:1.5rem 0 0;">Every Minute On the Minute — start each exercise at the top of every minute. Rest for whatever time remains.</p>
     <div class="emom-content">
       <div class="setting-row" style="width:100%;">
         <label>Minutes</label>
@@ -398,7 +398,7 @@
       <h2>Tabata</h2>
       <div style="width:34px"></div>
     </div>
-    <p style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:400;color:rgba(255,255,255,0.5);text-align:center;padding:0 1.5rem;margin:0.5rem 0 0;">20s work / 10s rest — 8 rounds per set.</p>
+    <p style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:400;color:rgba(255,255,255,0.5);text-align:center;padding:0 1.5rem;margin:1.5rem 0 0;">20s work / 10s rest — 8 rounds per set.</p>
     <div class="tabata-content">
       <div class="setting-row" style="width:100%;">
         <label>Sets</label>
@@ -418,10 +418,10 @@
       <button class="icon-btn" onclick="showScreen('menu-screen')">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
-      <h2>AMRAP</h2>
+      <h2>A.M.R.A.P.</h2>
       <div style="width:34px"></div>
     </div>
-    <p style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:400;color:rgba(255,255,255,0.5);text-align:center;padding:0 1.5rem;margin:0.5rem 0 0;">As Many Rounds As Possible — complete as many full rounds as you can before time runs out.</p>
+    <p style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:400;color:rgba(255,255,255,0.5);text-align:center;padding:0 1.5rem;margin:1.5rem 0 0;">As Many Rounds As Possible — complete as many full rounds as you can before time runs out.</p>
     <div class="amrap-content">
       <div class="setting-row" style="width:100%;">
         <label>Minutes</label>
@@ -512,7 +512,7 @@
 
   <!-- AMRAP WORKOUT -->
   <div id="amrap-workout-screen" class="screen workout-texture">
-    <div id="amrap-label">AMRAP</div>
+    <div id="amrap-label">A.M.R.A.P.</div>
     <div class="circle-wrap">
       <svg width="280" height="280" viewBox="0 0 280 280">
         <circle class="circle-bg" cx="140" cy="140" r="126"/>
