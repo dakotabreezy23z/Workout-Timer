@@ -313,25 +313,22 @@
       <div style="width:34px"></div>
     </div>
     <div style="flex:1;display:flex;flex-direction:column;padding:1rem 1.5rem;gap:12px;">
-      <button class="tabata-option-card" id="type-opt-amrap" onclick="selectType('amrap')">
+      <button class="tabata-option-card" id="type-opt-amrap" onclick="goToCreateType('amrap')">
         <span class="tabata-opt-rounds">A.M.R.A.P.</span>
         <span class="tabata-opt-detail">As many rounds as possible</span>
       </button>
-      <button class="tabata-option-card" id="type-opt-emom" onclick="selectType('emom')">
+      <button class="tabata-option-card" id="type-opt-emom" onclick="goToCreateType('emom')">
         <span class="tabata-opt-rounds">E.M.O.M.</span>
         <span class="tabata-opt-detail">Every minute on the minute</span>
       </button>
-      <button class="tabata-option-card" id="type-opt-interval" onclick="selectType('interval')">
+      <button class="tabata-option-card" id="type-opt-interval" onclick="goToCreateType('interval')">
         <span class="tabata-opt-rounds">Interval</span>
         <span class="tabata-opt-detail">Custom rounds, exercises &amp; times</span>
       </button>
-      <button class="tabata-option-card" id="type-opt-tabata" onclick="selectType('tabata')">
+      <button class="tabata-option-card" id="type-opt-tabata" onclick="goToCreateType('tabata')">
         <span class="tabata-opt-rounds">Tabata</span>
         <span class="tabata-opt-detail">Always 4 minutes, 3:1 work/rest</span>
       </button>
-    </div>
-    <div style="padding:0 1.5rem 2rem;">
-      <button class="btn-primary" onclick="goToCreateType()">Next</button>
     </div>
   </div>
 
@@ -765,17 +762,17 @@ function selectType(type) {
   document.getElementById('type-opt-' + type).classList.add('selected');
 }
 
-function goToCreateType() {
-  if (selectedWorkoutType === 'interval') { openCreate(); return; }
-  if (selectedWorkoutType === 'emom') {
+function goToCreateType(type) {
+  if (type === 'interval') { openCreate(); return; }
+  if (type === 'emom') {
     const count = savedWorkouts.filter(w => w.type === 'emom').length + 1;
     document.getElementById('save-emom-name').value = 'E.M.O.M. ' + count;
     showScreen('save-emom-screen');
-  } else if (selectedWorkoutType === 'tabata') {
+  } else if (type === 'tabata') {
     const count = savedWorkouts.filter(w => w.type === 'tabata').length + 1;
     document.getElementById('save-tabata-name').value = 'Tabata ' + count;
     showScreen('save-tabata-screen');
-  } else if (selectedWorkoutType === 'amrap') {
+  } else if (type === 'amrap') {
     const count = savedWorkouts.filter(w => w.type === 'amrap').length + 1;
     document.getElementById('save-amrap-name').value = 'A.M.R.A.P. ' + count;
     showScreen('save-amrap-screen');
