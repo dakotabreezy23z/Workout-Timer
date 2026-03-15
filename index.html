@@ -263,6 +263,10 @@
         <span>Create</span>
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
+      <button class="menu-card" onclick="showScreen('workout-types-screen')">
+        <span>Workout Types</span>
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
       <button class="menu-card" onclick="showScreen('settings-screen')">
         <span>Settings</span>
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
@@ -341,10 +345,29 @@
         <div class="slider-val" id="save-emom-val">10</div>
         <input type="range" min="1" max="60" value="10" step="1" oninput="document.getElementById('save-emom-val').textContent=this.value">
       </div>
+      <div class="setting-row">
+        <label>Exercises per round</label>
+        <div class="slider-val" id="save-emom-exercises-val">1</div>
+        <input type="range" min="1" max="6" value="1" step="1" oninput="updateSaveEmomExercises(this.value)">
+      </div>
     </div>
-    <div style="padding:0 1.5rem 2rem;">
+    <div style="padding:0 1.5rem 2rem;display:flex;flex-direction:column;gap:10px;">
+      <button class="btn-secondary" onclick="openSaveEmomNamesScreen()">Exercise Names</button>
       <button class="btn-save" onclick="saveTypedWorkout('emom')">Save</button>
     </div>
+  </div>
+
+  <!-- SAVE EMOM NAMES -->
+  <div id="save-emom-names-screen" class="screen">
+    <div class="top-bar">
+      <button class="icon-btn" onclick="showScreen('save-emom-screen')">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h2>Workouts</h2>
+      <div style="width:34px"></div>
+    </div>
+    <div class="names-list" id="save-emom-names-list"></div>
+    <button class="names-done-btn" onclick="showScreen('save-emom-screen')">Done</button>
   </div>
 
   <!-- SAVE TABATA -->
@@ -410,7 +433,7 @@
         <input type="range" min="1" max="60" value="10" step="1" oninput="document.getElementById('save-amrap-val').textContent=this.value">
       </div>
     </div>
-    <div style="padding:0 1.5rem 2rem;">
+    <div style="padding:0 1.5rem 2rem;display:flex;flex-direction:column;gap:10px;">
       <button class="btn-save" onclick="saveTypedWorkout('amrap')">Save</button>
     </div>
   </div>
@@ -512,9 +535,15 @@
         <div class="slider-val" id="emom-val-minutes">10</div>
         <input type="range" min="1" max="60" value="10" step="1" oninput="updateEmom(this.value)">
       </div>
+      <div class="setting-row" style="width:100%;">
+        <label>Exercises per round</label>
+        <div class="slider-val" id="emom-val-exercises">1</div>
+        <input type="range" min="1" max="6" value="1" step="1" oninput="updateEmomExercises(this.value)">
+      </div>
       <div class="emom-total-preview" id="emom-preview">Total: 10:00</div>
     </div>
     <div class="emom-btns">
+      <button class="btn-secondary" onclick="openEmomNamesScreen()">Exercise Names</button>
       <button class="btn-primary" onclick="startCountdown('emom')">Start</button>
     </div>
   </div>
@@ -625,6 +654,48 @@
     </div>
   </div>
 
+  <!-- EMOM NAMES -->
+  <div id="emom-names-screen" class="screen">
+    <div class="top-bar">
+      <button class="icon-btn" onclick="showScreen('emom-screen')">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h2>Workouts</h2>
+      <div style="width:34px"></div>
+    </div>
+    <div class="names-list" id="emom-names-list"></div>
+    <button class="names-done-btn" onclick="showScreen('emom-screen')">Done</button>
+  </div>
+
+  <!-- WORKOUT TYPES -->
+  <div id="workout-types-screen" class="screen">
+    <div class="top-bar">
+      <button class="icon-btn" onclick="showScreen('menu-screen')">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h2>Workout Types</h2>
+      <div style="width:34px"></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;padding:1rem 1.5rem;gap:12px;">
+      <button class="tabata-option-card" onclick="showScreen('amrap-screen')">
+        <span class="tabata-opt-rounds">A.M.R.A.P.</span>
+        <span class="tabata-opt-detail">As many rounds as possible</span>
+      </button>
+      <button class="tabata-option-card" onclick="showScreen('emom-screen')">
+        <span class="tabata-opt-rounds">E.M.O.M.</span>
+        <span class="tabata-opt-detail">Every minute on the minute</span>
+      </button>
+      <button class="tabata-option-card" onclick="showScreen('home-screen')">
+        <span class="tabata-opt-rounds">Interval</span>
+        <span class="tabata-opt-detail">Custom rounds, exercises &amp; times</span>
+      </button>
+      <button class="tabata-option-card" onclick="showScreen('tabata-screen')">
+        <span class="tabata-opt-rounds">Tabata</span>
+        <span class="tabata-opt-detail">Always 4 minutes, 3:1 work/rest</span>
+      </button>
+    </div>
+  </div>
+
   <!-- COUNTDOWN -->
   <div id="countdown-screen" class="screen">
     <div id="countdown-label">Get Ready</div>
@@ -666,7 +737,7 @@
 
   <!-- EMOM WORKOUT -->
   <div id="emom-workout-screen" class="screen workout-texture">
-    <div id="emom-phase-label">E.M.O.M.</div>
+    <div id="emom-phase-label" style="font-size:32px;font-weight:400;letter-spacing:0.08em;color:#fff;margin-bottom:1rem;">1/10</div>
     <div class="circle-wrap">
       <svg width="280" height="280" viewBox="0 0 280 280">
         <circle class="circle-bg" cx="140" cy="140" r="126"/>
@@ -674,9 +745,9 @@
       </svg>
       <div id="emom-timer-display" class="circle-num">60</div>
     </div>
-    <div id="emom-minute-display">Minute 1 of 10</div>
-    <div id="emom-total-remaining">10:00 remaining</div>
-    <div class="workout-btns" style="margin-top:0.5rem;">
+    <div id="emom-exercise-list" style="display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:0.5rem;"></div>
+    <div id="emom-total-remaining" style="font-size:15px;font-weight:400;color:rgba(255,255,255,0.4);margin-bottom:1.5rem;font-family:'Barlow',sans-serif;">10:00 remaining</div>
+    <div class="workout-btns">
       <button id="emom-pause-btn" onclick="toggleEmomPause()">Pause</button>
       <button onclick="stopEmom()">Stop</button>
     </div>
@@ -771,7 +842,7 @@ let ticker=null, countdownTicker=null, emomTicker=null, tabataTicker=null, amrap
 let timeLeft=0, phaseDuration=0, currentRound=1, currentExercise=1;
 let phase='work', workoutStart=0, paused=false, audioCtx=null;
 let totalSecondsRemaining=0;
-let emomSecondsLeft=60, emomCurrentMinute=1, emomTotalSeconds=0, emomElapsed=0, emomPaused=false;
+let emomSecondsLeft=60, emomCurrentMinute=1, emomTotalSeconds=0, emomElapsed=0, emomPaused=false, emomExercises=1, emomExerciseNames=[];
 let tabataSecondsLeft=23, tabataCurrentRound=1, tabataCurrentSet=1, tabataTotalRounds=8, tabataWork=23, tabataRest=7, tabataPhase='work', tabataPaused=false, tabataTotalTime=0, tabataElapsedTime=0, tabataSetsCount=1;
 let amrapSecondsLeft=0, amrapTotalSeconds=0, amrapRounds=0, amrapPaused=false;
 
@@ -789,6 +860,17 @@ function setArcEl(id,remaining,total){const el=document.getElementById(id);if(el
 function updateSlider(key,val){settings[key]=parseInt(val);document.getElementById('val-'+key).textContent=(key==='work'||key==='rest'||key==='roundRest')?val+'s':val;}
 function updateHomePreview(){document.getElementById('home-total-preview').textContent='Total: '+fmtTime(calcTotalSeconds(settings));}
 function updateEmom(val){emomMinutes=parseInt(val);document.getElementById('emom-val-minutes').textContent=val;document.getElementById('emom-preview').textContent='Total: '+fmtTime(emomMinutes*60);}
+function updateEmomExercises(val){emomExercises=parseInt(val);document.getElementById('emom-val-exercises').textContent=val;}
+function openEmomNamesScreen(){
+  emomExerciseNames=Array.from({length:emomExercises},(_,i)=>emomExerciseNames[i]||'');
+  const list=document.getElementById('emom-names-list');list.innerHTML='';
+  emomExerciseNames.forEach((name,i)=>{
+    const row=document.createElement('div');row.className='name-row';
+    row.innerHTML=`<span>${i+1}</span><input type="text" placeholder="Workout ${i+1}" value="${name}" oninput="emomExerciseNames[${i}]=this.value">`;
+    list.appendChild(row);
+  });
+  showScreen('emom-names-screen');
+}
 function updateTabataSetsSlider(val){
   tabataSetsCount=parseInt(val);
   document.getElementById('tabata-sets-val').textContent=val;
@@ -822,7 +904,23 @@ function saveWorkout(){syncExerciseNames();const workout={name:document.getEleme
 
 let selectedWorkoutType = 'interval';
 let saveTabataRounds = 8, saveTabataWork = 23, saveTabataRest = 7, saveTabataSetsCount = 1;
+let saveEmomExercises = 1, saveEmomExerciseNames = [];
 
+function updateSaveEmomExercises(val){
+  saveEmomExercises=parseInt(val);
+  document.getElementById('save-emom-exercises-val').textContent=val;
+  saveEmomExerciseNames=Array.from({length:saveEmomExercises},(_,i)=>saveEmomExerciseNames[i]||'');
+}
+function openSaveEmomNamesScreen(){
+  saveEmomExerciseNames=Array.from({length:saveEmomExercises},(_,i)=>saveEmomExerciseNames[i]||'');
+  const list=document.getElementById('save-emom-names-list');list.innerHTML='';
+  saveEmomExerciseNames.forEach((name,i)=>{
+    const row=document.createElement('div');row.className='name-row';
+    row.innerHTML=`<span>${i+1}</span><input type="text" placeholder="Workout ${i+1}" value="${name}" oninput="saveEmomExerciseNames[${i}]=this.value">`;
+    list.appendChild(row);
+  });
+  showScreen('save-emom-names-screen');
+}
 function selectType(type) {
   selectedWorkoutType = type;
   document.querySelectorAll('[id^="type-opt-"]').forEach(c => c.classList.remove('selected'));
@@ -865,7 +963,7 @@ function saveTypedWorkout(type) {
   let workout = { type };
   if (type === 'emom') {
     workout.name = document.getElementById('save-emom-name').value || 'E.M.O.M. 1';
-    workout.minutes = parseInt(document.getElementById('save-emom-val').textContent);
+    workout.minutes = parseInt(document.getElementById('save-emom-val').textContent); workout.exercises = saveEmomExercises; workout.exerciseNames = [...saveEmomExerciseNames];
   } else if (type === 'tabata') {
     workout.name = document.getElementById('save-tabata-name').value || 'Tabata 1';
     workout.rounds = saveTabataRounds; workout.work = saveTabataWork; workout.rest = saveTabataRest; workout.sets = saveTabataSetsCount;
@@ -925,7 +1023,7 @@ function openReview(index){
 
   if(w.type==='emom'){
     document.getElementById('review-total-preview').textContent='Total: '+fmtTime(w.minutes*60);
-    meta.innerHTML=`<div class="review-meta-row"><span class="review-meta-label">Type</span><span class="review-meta-val">E.M.O.M.</span></div><div class="review-meta-row"><span class="review-meta-label">Duration</span><span class="review-meta-val">${w.minutes} min</span></div>`;
+    meta.innerHTML=`<div class="review-meta-row"><span class="review-meta-label">Type</span><span class="review-meta-val">E.M.O.M.</span></div><div class="review-meta-row"><span class="review-meta-label">Duration</span><span class="review-meta-val">${w.minutes} min</span></div><div class="review-meta-row"><span class="review-meta-label">Exercises</span><span class="review-meta-val">${w.exercises||1}</span></div>`;
   } else if(w.type==='tabata'){
     document.getElementById('review-total-preview').textContent='Total: '+fmtTime(w.rounds*(w.work+w.rest));
     meta.innerHTML=`<div class="review-meta-row"><span class="review-meta-label">Type</span><span class="review-meta-val">Tabata</span></div><div class="review-meta-row"><span class="review-meta-label">Rounds</span><span class="review-meta-val">${w.rounds}</span></div><div class="review-meta-row"><span class="review-meta-label">Sets</span><span class="review-meta-val">${w.sets||1}</span></div><div class="review-meta-row"><span class="review-meta-label">Work</span><span class="review-meta-val">${w.work}s</span></div><div class="review-meta-row"><span class="review-meta-label">Rest</span><span class="review-meta-val">${w.rest}s</span></div>`;
@@ -940,7 +1038,7 @@ function openReview(index){
 
 function startFromReview(){
   const w=savedWorkouts[activeWorkoutIndex];
-  if(w.type==='emom'){emomMinutes=w.minutes;document.getElementById('emom-val-minutes').textContent=w.minutes;document.getElementById('emom-preview').textContent='Total: '+fmtTime(w.minutes*60);startCountdown('emom');return;}
+  if(w.type==='emom'){emomMinutes=w.minutes;emomExercises=w.exercises||1;emomExerciseNames=w.exerciseNames||[];document.getElementById('emom-val-minutes').textContent=w.minutes;document.getElementById('emom-preview').textContent='Total: '+fmtTime(w.minutes*60);startCountdown('emom');return;}
   if(w.type==='tabata'){tabataTotalRounds=w.rounds;tabataWork=w.work;tabataRest=w.rest;tabataSetsCount=w.sets||1;selectTabata(w.rounds,w.work,w.rest);startCountdown('tabata');return;}
   if(w.type==='amrap'){amrapMinutes=w.minutes;document.getElementById('amrap-val-minutes').textContent=w.minutes;document.getElementById('amrap-preview').textContent='Total: '+fmtTime(w.minutes*60);startCountdown('amrap');return;}
   settings.exercises=w.exercises;settings.rounds=w.rounds;settings.work=w.work;settings.rest=w.rest;settings.roundRest=w.roundRest;
@@ -1004,8 +1102,10 @@ function playStartBeep(){beep(1047,0.3,0);}
 // COUNTDOWN
 function startCountdown(mode){pendingMode=mode;initAudio();let count=appSettings.countdownDuration;const cdArc=document.getElementById('countdown-arc');cdArc.style.strokeDasharray=CIRCUMFERENCE;cdArc.style.strokeDashoffset=0;document.getElementById('countdown-number').textContent=count;setArcEl('countdown-arc',count,appSettings.countdownDuration);
   // Show first exercise name
-  const firstEx = mode==='interval' ? (currentExerciseNames.length>0&&currentExerciseNames[0] ? currentExerciseNames[0] : (settings.exercises>0?'Exercise 1':'')) : mode==='emom' ? 'Every Minute' : mode==='tabata' ? '20s Work' : mode==='amrap' ? 'As Many Rounds' : '';
+  const firstEx = mode==='interval' ? (currentExerciseNames.length>0&&currentExerciseNames[0] ? currentExerciseNames[0] : (settings.exercises>0?'Exercise 1':'')) : mode==='emom' ? '' : mode==='tabata' ? '20s Work' : mode==='amrap' ? 'As Many Rounds' : '';
   document.getElementById('countdown-next-name').textContent=firstEx;
+  document.getElementById('countdown-next-label').style.display=firstEx?'block':'none';
+  document.getElementById('countdown-next-name').style.display=firstEx?'block':'none';
   showScreen('countdown-screen');countdownTicker=setInterval(()=>{count--;if(count<=0){clearInterval(countdownTicker);launchMode();}else{document.getElementById('countdown-number').textContent=count;setArcEl('countdown-arc',count,appSettings.countdownDuration);if(count<=3){ if(count===1)beep(550,0.15,0);else beep(380,0.1,0); }}},1000);}
 
 function skipCountdown(){clearInterval(countdownTicker);playStartBeep();launchMode();}
@@ -1069,11 +1169,34 @@ function stopWorkout(){clearInterval(ticker);clearInterval(countdownTicker);stop
 function finishWorkout(){clearInterval(ticker);const elapsed=Math.round((Date.now()-workoutStart)/1000);document.getElementById('done-duration').textContent=fmtTime(elapsed);currentExerciseNames=[];showScreen('done-screen');playFanfare();}
 
 // EMOM
-function startEmomWorkout(){emomSecondsLeft=60;emomCurrentMinute=1;emomTotalSeconds=emomMinutes*60;emomElapsed=0;emomPaused=false;document.getElementById('emom-pause-btn').textContent='Pause';document.getElementById('emom-workout-screen').style.background='#0a0a0a';showScreen('emom-workout-screen');updateEmomDisplay();emomTicker=setInterval(emomTick,1000);startAudioKeepalive();}
-function updateEmomDisplay(){document.getElementById('emom-timer-display').textContent=emomSecondsLeft;document.getElementById('emom-minute-display').textContent='Minute '+emomCurrentMinute+' of '+emomMinutes;document.getElementById('emom-total-remaining').textContent=fmtTime(Math.max(0,emomTotalSeconds-emomElapsed))+' remaining';setArcEl('emom-arc',emomSecondsLeft,60);}
+function startEmomWorkout(){
+  emomSecondsLeft=60;emomCurrentMinute=1;emomTotalSeconds=emomMinutes*60;emomElapsed=0;emomPaused=false;
+  document.getElementById('emom-pause-btn').textContent='Pause';
+  document.getElementById('emom-workout-screen').style.background='#0a0a0a';
+  // Build exercise list — only show if names were explicitly set
+  const list=document.getElementById('emom-exercise-list');
+  list.innerHTML='';
+  const hasNames=emomExerciseNames.some(n=>n&&n.trim()!=='');
+  if(hasNames){
+    emomExerciseNames.forEach((name,i)=>{
+      if(!name||!name.trim())return;
+      const d=document.createElement('div');
+      d.style.cssText="font-size:18px;font-weight:400;color:rgba(255,255,255,0.8);letter-spacing:0.04em;text-transform:uppercase;font-family:Anton,sans-serif;";
+      d.textContent=name;
+      list.appendChild(d);
+    });
+  }
+  showScreen('emom-workout-screen');updateEmomDisplay();emomTicker=setInterval(emomTick,1000);startAudioKeepalive();
+}
+function updateEmomDisplay(){
+  document.getElementById('emom-timer-display').textContent=emomSecondsLeft;
+  document.getElementById('emom-phase-label').textContent=emomCurrentMinute+'/'+emomMinutes;
+  document.getElementById('emom-total-remaining').textContent=fmtTime(Math.max(0,emomTotalSeconds-emomElapsed))+' remaining';
+  setArcEl('emom-arc',emomSecondsLeft,60);
+}
 function emomTick(){if(emomPaused)return;emomElapsed++;if(emomElapsed>=emomTotalSeconds){finishEmom();return;}emomSecondsLeft--;if(emomSecondsLeft<=0){emomCurrentMinute++;emomSecondsLeft=60;}if(emomSecondsLeft===3)scheduleBeeps();updateEmomDisplay();}
 function toggleEmomPause(){emomPaused=!emomPaused;document.getElementById('emom-pause-btn').textContent=emomPaused?'Resume':'Pause';}
-function stopEmom(){clearInterval(emomTicker);stopAudioKeepalive();showScreen('home-screen');}
+function stopEmom(){clearInterval(emomTicker);stopAudioKeepalive();emomExerciseNames=[];showScreen('home-screen');}
 function finishEmom(){clearInterval(emomTicker);document.getElementById('done-duration').textContent=fmtTime(emomTotalSeconds);showScreen('done-screen');playFanfare();}
 
 // TABATA
