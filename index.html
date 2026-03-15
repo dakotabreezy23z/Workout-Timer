@@ -125,6 +125,12 @@
   /* TABATA */
   #tabata-screen { }
   .tabata-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; padding-bottom: 5%; padding-top: 0; margin-top: 1rem; }
+  .tabata-option-card { width: 100%; background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.15); border-radius: 14px; padding: 1rem 1.25rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer; font-family: 'Anton', sans-serif; transition: transform 0.12s cubic-bezier(0.34,1.56,0.64,1); }
+  .tabata-option-card.selected { background: #fff; border-color: #fff; }
+  .tabata-option-card.selected .tabata-opt-rounds { color: #111; }
+  .tabata-option-card.selected .tabata-opt-detail { color: rgba(0,0,0,0.5); }
+  .tabata-opt-rounds { font-size: 22px; font-weight: 400; color: #fff; letter-spacing: 0.04em; text-transform: uppercase; }
+  .tabata-opt-detail { font-size: 14px; font-weight: 400; color: rgba(255,255,255,0.45); font-family: 'Barlow', sans-serif; }
   .tabata-info { background: rgba(255,255,255,0.06); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 1rem 1.5rem; margin-bottom: 1.5rem; width: 100%; text-align: center; }
   .tabata-info p { font-size: 16px; font-weight: 400; color: rgba(255,255,255,0.5); font-family: 'Barlow', sans-serif; line-height: 1.6; }
   .tabata-info strong { color: rgba(255,255,255,0.85); font-weight: 400; }
@@ -277,11 +283,131 @@
       <div style="width:34px"></div>
     </div>
     <div class="library-list">
-      <button class="create-card" onclick="openCreate()">
+      <button class="create-card" onclick="showScreen('type-picker-screen')">
         <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         <span>Create Workout</span>
       </button>
       <div id="saved-workouts-list"></div>
+    </div>
+  </div>
+
+  <!-- TYPE PICKER -->
+  <div id="type-picker-screen" class="screen">
+    <div class="top-bar">
+      <button class="icon-btn" onclick="showScreen('saved-screen')">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h2>Workout Type</h2>
+      <div style="width:34px"></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;padding:1rem 1.5rem;gap:12px;">
+      <button class="tabata-option-card" id="type-opt-amrap" onclick="selectType('amrap')">
+        <span class="tabata-opt-rounds">A.M.R.A.P.</span>
+        <span class="tabata-opt-detail">As many rounds as possible</span>
+      </button>
+      <button class="tabata-option-card" id="type-opt-emom" onclick="selectType('emom')">
+        <span class="tabata-opt-rounds">E.M.O.M.</span>
+        <span class="tabata-opt-detail">Every minute on the minute</span>
+      </button>
+      <button class="tabata-option-card" id="type-opt-interval" onclick="selectType('interval')">
+        <span class="tabata-opt-rounds">Interval</span>
+        <span class="tabata-opt-detail">Custom rounds, exercises &amp; times</span>
+      </button>
+      <button class="tabata-option-card" id="type-opt-tabata" onclick="selectType('tabata')">
+        <span class="tabata-opt-rounds">Tabata</span>
+        <span class="tabata-opt-detail">Always 4 minutes, 3:1 work/rest</span>
+      </button>
+    </div>
+    <div style="padding:0 1.5rem 2rem;">
+      <button class="btn-primary" onclick="goToCreateType()">Next</button>
+    </div>
+  </div>
+
+  <!-- SAVE EMOM -->
+  <div id="save-emom-screen" class="screen">
+    <div class="top-bar">
+      <button class="icon-btn" onclick="showScreen('type-picker-screen')">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h2>E.M.O.M.</h2>
+      <div style="width:34px"></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;padding:1.5rem;justify-content:center;padding-bottom:20%;">
+      <div class="workout-title-row">
+        <input type="text" class="workout-title-input" id="save-emom-name" value="E.M.O.M. 1">
+        <button class="pencil-btn" onclick="document.getElementById('save-emom-name').focus()">
+          <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+      </div>
+      <div class="setting-row">
+        <label>Minutes</label>
+        <div class="slider-val" id="save-emom-val">10</div>
+        <input type="range" min="1" max="60" value="10" step="1" oninput="document.getElementById('save-emom-val').textContent=this.value;sliderClick()">
+      </div>
+    </div>
+    <div style="padding:0 1.5rem 2rem;">
+      <button class="btn-save" onclick="saveTypedWorkout('emom')">Save</button>
+    </div>
+  </div>
+
+  <!-- SAVE TABATA -->
+  <div id="save-tabata-screen" class="screen">
+    <div class="top-bar">
+      <button class="icon-btn" onclick="showScreen('type-picker-screen')">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h2>Tabata</h2>
+      <div style="width:34px"></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;padding:1.5rem;justify-content:center;padding-bottom:20%;gap:12px;">
+      <div class="workout-title-row">
+        <input type="text" class="workout-title-input" id="save-tabata-name" value="Tabata 1">
+        <button class="pencil-btn" onclick="document.getElementById('save-tabata-name').focus()">
+          <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+      </div>
+      <button class="tabata-option-card" id="save-tabata-opt-4" onclick="selectSaveTabata(4,45,15)">
+        <span class="tabata-opt-rounds">4 rounds</span>
+        <span class="tabata-opt-detail">45s work / 15s rest</span>
+      </button>
+      <button class="tabata-option-card selected" id="save-tabata-opt-8" onclick="selectSaveTabata(8,23,7)">
+        <span class="tabata-opt-rounds">8 rounds</span>
+        <span class="tabata-opt-detail">23s work / 7s rest</span>
+      </button>
+      <button class="tabata-option-card" id="save-tabata-opt-6" onclick="selectSaveTabata(6,30,10)">
+        <span class="tabata-opt-rounds">6 rounds</span>
+        <span class="tabata-opt-detail">30s work / 10s rest</span>
+      </button>
+    </div>
+    <div style="padding:0 1.5rem 2rem;">
+      <button class="btn-save" onclick="saveTypedWorkout('tabata')">Save</button>
+    </div>
+  </div>
+
+  <!-- SAVE AMRAP -->
+  <div id="save-amrap-screen" class="screen">
+    <div class="top-bar">
+      <button class="icon-btn" onclick="showScreen('type-picker-screen')">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h2>A.M.R.A.P.</h2>
+      <div style="width:34px"></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;padding:1.5rem;justify-content:center;padding-bottom:20%;">
+      <div class="workout-title-row">
+        <input type="text" class="workout-title-input" id="save-amrap-name" value="A.M.R.A.P. 1">
+        <button class="pencil-btn" onclick="document.getElementById('save-amrap-name').focus()">
+          <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+      </div>
+      <div class="setting-row">
+        <label>Minutes</label>
+        <div class="slider-val" id="save-amrap-val">10</div>
+        <input type="range" min="1" max="60" value="10" step="1" oninput="document.getElementById('save-amrap-val').textContent=this.value;sliderClick()">
+      </div>
+    </div>
+    <div style="padding:0 1.5rem 2rem;">
+      <button class="btn-save" onclick="saveTypedWorkout('amrap')">Save</button>
     </div>
   </div>
 
@@ -398,14 +524,22 @@
       <h2>Tabata</h2>
       <div style="width:34px"></div>
     </div>
-    <p style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:400;color:rgba(255,255,255,0.5);text-align:center;padding:0 1.5rem;margin:1.5rem 0 0;">20s work / 10s rest — 8 rounds per set.</p>
+    <p style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:400;color:rgba(255,255,255,0.5);text-align:center;padding:0 1.5rem;margin:1.5rem 0 0;">Always 4 minutes — 3:1 work to rest.</p>
     <div class="tabata-content">
-      <div class="setting-row" style="width:100%;">
-        <label>Sets</label>
-        <div class="slider-val" id="tabata-val-sets">1</div>
-        <input type="range" min="1" max="10" value="1" step="1" oninput="updateTabata(this.value);sliderClick()">
+      <div style="display:flex;flex-direction:column;gap:12px;width:100%;">
+        <button class="tabata-option-card" id="tabata-opt-4" onclick="selectTabata(4,45,15)">
+          <span class="tabata-opt-rounds">4 rounds</span>
+          <span class="tabata-opt-detail">45s work / 15s rest</span>
+        </button>
+        <button class="tabata-option-card" id="tabata-opt-6" onclick="selectTabata(6,30,10)">
+          <span class="tabata-opt-rounds">6 rounds</span>
+          <span class="tabata-opt-detail">30s work / 10s rest</span>
+        </button>
+        <button class="tabata-option-card selected" id="tabata-opt-8" onclick="selectTabata(8,23,7)">
+          <span class="tabata-opt-rounds">8 rounds</span>
+          <span class="tabata-opt-detail">23s work / 7s rest</span>
+        </button>
       </div>
-      <div class="emom-total-preview" id="tabata-preview">Total: 4:00</div>
     </div>
     <div class="tabata-btns">
       <button class="btn-primary" onclick="startCountdown('tabata')">Start</button>
@@ -433,6 +567,19 @@
     <div class="amrap-btns">
       <button class="btn-primary" onclick="startCountdown('amrap')">Start</button>
     </div>
+  </div>
+
+  <!-- TABATA NAMES -->
+  <div id="tabata-names-screen" class="screen">
+    <div class="top-bar">
+      <button class="icon-btn" onclick="showScreen('tabata-screen')">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h2>Name Exercises</h2>
+      <div style="width:34px"></div>
+    </div>
+    <div class="names-list" id="tabata-names-list"></div>
+    <button class="names-done-btn" onclick="showScreen('tabata-screen')">Done</button>
   </div>
 
   <!-- COUNTDOWN -->
@@ -502,10 +649,13 @@
       </svg>
       <div id="tabata-timer-display" class="circle-num">20</div>
     </div>
-    <div id="tabata-set-display">Set 1 of 1</div>
-    <div id="tabata-round-display">Round 1 of 8</div>
-    <div class="workout-btns" style="margin-top:1.5rem;">
+    <div id="tabata-exercise-name" style="font-size:39px;font-weight:400;color:inherit;margin-bottom:0.2rem;letter-spacing:0.06em;text-transform:uppercase;">Round 1</div>
+    <div id="tabata-set-display" style="font-size:17px;font-weight:400;color:inherit;opacity:0.65;margin-bottom:0.2rem;font-family:'Barlow',sans-serif;">45s work</div>
+    <div id="tabata-round-display" style="font-size:15px;font-weight:400;color:inherit;opacity:0.5;margin-bottom:0.2rem;font-family:'Barlow',sans-serif;"></div>
+    <div id="tabata-total-remaining" style="font-size:15px;font-weight:400;color:inherit;opacity:0.35;margin-bottom:1.5rem;font-family:'Barlow',sans-serif;">--:--</div>
+    <div class="workout-btns">
       <button id="tabata-pause-btn" onclick="toggleTabataPause()">Pause</button>
+      <button onclick="skipTabata()">Skip</button>
       <button onclick="stopTabata()">Stop</button>
     </div>
   </div>
@@ -552,7 +702,7 @@ let timeLeft=0, phaseDuration=0, currentRound=1, currentExercise=1;
 let phase='work', workoutStart=0, paused=false, audioCtx=null;
 let totalSecondsRemaining=0;
 let emomSecondsLeft=60, emomCurrentMinute=1, emomTotalSeconds=0, emomElapsed=0, emomPaused=false;
-let tabataSecondsLeft=20, tabataCurrentSet=1, tabataCurrentRound=1, tabataTotalSets=1, tabataPhase='work', tabataPaused=false;
+let tabataSecondsLeft=23, tabataCurrentRound=1, tabataTotalRounds=8, tabataWork=23, tabataRest=7, tabataPhase='work', tabataPaused=false, tabataTotalTime=0, tabataElapsedTime=0;
 let amrapSecondsLeft=0, amrapTotalSeconds=0, amrapRounds=0, amrapPaused=false;
 
 const CIRCUMFERENCE = 2*Math.PI*126;
@@ -569,7 +719,13 @@ function setArcEl(id,remaining,total){const el=document.getElementById(id);if(el
 function updateSlider(key,val){settings[key]=parseInt(val);document.getElementById('val-'+key).textContent=(key==='work'||key==='rest'||key==='roundRest')?val+'s':val;}
 function updateHomePreview(){document.getElementById('home-total-preview').textContent='Total: '+fmtTime(calcTotalSeconds(settings));}
 function updateEmom(val){emomMinutes=parseInt(val);document.getElementById('emom-val-minutes').textContent=val;document.getElementById('emom-preview').textContent='Total: '+fmtTime(emomMinutes*60);}
-function updateTabata(val){tabataSets=parseInt(val);document.getElementById('tabata-val-sets').textContent=val;document.getElementById('tabata-preview').textContent='Total: '+fmtTime(tabataSets*4*60);}
+function selectTabata(rounds, work, rest){
+  tabataTotalRounds=rounds; tabataWork=work; tabataRest=rest;
+  const screen=document.getElementById('tabata-screen');
+  if(screen) screen.querySelectorAll('.tabata-option-card').forEach(c=>c.classList.remove('selected'));
+  const el=document.getElementById('tabata-opt-'+rounds);
+  if(el) el.classList.add('selected');
+}
 function updateAmrap(val){amrapMinutes=parseInt(val);document.getElementById('amrap-val-minutes').textContent=val;document.getElementById('amrap-preview').textContent='Total: '+fmtTime(amrapMinutes*60);}
 
 function updateCreateSlider(key,val){createSettings[key]=parseInt(val);document.getElementById('create-val-'+key).textContent=(key==='work'||key==='rest'||key==='roundRest')?val+'s':val;if(key==='exercises')syncExerciseNames();}
@@ -586,6 +742,60 @@ function openNamesScreen(){syncExerciseNames();const list=document.getElementByI
 
 function saveWorkout(){syncExerciseNames();const workout={name:document.getElementById('create-name').value||'Workout',exercises:createSettings.exercises,rounds:createSettings.rounds,work:createSettings.work,rest:createSettings.rest,roundRest:createSettings.roundRest,exerciseNames:[...createExerciseNames]};if(activeWorkoutIndex>=0)savedWorkouts[activeWorkoutIndex]=workout;else savedWorkouts.push(workout);localStorage.setItem('workouts',JSON.stringify(savedWorkouts));renderLibrary();showScreen('saved-screen');}
 
+
+
+let selectedWorkoutType = 'interval';
+let saveTabataRounds = 8, saveTabataWork = 23, saveTabataRest = 7;
+
+function selectType(type) {
+  selectedWorkoutType = type;
+  document.querySelectorAll('[id^="type-opt-"]').forEach(c => c.classList.remove('selected'));
+  document.getElementById('type-opt-' + type).classList.add('selected');
+}
+
+function goToCreateType() {
+  if (selectedWorkoutType === 'interval') { openCreate(); return; }
+  if (selectedWorkoutType === 'emom') {
+    const count = savedWorkouts.filter(w => w.type === 'emom').length + 1;
+    document.getElementById('save-emom-name').value = 'E.M.O.M. ' + count;
+    showScreen('save-emom-screen');
+  } else if (selectedWorkoutType === 'tabata') {
+    const count = savedWorkouts.filter(w => w.type === 'tabata').length + 1;
+    document.getElementById('save-tabata-name').value = 'Tabata ' + count;
+    showScreen('save-tabata-screen');
+  } else if (selectedWorkoutType === 'amrap') {
+    const count = savedWorkouts.filter(w => w.type === 'amrap').length + 1;
+    document.getElementById('save-amrap-name').value = 'A.M.R.A.P. ' + count;
+    showScreen('save-amrap-screen');
+  }
+}
+
+function selectSaveTabata(rounds, work, rest) {
+  saveTabataRounds = rounds; saveTabataWork = work; saveTabataRest = rest;
+  const screen = document.getElementById('save-tabata-screen');
+  if(screen) screen.querySelectorAll('.tabata-option-card').forEach(c => c.classList.remove('selected'));
+  const el = document.getElementById('save-tabata-opt-' + rounds);
+  if(el) el.classList.add('selected');
+}
+
+function saveTypedWorkout(type) {
+  let workout = { type };
+  if (type === 'emom') {
+    workout.name = document.getElementById('save-emom-name').value || 'E.M.O.M. 1';
+    workout.minutes = parseInt(document.getElementById('save-emom-val').textContent);
+  } else if (type === 'tabata') {
+    workout.name = document.getElementById('save-tabata-name').value || 'Tabata 1';
+    workout.rounds = saveTabataRounds; workout.work = saveTabataWork; workout.rest = saveTabataRest;
+  } else if (type === 'amrap') {
+    workout.name = document.getElementById('save-amrap-name').value || 'A.M.R.A.P. 1';
+    workout.minutes = parseInt(document.getElementById('save-amrap-val').textContent);
+  }
+  savedWorkouts.push(workout);
+  localStorage.setItem('workouts', JSON.stringify(savedWorkouts));
+  renderLibrary();
+  showScreen('saved-screen');
+}
+
 function renderLibrary(){
   const container=document.getElementById('saved-workouts-list');
   container.innerHTML='';container.style.display='flex';container.style.flexDirection='column';container.style.gap='8px';
@@ -595,8 +805,22 @@ function renderLibrary(){
   indexed.forEach(({w,i})=>{
     const btn=document.createElement('button');
     btn.className='workout-card';
-    btn.innerHTML=`<div class="workout-card-info"><span class="workout-card-name">${w.name}</span><span class="workout-card-meta">${w.rounds} rounds · ${w.exercises} exercises · ${w.work}s work</span></div><svg class="workout-card-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>`;
+    const meta = w.type==='emom' ? w.minutes+' min' : w.type==='tabata' ? w.rounds+' rounds · '+w.work+'s work' : w.type==='amrap' ? w.minutes+' min' : w.rounds+' rounds · '+w.exercises+' exercises · '+fmtTime(calcTotalSeconds(w));
+    btn.innerHTML=`<div class="workout-card-info"><span class="workout-card-name">${w.name}</span><span class="workout-card-meta">${meta}</span></div><svg class="workout-card-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>`;
     btn.onclick=()=>openReview(i);
+    // Long press to delete
+    let pressTimer;
+    btn.addEventListener('touchstart', () => {
+      pressTimer = setTimeout(() => {
+        if(confirm('Delete "' + w.name + '"?')) {
+          savedWorkouts.splice(i, 1);
+          localStorage.setItem('workouts', JSON.stringify(savedWorkouts));
+          renderLibrary();
+        }
+      }, 600);
+    }, {passive: true});
+    btn.addEventListener('touchend', () => clearTimeout(pressTimer));
+    btn.addEventListener('touchmove', () => clearTimeout(pressTimer));
     container.appendChild(btn);
   });
 }
@@ -713,7 +937,13 @@ function stopEmom(){clearInterval(emomTicker);showScreen('home-screen');}
 function finishEmom(){clearInterval(emomTicker);document.getElementById('done-duration').textContent=fmtTime(emomTotalSeconds);showScreen('done-screen');playFanfare();fireConfetti();setTimeout(fireConfetti,800);}
 
 // TABATA
-function startTabataWorkout(){tabataSecondsLeft=20;tabataCurrentSet=1;tabataCurrentRound=1;tabataTotalSets=tabataSets;tabataPhase='work';tabataPaused=false;document.getElementById('tabata-pause-btn').textContent='Pause';updateTabataDisplay();showScreen('tabata-workout-screen');tabataTicker=setInterval(tabataTick,1000);}
+function startTabataWorkout(){
+  tabataSecondsLeft=tabataWork;tabataCurrentRound=1;tabataPhase='work';tabataPaused=false;
+  tabataTotalTime=tabataTotalRounds*60;tabataElapsedTime=0;
+  document.getElementById('tabata-pause-btn').textContent='Pause';
+  updateTabataDisplay();showScreen('tabata-workout-screen');
+  tabataTicker=setInterval(tabataTick,1000);
+}
 function applyTabataColors(){
   const tws=document.getElementById('tabata-workout-screen');
   const isWork=tabataPhase==='work';
@@ -725,12 +955,22 @@ function applyTabataColors(){
   bgEl.style.stroke=isWork?'rgba(255,255,255,0.15)':'rgba(0,0,0,0.12)';
   document.querySelectorAll('#tabata-workout-screen .workout-btns button').forEach(b=>{b.style.borderColor=isWork?'rgba(255,255,255,0.4)':'rgba(0,0,0,0.3)';b.style.color=isWork?'#fff':'#0a0a0a';});
 }
-function updateTabataDisplay(){document.getElementById('tabata-timer-display').textContent=tabataSecondsLeft;document.getElementById('tabata-phase-label').textContent=tabataPhase==='work'?'LETS GO!':'REST';document.getElementById('tabata-set-display').textContent='Set '+tabataCurrentSet+' of '+tabataTotalSets;document.getElementById('tabata-round-display').textContent='Round '+tabataCurrentRound+' of 8';setArcEl('tabata-arc',tabataSecondsLeft,tabataPhase==='work'?20:10);applyTabataColors();}
-function tabataTick(){if(tabataPaused)return;if(tabataSecondsLeft===3)scheduleBeeps();if(tabataSecondsLeft<=0){advanceTabata();return;}updateTabataDisplay();tabataSecondsLeft--;}
-function advanceTabata(){if(tabataPhase==='work'){tabataPhase='rest';tabataSecondsLeft=10;}else{tabataCurrentRound++;if(tabataCurrentRound>8){tabataCurrentRound=1;tabataCurrentSet++;if(tabataCurrentSet>tabataTotalSets){finishTabata();return;}}tabataPhase='work';tabataSecondsLeft=20;}updateTabataDisplay();tabataSecondsLeft--;}
+function updateTabataDisplay(){
+  document.getElementById('tabata-timer-display').textContent=tabataSecondsLeft;
+  document.getElementById('tabata-phase-label').textContent=tabataPhase==='work'?'LETS GO!':'REST';
+  document.getElementById('tabata-exercise-name').textContent=tabataPhase==='work'?'Round '+tabataCurrentRound+' of '+tabataTotalRounds:'Rest';
+  document.getElementById('tabata-set-display').textContent=tabataPhase==='work'?'45s work':'15s rest';
+  document.getElementById('tabata-round-display').textContent='';
+  document.getElementById('tabata-total-remaining').textContent=fmtTime(Math.max(0,tabataTotalTime-tabataElapsedTime))+' remaining';
+  setArcEl('tabata-arc',tabataSecondsLeft,tabataPhase==='work'?tabataWork:tabataRest);
+  applyTabataColors();
+}
+function tabataTick(){if(tabataPaused)return;tabataElapsedTime++;if(tabataSecondsLeft<=0){advanceTabata();return;}if(tabataSecondsLeft===3)scheduleBeeps();updateTabataDisplay();tabataSecondsLeft--;}
+function advanceTabata(){if(tabataPhase==='work'){tabataPhase='rest';tabataSecondsLeft=tabataRest;}else{tabataCurrentRound++;if(tabataCurrentRound>tabataTotalRounds){finishTabata();return;}tabataPhase='work';tabataSecondsLeft=tabataWork;}updateTabataDisplay();tabataSecondsLeft--;}
+function skipTabata(){if(tabataPaused)return;advanceTabata();}
 function toggleTabataPause(){tabataPaused=!tabataPaused;document.getElementById('tabata-pause-btn').textContent=tabataPaused?'Resume':'Pause';}
 function stopTabata(){clearInterval(tabataTicker);showScreen('home-screen');}
-function finishTabata(){clearInterval(tabataTicker);const total=tabataSets*4*60;document.getElementById('done-duration').textContent=fmtTime(total);showScreen('done-screen');playFanfare();fireConfetti();setTimeout(fireConfetti,800);}
+function finishTabata(){clearInterval(tabataTicker);document.getElementById('done-duration').textContent=fmtTime(tabataTotalRounds*60);showScreen('done-screen');playFanfare();fireConfetti();setTimeout(fireConfetti,800);}
 
 // AMRAP
 function startAmrapWorkout(){amrapTotalSeconds=amrapMinutes*60;amrapSecondsLeft=amrapTotalSeconds;amrapRounds=0;amrapPaused=false;document.getElementById('amrap-pause-btn').textContent='Pause';document.getElementById('amrap-rounds-display').textContent='Rounds: 0';showScreen('amrap-workout-screen');updateAmrapDisplay();amrapTicker=setInterval(amrapTick,1000);}
