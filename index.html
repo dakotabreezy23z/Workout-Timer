@@ -661,7 +661,7 @@
       </svg>
       <div id="tabata-timer-display" class="circle-num">20</div>
     </div>
-    <div id="tabata-exercise-name" style="font-size:39px;font-weight:400;color:inherit;margin-bottom:0.2rem;letter-spacing:0.06em;text-transform:uppercase;">Round 1</div>
+    <div id="tabata-exercise-name" style="font-size:clamp(16px,7vw,39px);font-weight:400;color:inherit;margin-bottom:0.2rem;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap;overflow:hidden;width:90%;text-align:center;">Round 1</div>
     <div id="tabata-set-display" style="font-size:17px;font-weight:400;color:inherit;opacity:0.65;margin-bottom:0.2rem;font-family:'Barlow',sans-serif;">45s work</div>
     <div id="tabata-round-display" style="font-size:15px;font-weight:400;color:inherit;opacity:0.5;margin-bottom:0.2rem;font-family:'Barlow',sans-serif;"></div>
     <div id="tabata-total-remaining" style="font-size:15px;font-weight:400;color:inherit;opacity:0.35;margin-bottom:1.5rem;font-family:'Barlow',sans-serif;">--:--</div>
@@ -850,7 +850,19 @@ function editFromReview(){openCreate(activeWorkoutIndex);}
 function deleteFromReview(){if(!confirm('Delete "'+savedWorkouts[activeWorkoutIndex].name+'"?'))return;savedWorkouts.splice(activeWorkoutIndex,1);localStorage.setItem('workouts',JSON.stringify(savedWorkouts));renderLibrary();showScreen('saved-screen');}
 
 // AUDIO
-function initAudio(){if(audioCtx)return;audioCtx=new(window.AudioContext||window.webkitAudioContext)();const buf=audioCtx.createBuffer(1,1,22050);const src=audioCtx.createBufferSource();src.buffer=buf;src.connect(audioCtx.destination);src.start(0);}
+function initAudio(){
+  if(audioCtx)return;
+  audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  const buf=audioCtx.createBuffer(1,1,22050);
+  const src=audioCtx.createBufferSource();
+  src.buffer=buf;src.connect(audioCtx.destination);src.start(0);
+}
+
+function ensureAudio(){
+  if(!audioCtx)initAudio();
+  if(audioCtx.state!=='running')return audioCtx.resume();
+  return Promise.resolve();
+}
 function beep(freq, dur, delay) {
   try {
     if (!audioCtx) return;
@@ -866,22 +878,13 @@ function beep(freq, dur, delay) {
         o.start(t); o.stop(t + dur + 0.05);
       } catch(e) {}
     };
-    if (audioCtx.state !== 'running') {
-      audioCtx.resume().then(play).catch(() => {});
-    } else {
-      play();
-    }
+    ensureAudio().then(play).catch(()=>{});
   } catch(e) {}
 }
 
-function scheduleBeeps() {
-  if (!audioCtx) return;
-  const fireBeeps = () => { beep(440,0.15,0); beep(440,0.15,1.0); beep(660,0.25,2.0); };
-  if (audioCtx.state !== 'running') { audioCtx.resume().then(fireBeeps).catch(()=>{}); }
-  else { fireBeeps(); }
-}
+function scheduleBeeps(){beep(440,0.15,0);beep(440,0.15,1.0);beep(660,0.25,2.0);}
 function playFanfare() { [392,494,587,784].forEach((f,i) => beep(f,[0.2,0.2,0.2,0.5][i],[0,0.18,0.36,0.55][i])); }
-function playStartBeep() { if(audioCtx&&audioCtx.state!=='running'){audioCtx.resume().then(()=>beep(1047,0.3,0)).catch(()=>{});}else{beep(1047,0.3,0);} }
+function playStartBeep(){beep(1047,0.3,0);}
 
 
 // COUNTDOWN
@@ -889,7 +892,7 @@ function startCountdown(mode){pendingMode=mode;initAudio();let count=10;const cd
   // Show first exercise name
   const firstEx = mode==='interval' ? (currentExerciseNames.length>0&&currentExerciseNames[0] ? currentExerciseNames[0] : (settings.exercises>0?'Exercise 1':'')) : mode==='emom' ? 'Every Minute' : mode==='tabata' ? '20s Work' : mode==='amrap' ? 'As Many Rounds' : '';
   document.getElementById('countdown-next-name').textContent=firstEx;
-  showScreen('countdown-screen');countdownTicker=setInterval(()=>{count--;if(count<=0){clearInterval(countdownTicker);launchMode();}else{document.getElementById('countdown-number').textContent=count;setArcEl('countdown-arc',count,10);if(count<=3){ const _cb=()=>{if(count===1)beep(550,0.15,0);else beep(380,0.1,0);};if(audioCtx&&audioCtx.state!=='running')audioCtx.resume().then(_cb).catch(()=>{});else _cb(); }}},1000);}
+  showScreen('countdown-screen');countdownTicker=setInterval(()=>{count--;if(count<=0){clearInterval(countdownTicker);launchMode();}else{document.getElementById('countdown-number').textContent=count;setArcEl('countdown-arc',count,10);if(count<=3){ if(count===1)beep(550,0.15,0);else beep(380,0.1,0); }}},1000);}
 
 function skipCountdown(){clearInterval(countdownTicker);playStartBeep();launchMode();}
 function launchMode(){if(pendingMode==='interval')startWorkout();else if(pendingMode==='emom')startEmomWorkout();else if(pendingMode==='tabata')startTabataWorkout();else if(pendingMode==='amrap')startAmrapWorkout();}
@@ -929,7 +932,7 @@ function updateDisplay(){
   setArcEl('circle-arc',timeLeft,phaseDuration);
   applyColors();
 }
-function tick(){if(paused)return;if(audioCtx&&audioCtx.state!=='running')audioCtx.resume();totalSecondsRemaining--;if(timeLeft<=0){advance();return;}if(timeLeft===3)scheduleBeeps();updateDisplay();timeLeft--;}
+function tick(){if(paused)return;totalSecondsRemaining--;if(timeLeft<=0){advance();return;}if(timeLeft===3)scheduleBeeps();updateDisplay();timeLeft--;}
 function advance(){const isLastEx=currentExercise>=settings.exercises,isLastRound=currentRound>=settings.rounds;if(phase==='work'){if(isLastEx&&isLastRound){finishWorkout();return;}if(isLastEx){phase='roundRest';phaseDuration=settings.roundRest;timeLeft=settings.roundRest;}else{phase='rest';phaseDuration=settings.rest;timeLeft=settings.rest;}}else if(phase==='rest'){currentExercise++;phase='work';phaseDuration=settings.work;timeLeft=settings.work;}else if(phase==='roundRest'){currentRound++;currentExercise=1;phase='work';phaseDuration=settings.work;timeLeft=settings.work;}updateDisplay();timeLeft--;}
 function skipInterval(){if(paused)return;advance();}
 function togglePause(){paused=!paused;document.getElementById('pause-btn').textContent=paused?'Resume':'Pause';}
@@ -940,7 +943,7 @@ function finishWorkout(){clearInterval(ticker);const elapsed=Math.round((Date.no
 // EMOM
 function startEmomWorkout(){emomSecondsLeft=60;emomCurrentMinute=1;emomTotalSeconds=emomMinutes*60;emomElapsed=0;emomPaused=false;document.getElementById('emom-pause-btn').textContent='Pause';document.getElementById('emom-workout-screen').style.background='#0a0a0a';showScreen('emom-workout-screen');updateEmomDisplay();emomTicker=setInterval(emomTick,1000);}
 function updateEmomDisplay(){document.getElementById('emom-timer-display').textContent=emomSecondsLeft;document.getElementById('emom-minute-display').textContent='Minute '+emomCurrentMinute+' of '+emomMinutes;document.getElementById('emom-total-remaining').textContent=fmtTime(Math.max(0,emomTotalSeconds-emomElapsed))+' remaining';setArcEl('emom-arc',emomSecondsLeft,60);}
-function emomTick(){if(emomPaused)return;if(audioCtx&&audioCtx.state!=='running')audioCtx.resume();emomElapsed++;if(emomElapsed>=emomTotalSeconds){finishEmom();return;}emomSecondsLeft--;if(emomSecondsLeft<=0){emomCurrentMinute++;emomSecondsLeft=60;}if(emomSecondsLeft===3)scheduleBeeps();updateEmomDisplay();}
+function emomTick(){if(emomPaused)return;emomElapsed++;if(emomElapsed>=emomTotalSeconds){finishEmom();return;}emomSecondsLeft--;if(emomSecondsLeft<=0){emomCurrentMinute++;emomSecondsLeft=60;}if(emomSecondsLeft===3)scheduleBeeps();updateEmomDisplay();}
 function toggleEmomPause(){emomPaused=!emomPaused;document.getElementById('emom-pause-btn').textContent=emomPaused?'Resume':'Pause';}
 function stopEmom(){clearInterval(emomTicker);showScreen('home-screen');}
 function finishEmom(){clearInterval(emomTicker);document.getElementById('done-duration').textContent=fmtTime(emomTotalSeconds);showScreen('done-screen');playFanfare();fireConfetti();setTimeout(fireConfetti,800);}
@@ -974,7 +977,7 @@ function updateTabataDisplay(){
   setArcEl('tabata-arc',tabataSecondsLeft,tabataPhase==='work'?tabataWork:tabataRest);
   applyTabataColors();
 }
-function tabataTick(){if(tabataPaused)return;if(audioCtx&&audioCtx.state!=='running')audioCtx.resume();tabataElapsedTime++;if(tabataSecondsLeft<=0){advanceTabata();return;}if(tabataSecondsLeft===3)scheduleBeeps();updateTabataDisplay();tabataSecondsLeft--;}
+function tabataTick(){if(tabataPaused)return;tabataElapsedTime++;if(tabataSecondsLeft<=0){advanceTabata();return;}if(tabataSecondsLeft===3)scheduleBeeps();updateTabataDisplay();tabataSecondsLeft--;}
 function advanceTabata(){if(tabataPhase==='work'){tabataPhase='rest';tabataSecondsLeft=tabataRest;}else{tabataCurrentRound++;if(tabataCurrentRound>tabataTotalRounds){finishTabata();return;}tabataPhase='work';tabataSecondsLeft=tabataWork;}updateTabataDisplay();tabataSecondsLeft--;}
 function skipTabata(){if(tabataPaused)return;advanceTabata();}
 function toggleTabataPause(){tabataPaused=!tabataPaused;document.getElementById('tabata-pause-btn').textContent=tabataPaused?'Resume':'Pause';}
@@ -996,6 +999,13 @@ document.addEventListener('visibilitychange', () => {
     audioCtx.resume();
   }
 });
+// Unlock audio on very first touch anywhere
+document.addEventListener('touchstart', function unlock() {
+  if (!audioCtx) initAudio();
+  else if (audioCtx.state !== 'running') audioCtx.resume();
+  document.removeEventListener('touchstart', unlock);
+}, { once: true, passive: true });
+
 renderLibrary();
 updateHomePreview();
 showScreen('home-screen');
