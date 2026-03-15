@@ -70,7 +70,7 @@
 
   /* LIBRARY */
   #library-screen { }
-  .library-list { flex: 1; padding: 1rem 1.5rem; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+  .library-list { flex: 1; padding: 1rem 1.5rem; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; }
   .create-card { background: #fff; border-radius: 14px; padding: 1.1rem 1.25rem; display: flex; align-items: center; gap: 12px; cursor: pointer; border: none; font-family: 'Anton', sans-serif; width: 100%; }
   .create-card:active { }
   .create-card span { font-size: 20px; font-weight: 400; color: #111; letter-spacing: 0.06em; text-transform: uppercase; }
@@ -167,7 +167,7 @@
   .workout-btns button:active { }
 
   /* EMOM WORKOUT */
-  #emom-workout-screen { align-items: center; justify-content: center; padding: 2rem; background: #1a3a5c; }
+  #emom-workout-screen { align-items: center; justify-content: center; padding: 2rem; background: #0a0a0a; color: #fff; }
   #emom-phase-label { font-size: 15px; font-weight: 400; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 1rem; opacity: 0.75; color: #fff; }
   #emom-minute-display { font-size: 24px; font-weight: 400; color: rgba(255,255,255,0.9); margin-bottom: 0.2rem; letter-spacing: 0.04em; text-transform: uppercase; }
   #emom-total-remaining { font-size: 15px; font-weight: 400; color: rgba(255,255,255,0.4); margin-bottom: 1.5rem; font-family: 'Barlow', sans-serif; }
@@ -179,7 +179,7 @@
   #tabata-round-display { font-size: 18.0px; font-weight: 400; color: inherit; opacity: 0.5; margin-bottom: 1.5rem; font-family: 'Barlow', sans-serif; }
 
   /* AMRAP WORKOUT */
-  #amrap-workout-screen { align-items: center; justify-content: center; padding: 2rem; background: #3a1a5c; }
+  #amrap-workout-screen { align-items: center; justify-content: center; padding: 2rem; background: #0a0a0a; color: #fff; }
   #amrap-label { font-size: 15px; font-weight: 400; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 1rem; opacity: 0.75; color: #fff; }
   #amrap-rounds-display { font-size: 22px; font-weight: 400; color: rgba(255,255,255,0.85); margin-bottom: 0.2rem; letter-spacing: 0.04em; font-family: 'Barlow', sans-serif; }
   #amrap-round-btns { display: flex; gap: 10px; margin-bottom: 1.5rem; }
@@ -476,7 +476,7 @@
 
   <!-- EMOM WORKOUT -->
   <div id="emom-workout-screen" class="screen workout-texture">
-    <div id="emom-phase-label">Every Minute On The Minute</div>
+    <div id="emom-phase-label">E.M.O.M.</div>
     <div class="circle-wrap">
       <svg width="280" height="280" viewBox="0 0 280 280">
         <circle class="circle-bg" cx="140" cy="140" r="126"/>
@@ -518,7 +518,7 @@
         <circle class="circle-bg" cx="140" cy="140" r="126"/>
         <circle class="circle-progress" id="amrap-arc" cx="140" cy="140" r="126"/>
       </svg>
-      <div id="amrap-timer-display" class="circle-num">10:00</div>
+      <div id="amrap-timer-display" class="circle-num" style="font-size:88px;">10:00</div>
     </div>
     <div id="amrap-rounds-display">Rounds: 0</div>
     <div id="amrap-round-btns">
@@ -588,7 +588,7 @@ function saveWorkout(){syncExerciseNames();const workout={name:document.getEleme
 
 function renderLibrary(){
   const container=document.getElementById('saved-workouts-list');
-  container.innerHTML='';
+  container.innerHTML='';container.style.display='flex';container.style.flexDirection='column';container.style.gap='14px';
   if(savedWorkouts.length===0){container.innerHTML='<div class="empty-state"><span>No saved workouts yet</span></div>';return;}
   const indexed=savedWorkouts.map((w,i)=>({w,i}));
   indexed.sort((a,b)=>a.w.name.localeCompare(b.w.name));
@@ -696,7 +696,7 @@ function updateDisplay(){
   setArcEl('circle-arc',timeLeft,phaseDuration);
   applyColors();
 }
-function tick(){if(paused)return;totalSecondsRemaining--;if(timeLeft===3)scheduleBeeps();if(timeLeft<=0){advance();return;}updateDisplay();timeLeft--;}
+function tick(){if(paused)return;totalSecondsRemaining--;if(timeLeft<=0){advance();return;}if(timeLeft===3)scheduleBeeps();updateDisplay();timeLeft--;}
 function advance(){const isLastEx=currentExercise>=settings.exercises,isLastRound=currentRound>=settings.rounds;if(phase==='work'){if(isLastEx&&isLastRound){finishWorkout();return;}if(isLastEx){phase='roundRest';phaseDuration=settings.roundRest;timeLeft=settings.roundRest;}else{phase='rest';phaseDuration=settings.rest;timeLeft=settings.rest;}}else if(phase==='rest'){currentExercise++;phase='work';phaseDuration=settings.work;timeLeft=settings.work;}else if(phase==='roundRest'){currentRound++;currentExercise=1;phase='work';phaseDuration=settings.work;timeLeft=settings.work;}updateDisplay();timeLeft--;}
 function skipInterval(){if(paused)return;advance();}
 function togglePause(){paused=!paused;document.getElementById('pause-btn').textContent=paused?'Resume':'Pause';}
@@ -705,9 +705,9 @@ function stopWorkout(){clearInterval(ticker);clearInterval(countdownTicker);paus
 function finishWorkout(){clearInterval(ticker);const elapsed=Math.round((Date.now()-workoutStart)/1000);document.getElementById('done-duration').textContent=fmtTime(elapsed);currentExerciseNames=[];showScreen('done-screen');playFanfare();fireConfetti();setTimeout(fireConfetti,800);}
 
 // EMOM
-function startEmomWorkout(){emomSecondsLeft=60;emomCurrentMinute=1;emomTotalSeconds=emomMinutes*60;emomElapsed=0;emomPaused=false;document.getElementById('emom-pause-btn').textContent='Pause';document.getElementById('emom-workout-screen').style.background='#1a3a5c';showScreen('emom-workout-screen');updateEmomDisplay();emomTicker=setInterval(emomTick,1000);}
+function startEmomWorkout(){emomSecondsLeft=60;emomCurrentMinute=1;emomTotalSeconds=emomMinutes*60;emomElapsed=0;emomPaused=false;document.getElementById('emom-pause-btn').textContent='Pause';document.getElementById('emom-workout-screen').style.background='#0a0a0a';showScreen('emom-workout-screen');updateEmomDisplay();emomTicker=setInterval(emomTick,1000);}
 function updateEmomDisplay(){document.getElementById('emom-timer-display').textContent=emomSecondsLeft;document.getElementById('emom-minute-display').textContent='Minute '+emomCurrentMinute+' of '+emomMinutes;document.getElementById('emom-total-remaining').textContent=fmtTime(Math.max(0,emomTotalSeconds-emomElapsed))+' remaining';setArcEl('emom-arc',emomSecondsLeft,60);}
-function emomTick(){if(emomPaused)return;emomElapsed++;emomSecondsLeft--;if(emomElapsed>=emomTotalSeconds){finishEmom();return;}if(emomSecondsLeft<=0){emomCurrentMinute++;emomSecondsLeft=60;scheduleBeeps();}if(emomSecondsLeft===3)scheduleBeeps();updateEmomDisplay();}
+function emomTick(){if(emomPaused)return;emomElapsed++;if(emomElapsed>=emomTotalSeconds){finishEmom();return;}emomSecondsLeft--;if(emomSecondsLeft<=0){emomCurrentMinute++;emomSecondsLeft=60;}if(emomSecondsLeft===3)scheduleBeeps();updateEmomDisplay();}
 function toggleEmomPause(){emomPaused=!emomPaused;document.getElementById('emom-pause-btn').textContent=emomPaused?'Resume':'Pause';}
 function stopEmom(){clearInterval(emomTicker);showScreen('home-screen');}
 function finishEmom(){clearInterval(emomTicker);document.getElementById('done-duration').textContent=fmtTime(emomTotalSeconds);showScreen('done-screen');playFanfare();fireConfetti();setTimeout(fireConfetti,800);}
