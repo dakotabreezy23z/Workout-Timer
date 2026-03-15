@@ -588,7 +588,7 @@ function saveWorkout(){syncExerciseNames();const workout={name:document.getEleme
 
 function renderLibrary(){
   const container=document.getElementById('saved-workouts-list');
-  container.innerHTML='';container.style.display='flex';container.style.flexDirection='column';container.style.gap='14px';
+  container.innerHTML='';container.style.display='flex';container.style.flexDirection='column';container.style.gap='8px';
   if(savedWorkouts.length===0){container.innerHTML='<div class="empty-state"><span>No saved workouts yet</span></div>';return;}
   const indexed=savedWorkouts.map((w,i)=>({w,i}));
   indexed.sort((a,b)=>a.w.name.localeCompare(b.w.name));
