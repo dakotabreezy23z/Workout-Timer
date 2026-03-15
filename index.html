@@ -1053,7 +1053,7 @@ function updateDisplay(){
   applyColors();
 }
 function tick(){if(paused)return;totalSecondsRemaining--;if(timeLeft<=0){advance();return;}if(timeLeft===3)scheduleBeeps();updateDisplay();timeLeft--;}
-function advance(){const isLastEx=currentExercise>=settings.exercises,isLastRound=currentRound>=settings.rounds;if(phase==='work'){if(isLastEx&&isLastRound){finishWorkout();return;}if(isLastEx){phase='roundRest';phaseDuration=settings.roundRest;timeLeft=settings.roundRest;}else{phase='rest';phaseDuration=settings.rest;timeLeft=settings.rest;}}else if(phase==='rest'){currentExercise++;phase='work';phaseDuration=settings.work;timeLeft=settings.work;}else if(phase==='roundRest'){currentRound++;currentExercise=1;phase='work';phaseDuration=settings.work;timeLeft=settings.work;}updateDisplay();timeLeft--;}
+function advance(fromSkip){const isLastEx=currentExercise>=settings.exercises,isLastRound=currentRound>=settings.rounds;if(phase==='work'){if(isLastEx&&isLastRound){finishWorkout();return;}if(isLastEx){phase='roundRest';phaseDuration=settings.roundRest;timeLeft=settings.roundRest;}else{phase='rest';phaseDuration=settings.rest;timeLeft=settings.rest;}}else if(phase==='rest'){currentExercise++;phase='work';phaseDuration=settings.work;timeLeft=settings.work;}else if(phase==='roundRest'){currentRound++;currentExercise=1;phase='work';phaseDuration=settings.work;timeLeft=settings.work;}updateDisplay();if(fromSkip)return;timeLeft--;}
 
 let keepaliveTicker = null;
 function startAudioKeepalive() {
@@ -1065,7 +1065,7 @@ function startAudioKeepalive() {
 function stopAudioKeepalive() {
   if (keepaliveTicker) { clearInterval(keepaliveTicker); keepaliveTicker = null; }
 }
-function skipInterval(){if(paused)return;ensureAudio();advance();}
+function skipInterval(){if(paused)return;ensureAudio();totalSecondsRemaining-=timeLeft;advance(true);}
 function togglePause(){paused=!paused;document.getElementById('pause-btn').textContent=paused?'Resume':'Pause';}
 function startWorkout(){currentRound=1;currentExercise=1;phase='work';phaseDuration=settings.work;timeLeft=settings.work;totalSecondsRemaining=calcTotalSeconds(settings);paused=false;workoutStart=Date.now();document.getElementById('pause-btn').textContent='Pause';showScreen('workout-screen');updateDisplay();timeLeft--;ticker=setInterval(tick,1000);startAudioKeepalive();if(appSettings.wakeLock)requestWakeLock();}
 function stopWorkout(){clearInterval(ticker);clearInterval(countdownTicker);stopAudioKeepalive();paused=false;currentExerciseNames=[];showScreen('home-screen');}
