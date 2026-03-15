@@ -194,6 +194,8 @@
 
   /* DONE */
   #done-screen { background: #6b6b6b; align-items: center; justify-content: center; text-align: center; padding: 2rem; overflow: hidden; }
+
+  .rating-label { font-size: 14px; color: rgba(255,255,255,0.5); margin-bottom: 0.75rem; font-family: 'Barlow', sans-serif; letter-spacing: 0.06em; text-transform: uppercase; }
   #done-screen h2 { font-size: 26.4px; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 1rem; opacity: 0.7; }
   #done-duration { font-size: 132.0px; font-weight: 400; color: #fff; letter-spacing: 0.02em; margin-bottom: 0.25rem; }
   #done-label { font-size: 24.0px; color: rgba(255,255,255,0.6); margin-bottom: 3rem; opacity: 0.8; font-family: 'Barlow', sans-serif; }
@@ -984,6 +986,7 @@ function randomWorkout() {
   const i = Math.floor(Math.random() * savedWorkouts.length);
   openReview(i);
 }
+
 function renderLibrary(){
   const container=document.getElementById('saved-workouts-list');
   container.innerHTML='';container.style.display='flex';container.style.flexDirection='column';container.style.gap='8px';
@@ -994,6 +997,7 @@ function renderLibrary(){
     const btn=document.createElement('button');
     btn.className='workout-card';
     const meta = w.type==='emom' ? w.minutes+' min' : w.type==='tabata' ? w.rounds+' rounds · '+w.work+'s work' : w.type==='amrap' ? w.minutes+' min' : w.rounds+' rounds · '+w.exercises+' exercises · '+fmtTime(calcTotalSeconds(w));
+
     btn.innerHTML=`<div class="workout-card-info"><span class="workout-card-name">${w.name}</span><span class="workout-card-meta">${meta}</span></div><svg class="workout-card-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>`;
     btn.onclick=()=>openReview(i);
     // Long press to delete
@@ -1048,7 +1052,23 @@ function startFromReview(){
 function editFromReview(){
   const w=savedWorkouts[activeWorkoutIndex];
   if(!w.type||w.type==='interval'){openCreate(activeWorkoutIndex);return;}
-  alert('Editing is only available for Interval workouts right now.');
+  if(w.type==='emom'){
+    document.getElementById('save-emom-name').value=w.name;
+    const sl=document.querySelector('#save-emom-screen input[type=range]');
+    if(sl){sl.value=w.minutes;document.getElementById('save-emom-val').textContent=w.minutes;}
+    showScreen('save-emom-screen');return;
+  }
+  if(w.type==='tabata'){
+    document.getElementById('save-tabata-name').value=w.name;
+    selectSaveTabata(w.rounds,w.work,w.rest);
+    showScreen('save-tabata-screen');return;
+  }
+  if(w.type==='amrap'){
+    document.getElementById('save-amrap-name').value=w.name;
+    const sl=document.querySelector('#save-amrap-screen input[type=range]');
+    if(sl){sl.value=w.minutes;document.getElementById('save-amrap-val').textContent=w.minutes;}
+    showScreen('save-amrap-screen');return;
+  }
 }
 function deleteFromReview(){if(!confirm('Delete "'+savedWorkouts[activeWorkoutIndex].name+'"?'))return;savedWorkouts.splice(activeWorkoutIndex,1);localStorage.setItem('workouts',JSON.stringify(savedWorkouts));renderLibrary();showScreen('saved-screen');}
 
@@ -1166,7 +1186,7 @@ function skipInterval(){if(paused)return;ensureAudio();totalSecondsRemaining-=ti
 function togglePause(){paused=!paused;document.getElementById('pause-btn').textContent=paused?'Resume':'Pause';}
 function startWorkout(){currentRound=1;currentExercise=1;phase='work';phaseDuration=settings.work;timeLeft=settings.work;totalSecondsRemaining=calcTotalSeconds(settings);paused=false;workoutStart=Date.now();document.getElementById('pause-btn').textContent='Pause';showScreen('workout-screen');updateDisplay();timeLeft--;ticker=setInterval(tick,1000);startAudioKeepalive();if(appSettings.wakeLock)requestWakeLock();}
 function stopWorkout(){clearInterval(ticker);clearInterval(countdownTicker);stopAudioKeepalive();paused=false;currentExerciseNames=[];showScreen('home-screen');}
-function finishWorkout(){clearInterval(ticker);const elapsed=Math.round((Date.now()-workoutStart)/1000);document.getElementById('done-duration').textContent=fmtTime(elapsed);currentExerciseNames=[];showScreen('done-screen');playFanfare();}
+function finishWorkout(){clearInterval(ticker);const elapsed=Math.round((Date.now()-workoutStart)/1000);document.getElementById('done-duration').textContent=fmtTime(elapsed);currentExerciseNames=[];stopAudioKeepalive();showScreen('done-screen');playFanfare();}
 
 // EMOM
 function startEmomWorkout(){
@@ -1197,7 +1217,7 @@ function updateEmomDisplay(){
 function emomTick(){if(emomPaused)return;emomElapsed++;if(emomElapsed>=emomTotalSeconds){finishEmom();return;}emomSecondsLeft--;if(emomSecondsLeft<=0){emomCurrentMinute++;emomSecondsLeft=60;}if(emomSecondsLeft===3)scheduleBeeps();updateEmomDisplay();}
 function toggleEmomPause(){emomPaused=!emomPaused;document.getElementById('emom-pause-btn').textContent=emomPaused?'Resume':'Pause';}
 function stopEmom(){clearInterval(emomTicker);stopAudioKeepalive();emomExerciseNames=[];showScreen('home-screen');}
-function finishEmom(){clearInterval(emomTicker);document.getElementById('done-duration').textContent=fmtTime(emomTotalSeconds);showScreen('done-screen');playFanfare();}
+function finishEmom(){clearInterval(emomTicker);stopAudioKeepalive();document.getElementById('done-duration').textContent=fmtTime(emomTotalSeconds);showScreen('done-screen');playFanfare();}
 
 // TABATA
 function startTabataWorkout(){
@@ -1255,7 +1275,7 @@ function amrapTick(){if(amrapPaused)return;if(amrapSecondsLeft===3)scheduleBeeps
 function amrapRound(delta){amrapRounds=Math.max(0,amrapRounds+delta);document.getElementById('amrap-rounds-display').textContent='Rounds: '+amrapRounds;}
 function toggleAmrapPause(){amrapPaused=!amrapPaused;document.getElementById('amrap-pause-btn').textContent=amrapPaused?'Resume':'Pause';}
 function stopAmrap(){clearInterval(amrapTicker);stopAudioKeepalive();showScreen('home-screen');}
-function finishAmrap(){clearInterval(amrapTicker);document.getElementById('done-duration').textContent=fmtTime(amrapTotalSeconds);showScreen('done-screen');playFanfare();}
+function finishAmrap(){clearInterval(amrapTicker);stopAudioKeepalive();document.getElementById('done-duration').textContent=fmtTime(amrapTotalSeconds);showScreen('done-screen');playFanfare();}
 
 function restart(){showScreen('home-screen');}
 document.addEventListener('visibilitychange', () => {
@@ -1263,6 +1283,11 @@ document.addEventListener('visibilitychange', () => {
     audioCtx.resume();
   }
 });
+// Load default workouts on first launch
+if(savedWorkouts.length===0){
+  savedWorkouts=[{"name":"Push 1","type":"interval","exercises":3,"rounds":4,"work":40,"rest":20,"roundRest":60,"exerciseNames":["KB Floor Press","KB Push Press","KB Tricep Extension"]},{"name":"Push 2","type":"interval","exercises":4,"rounds":3,"work":35,"rest":20,"roundRest":60,"exerciseNames":["KB Single Arm Press","KB Push Press","KB Chest Fly","KB Close Grip Press"]},{"name":"Push 3","type":"interval","exercises":3,"rounds":5,"work":30,"rest":15,"roundRest":45,"exerciseNames":["KB Arnold Press","KB Push Press","KB Skull Crusher"]},{"name":"Pull 1","type":"interval","exercises":3,"rounds":4,"work":40,"rest":20,"roundRest":60,"exerciseNames":["KB Single Arm Row","KB Renegade Row","KB High Pull"]},{"name":"Pull 2","type":"interval","exercises":4,"rounds":3,"work":35,"rest":20,"roundRest":60,"exerciseNames":["KB Bent Over Row","KB Upright Row","KB Single Arm Row","KB Snatch"]},{"name":"Pull 3","type":"interval","exercises":3,"rounds":5,"work":30,"rest":15,"roundRest":45,"exerciseNames":["KB Clean","KB High Pull","KB Renegade Row"]},{"name":"Legs 1","type":"interval","exercises":3,"rounds":4,"work":40,"rest":20,"roundRest":60,"exerciseNames":["KB Goblet Squat","KB Romanian Deadlift","KB Swing"]},{"name":"Legs 2","type":"interval","exercises":4,"rounds":3,"work":40,"rest":20,"roundRest":60,"exerciseNames":["KB Sumo Squat","KB Single Leg Deadlift","KB Lunge","KB Step Up"]},{"name":"Legs 3","type":"interval","exercises":3,"rounds":5,"work":30,"rest":15,"roundRest":45,"exerciseNames":["KB Swing","KB Goblet Squat","KB Jump Squat"]},{"name":"Arms 1","type":"interval","exercises":4,"rounds":4,"work":35,"rest":15,"roundRest":60,"exerciseNames":["KB Curl","KB Hammer Curl","KB Tricep Extension","KB Overhead Tricep"]},{"name":"Arms 2","type":"interval","exercises":3,"rounds":4,"work":40,"rest":20,"roundRest":60,"exerciseNames":["KB Single Arm Curl","KB Skull Crusher","KB Concentration Curl"]},{"name":"Arms 3","type":"interval","exercises":4,"rounds":3,"work":30,"rest":15,"roundRest":45,"exerciseNames":["KB Hammer Curl","KB Tricep Kickback","KB Reverse Curl","KB Close Grip Press"]},{"name":"Shoulders 1","type":"interval","exercises":3,"rounds":4,"work":40,"rest":20,"roundRest":60,"exerciseNames":["KB Overhead Press","KB Lateral Raise","KB Front Raise"]},{"name":"Shoulders 2","type":"interval","exercises":4,"rounds":3,"work":35,"rest":20,"roundRest":60,"exerciseNames":["KB Arnold Press","KB Upright Row","KB Face Pull","KB Shrug"]},{"name":"Shoulders 3","type":"interval","exercises":3,"rounds":5,"work":30,"rest":15,"roundRest":45,"exerciseNames":["KB Push Press","KB Lateral Raise","KB Rear Delt Fly"]},{"name":"Back 1","type":"interval","exercises":3,"rounds":4,"work":40,"rest":20,"roundRest":60,"exerciseNames":["KB Deadlift","KB Bent Over Row","KB Good Morning"]},{"name":"Back 2","type":"interval","exercises":4,"rounds":3,"work":40,"rest":20,"roundRest":60,"exerciseNames":["KB Single Arm Row","KB Romanian Deadlift","KB Reverse Fly","KB Shrug"]},{"name":"Back 3","type":"interval","exercises":3,"rounds":5,"work":30,"rest":15,"roundRest":45,"exerciseNames":["KB Swing","KB Deadlift","KB Renegade Row"]},{"name":"Core 1","type":"interval","exercises":3,"rounds":4,"work":40,"rest":20,"roundRest":60,"exerciseNames":["KB Russian Twist","KB Windmill","KB Sit Up & Press"]},{"name":"Core 2","type":"interval","exercises":4,"rounds":3,"work":35,"rest":15,"roundRest":60,"exerciseNames":["KB Halo","KB Side Bend","KB Dead Bug","KB Turkish Get Up"]},{"name":"Core 3","type":"interval","exercises":3,"rounds":5,"work":30,"rest":15,"roundRest":45,"exerciseNames":["KB Russian Twist","KB Plank Pull Through","KB Windmill"]}];
+  localStorage.setItem('workouts',JSON.stringify(savedWorkouts));
+}
 renderLibrary();
 updateHomePreview();
 showScreen('home-screen');
