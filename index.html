@@ -205,10 +205,11 @@
 
   @media (orientation: landscape) {
     #workout-screen { flex-direction: row !important; align-items: center; justify-content: center; gap: 2rem; padding: 1rem 2rem; }
-    #workout-screen .circle-wrap { width: 220px; height: 220px; flex-shrink: 0; margin-bottom: 0; }
-    #workout-screen .circle-wrap svg { width: 220px; height: 220px; }
-    #timer-display { font-size: 80px !important; }
-    .workout-info-col { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 0.5rem; }
+    #workout-screen .circle-wrap { width: 260px; height: 260px; flex-shrink: 0; margin-bottom: 0; }
+    #workout-screen .circle-wrap svg { width: 260px; height: 260px; }
+    #timer-display { font-size: 100px !important; }
+    #phase-label { display: none !important; }
+    .workout-info-col { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; text-align: center; }
     #phase-label { margin-bottom: 0; }
     #exercise-name-display { text-align: left !important; }
     #round-info { text-align: left; }
@@ -291,16 +292,57 @@
         <span>Saved</span>
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
+      <button class="menu-card" onclick="showScreen('workout-types-screen')">
+        <span>Workout Types</span>
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
       <button class="menu-card" onclick="showScreen('type-picker-screen')">
         <span>Create</span>
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
       <button class="menu-card" onclick="showScreen('settings-screen')">
-        <span>Workout Types</span>
+        <span>Settings</span>
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
-      <button class="menu-card" onclick="showScreen('settings-screen')">
-        <span>Settings</span>
+    </div>
+  </div>
+
+  <!-- WORKOUT TYPES -->
+  <div id="workout-types-screen" class="screen">
+    <div class="top-bar">
+      <button class="icon-btn" onclick="showScreen('menu-screen')">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h2>Workout Types</h2>
+      <div style="width:34px"></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;padding:1rem 1.5rem;gap:12px;">
+      <button class="menu-card" onclick="showScreen('home-screen')">
+        <div>
+          <div style="font-size:22px;font-weight:400;color:#fff;letter-spacing:0.06em;text-transform:uppercase;">Interval</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.4);font-family:'Barlow',sans-serif;margin-top:3px;">Custom rounds, exercises &amp; times</div>
+        </div>
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="menu-card" onclick="showScreen('emom-screen')">
+        <div>
+          <div style="font-size:22px;font-weight:400;color:#fff;letter-spacing:0.06em;text-transform:uppercase;">E.M.O.M.</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.4);font-family:'Barlow',sans-serif;margin-top:3px;">Every minute on the minute</div>
+        </div>
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="menu-card" onclick="showScreen('tabata-screen')">
+        <div>
+          <div style="font-size:22px;font-weight:400;color:#fff;letter-spacing:0.06em;text-transform:uppercase;">Tabata</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.4);font-family:'Barlow',sans-serif;margin-top:3px;">Always 4 minutes, 3:1 work/rest</div>
+        </div>
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="menu-card" onclick="showScreen('amrap-screen')">
+        <div>
+          <div style="font-size:22px;font-weight:400;color:#fff;letter-spacing:0.06em;text-transform:uppercase;">A.M.R.A.P.</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.4);font-family:'Barlow',sans-serif;margin-top:3px;">As many rounds as possible</div>
+        </div>
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
     </div>
@@ -579,6 +621,7 @@
     </div>
     <p style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:400;color:rgba(255,255,255,0.5);text-align:center;padding:0 1.5rem;margin:1.5rem 0 0;">Every Minute On the Minute. When the minute starts, do your work. The faster you finish, the more rest you get before the next minute fires.</p>
     <div class="emom-content">
+      <p style="font-size:13px;font-weight:400;color:rgba(255,255,255,0.3);text-align:center;margin-bottom:1rem;font-family:'Barlow',sans-serif;letter-spacing:0.08em;text-transform:uppercase;">Quick Start</p>
       <div class="setting-row" style="width:100%;">
         <label>Minutes</label>
         <div class="slider-val" id="emom-val-minutes">10</div>
@@ -608,6 +651,7 @@
     </div>
     <p style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:400;color:rgba(255,255,255,0.5);text-align:center;padding:0 1.5rem;margin:1.5rem 0 0;">Always 4 minutes per set. Work hard, rest briefly, repeat. Pick a weight you can move fast.</p>
     <div class="tabata-content">
+      <p style="font-size:13px;font-weight:400;color:rgba(255,255,255,0.3);text-align:center;margin-bottom:1rem;font-family:'Barlow',sans-serif;letter-spacing:0.08em;text-transform:uppercase;">Quick Start</p>
       <div style="display:flex;flex-direction:column;gap:12px;width:100%;">
         <button class="tabata-option-card" id="tabata-opt-4" onclick="selectTabata(4,45,15)">
           <span class="tabata-opt-rounds">4 rounds</span>
@@ -645,6 +689,7 @@
     </div>
     <p style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:400;color:rgba(255,255,255,0.5);text-align:center;padding:0 1.5rem;margin:1.5rem 0 0;">As Many Rounds As Possible. Set a time and go. Every time you finish a full round, hit + Round. Your score is how many rounds you complete before time runs out.</p>
     <div class="amrap-content">
+      <p style="font-size:13px;font-weight:400;color:rgba(255,255,255,0.3);text-align:center;margin-bottom:1rem;font-family:'Barlow',sans-serif;letter-spacing:0.08em;text-transform:uppercase;">Quick Start</p>
       <div class="setting-row" style="width:100%;">
         <label>Minutes</label>
         <div class="slider-val" id="amrap-val-minutes">10</div>
@@ -841,8 +886,8 @@
       <button onclick="stopAmrap()">Stop</button>
     </div>
     <div style="display:flex;gap:12px;width:100%;margin-top:1rem;padding:0 0.5rem;">
-      <button onclick="amrapRound(1)" style="flex:1;padding:1.5rem;font-size:28px;font-weight:400;font-family:'Anton',sans-serif;border-radius:14px;border:2px solid rgba(255,255,255,0.4);background:transparent;color:#fff;cursor:pointer;letter-spacing:0.04em;">+ Round</button>
       <button onclick="amrapRound(-1)" style="flex:1;padding:1.5rem;font-size:28px;font-weight:400;font-family:'Anton',sans-serif;border-radius:14px;border:2px solid rgba(255,255,255,0.4);background:transparent;color:#fff;cursor:pointer;letter-spacing:0.04em;">- Round</button>
+      <button onclick="amrapRound(1)" style="flex:1;padding:1.5rem;font-size:28px;font-weight:400;font-family:'Anton',sans-serif;border-radius:14px;border:2px solid rgba(255,255,255,0.4);background:transparent;color:#fff;cursor:pointer;letter-spacing:0.04em;">+ Round</button>
     </div>
   </div>
 
