@@ -1392,27 +1392,14 @@ function initAudio(){
   const buf=audioCtx.createBuffer(1,1,22050);
   const src=audioCtx.createBufferSource();
   src.buffer=buf;src.connect(audioCtx.destination);src.start(0);
-  if(audioCtx.state==='suspended') audioCtx.resume();
 }
+
 
 function ensureAudio(){
   if(!audioCtx)initAudio();
-  if(audioCtx.state!=='running') audioCtx.resume();
+  if(audioCtx.state!=='running')return audioCtx.resume();
   return Promise.resolve();
 }
-
-// iOS: unlock audio on very first touch — synchronously in gesture handler
-(function(){
-  let unlocked=false;
-  function unlockAudio(){
-    if(unlocked)return; unlocked=true;
-    initAudio();
-    ['touchstart','touchend','click'].forEach(ev=>document.removeEventListener(ev,unlockAudio,true));
-  }
-  ['touchstart','touchend','click'].forEach(ev=>
-    document.addEventListener(ev,unlockAudio,{capture:true,passive:true})
-  );
-})();
 function beep(freq, dur, delay) {
   if (!appSettings.sound) return;
   try {
