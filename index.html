@@ -386,35 +386,35 @@
     <div class="splash-title">Swing State</div>
     <div class="splash-sub">Kettlebell Timer</div>
     <div class="splash-menu">
-      <button class="splash-menu-btn primary" onclick="enterApp('workout-types-screen')">
+      <button class="splash-menu-btn primary" onclick="initAudio();enterApp('workout-types-screen')">
         <div>
           Quick Start
           <span class="splash-menu-btn-sub">Interval · E.M.O.M. · Tabata · A.M.R.A.P.</span>
         </div>
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
-      <button class="splash-menu-btn secondary" onclick="enterApp('saved-screen')">
+      <button class="splash-menu-btn secondary" onclick="initAudio();enterApp('saved-screen')">
         <div>
           Library
           <span class="splash-menu-btn-sub">Your saved workouts</span>
         </div>
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
-      <button class="splash-menu-btn secondary" onclick="enterApp('favorites-screen')">
+      <button class="splash-menu-btn secondary" onclick="initAudio();enterApp('favorites-screen')">
         <div>
           Favorites
           <span class="splash-menu-btn-sub">Workouts you've starred</span>
         </div>
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
-      <button class="splash-menu-btn secondary" onclick="enterApp('type-picker-screen')">
+      <button class="splash-menu-btn secondary" onclick="initAudio();enterApp('type-picker-screen')">
         <div>
           Create
           <span class="splash-menu-btn-sub">Build a custom workout</span>
         </div>
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
-      <button class="splash-menu-btn secondary" onclick="enterApp('settings-screen')">
+      <button class="splash-menu-btn secondary" onclick="initAudio();enterApp('settings-screen')">
         <div>
           Settings
           <span class="splash-menu-btn-sub">Sound, screen &amp; countdown</span>
@@ -461,7 +461,7 @@
     </div>
     <div class="home-btns">
       <div class="total-time-preview" id="home-total-preview"></div>
-      <button class="btn-primary" onclick="startCountdown('interval')">Start</button>
+      <button class="btn-primary" onclick="initAudio();startCountdown('interval')">Start</button>
     </div>
   </div>
 
@@ -508,28 +508,28 @@
       <div style="width:34px"></div>
     </div>
     <div style="flex:1;display:flex;flex-direction:column;padding:1rem 1.5rem;gap:12px;">
-      <button class="menu-card" onclick="showScreen('home-screen')">
+      <button class="menu-card" onclick="initAudio();showScreen('home-screen')">
         <div style="text-align:left;">
           <div style="font-size:22px;font-weight:400;color:#fff;letter-spacing:0.06em;text-transform:uppercase;">Interval</div>
           <div style="font-size:13px;color:rgba(255,255,255,0.4);font-family:'Barlow',sans-serif;margin-top:3px;">Custom rounds, exercises &amp; times</div>
         </div>
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
-      <button class="menu-card" onclick="showScreen('emom-screen')">
+      <button class="menu-card" onclick="initAudio();showScreen('emom-screen')">
         <div style="text-align:left;">
           <div style="font-size:22px;font-weight:400;color:#fff;letter-spacing:0.06em;text-transform:uppercase;">E.M.O.M.</div>
           <div style="font-size:13px;color:rgba(255,255,255,0.4);font-family:'Barlow',sans-serif;margin-top:3px;">Every minute on the minute</div>
         </div>
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
-      <button class="menu-card" onclick="showScreen('tabata-screen')">
+      <button class="menu-card" onclick="initAudio();showScreen('tabata-screen')">
         <div style="text-align:left;">
           <div style="font-size:22px;font-weight:400;color:#fff;letter-spacing:0.06em;text-transform:uppercase;">Tabata</div>
           <div style="font-size:13px;color:rgba(255,255,255,0.4);font-family:'Barlow',sans-serif;margin-top:3px;">Always 4 minutes, 3:1 work/rest</div>
         </div>
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
-      <button class="menu-card" onclick="showScreen('amrap-screen')">
+      <button class="menu-card" onclick="initAudio();showScreen('amrap-screen')">
         <div style="text-align:left;">
           <div style="font-size:22px;font-weight:400;color:#fff;letter-spacing:0.06em;text-transform:uppercase;">A.M.R.A.P.</div>
           <div style="font-size:13px;color:rgba(255,255,255,0.4);font-family:'Barlow',sans-serif;margin-top:3px;">As many rounds as possible</div>
@@ -827,7 +827,7 @@
     </div>
     <div class="emom-btns">
       <button class="btn-secondary" onclick="openEmomNamesScreen()">Exercise Names</button>
-      <button class="btn-primary" onclick="startCountdown('emom')">Start</button>
+      <button class="btn-primary" onclick="initAudio();startCountdown('emom')">Start</button>
     </div>
   </div>
 
@@ -865,7 +865,7 @@
       <div class="emom-total-preview" id="tabata-preview">Total: 1:30</div>
     </div>
     <div class="tabata-btns">
-      <button class="btn-primary" onclick="startCountdown('tabata')">Start</button>
+      <button class="btn-primary" onclick="initAudio();startCountdown('tabata')">Start</button>
     </div>
   </div>
 
@@ -889,21 +889,21 @@
       <div class="amrap-total-preview" id="amrap-preview">Total: 10:00</div>
     </div>
     <div class="amrap-btns">
-      <button class="btn-primary" onclick="startCountdown('amrap')">Start</button>
+      <button class="btn-primary" onclick="initAudio();startCountdown('amrap')">Start</button>
     </div>
   </div>
 
   <!-- TABATA NAMES -->
   <div id="tabata-names-screen" class="screen">
     <div class="top-bar">
-      <button class="icon-btn" onclick="showScreen('tabata-screen')">
+      <button class="icon-btn" onclick="initAudio();showScreen('tabata-screen')">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <h2>Workouts</h2>
       <div style="width:34px"></div>
     </div>
     <div class="names-list" id="tabata-names-list"></div>
-    <button class="names-done-btn" onclick="showScreen('tabata-screen')">Done</button>
+    <button class="names-done-btn" onclick="initAudio();showScreen('tabata-screen')">Done</button>
   </div>
 
   <!-- SETTINGS -->
@@ -942,14 +942,14 @@
   <!-- EMOM NAMES -->
   <div id="emom-names-screen" class="screen">
     <div class="top-bar">
-      <button class="icon-btn" onclick="showScreen('emom-screen')">
+      <button class="icon-btn" onclick="initAudio();showScreen('emom-screen')">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <h2>Workouts</h2>
       <div style="width:34px"></div>
     </div>
     <div class="names-list" id="emom-names-list"></div>
-    <button class="names-done-btn" onclick="showScreen('emom-screen')">Done</button>
+    <button class="names-done-btn" onclick="initAudio();showScreen('emom-screen')">Done</button>
   </div>
 
 
