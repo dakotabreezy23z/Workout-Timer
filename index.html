@@ -1559,7 +1559,7 @@ function beep(freq, dur, delay) {
     o.frequency.value = freq; o.type = 'sine';
     const t = audioCtx.currentTime + (delay || 0);
     g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(0.35, t + 0.01);
+    g.gain.linearRampToValueAtTime(0.7, t + 0.01);
     g.gain.exponentialRampToValueAtTime(0.001, t + dur);
     o.start(t); o.stop(t + dur + 0.05);
   } catch(e) {}
@@ -1581,7 +1581,7 @@ function sliderTick(){
     src.buffer=buf;
     src.connect(hp);hp.connect(g);g.connect(audioCtx.destination);
     const t=audioCtx.currentTime;
-    g.gain.setValueAtTime(0.18,t);
+    g.gain.setValueAtTime(0.05,t);
     g.gain.exponentialRampToValueAtTime(0.001,t+0.012);
     src.start(t);src.stop(t+0.014);
   }catch(e){}
