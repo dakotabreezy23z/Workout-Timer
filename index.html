@@ -231,11 +231,11 @@
     #tabata-workout-screen .workout-info-col { align-items: flex-start; text-align: left; }
 
     #amrap-workout-screen { flex-direction: row !important; align-items: center; justify-content: center; gap: 2rem; padding: 1rem 2rem; }
-    #amrap-workout-screen .circle-wrap { width: 220px; height: 220px; flex-shrink: 0; margin-bottom: 0; }
+    #amrap-workout-screen .circle-wrap { width: 260px; height: 260px; flex-shrink: 0; margin-bottom: 0; }
+    #amrap-workout-screen .circle-wrap svg { width: 260px; height: 260px; }
     #amrap-timer-display { font-size: 52px !important; }
-    #amrap-right-col { display: flex; flex-direction: column; align-items: stretch; justify-content: center; gap: 12px; flex: 1; }
-    #amrap-round-row { display: flex; gap: 10px; }
-    #amrap-round-row button { flex: 1; padding: 1rem; font-size: 24px; }
+    #amrap-label { display: none !important; }
+    #amrap-right-col { display: flex; flex-direction: column; align-items: stretch; justify-content: center; gap: 14px; flex: 1; }
   }
 </style>
 </head>
@@ -852,7 +852,7 @@
     </div>
     <div class="workout-info-col">
       <div id="emom-exercise-list" style="display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:0.5rem;"></div>
-      <div id="emom-total-remaining" style="font-size:15px;font-weight:400;color:rgba(255,255,255,0.4);margin-bottom:1.5rem;font-family:'Barlow',sans-serif;">10:00 remaining</div>
+      <div id="emom-total-remaining" style="font-size:15px;font-weight:400;color:rgba(255,255,255,0.4);margin-bottom:1.5rem;font-family:'Barlow',sans-serif;text-align:center;width:100%;">10:00 remaining</div>
       <div class="workout-btns">
         <button id="emom-pause-btn" onclick="toggleEmomPause()">Pause</button>
         <button onclick="stopEmom()">Stop</button>
@@ -872,9 +872,9 @@
     </div>
     <div class="workout-info-col">
       <div id="tabata-exercise-name" style="font-size:clamp(16px,7vw,39px);font-weight:400;color:inherit;margin-bottom:0.2rem;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap;overflow:hidden;width:90%;text-align:center;">Round 1</div>
-      <div id="tabata-set-display" style="font-size:17px;font-weight:400;color:inherit;opacity:0.65;margin-bottom:0.2rem;font-family:'Barlow',sans-serif;">45s work</div>
+      <div id="tabata-set-display" style="display:none;">45s work</div>
       <div id="tabata-round-display" style="font-size:15px;font-weight:400;color:inherit;opacity:0.5;margin-bottom:0.2rem;font-family:'Barlow',sans-serif;"></div>
-      <div id="tabata-total-remaining" style="font-size:15px;font-weight:400;color:inherit;opacity:0.35;margin-bottom:1.5rem;font-family:'Barlow',sans-serif;">--:--</div>
+      <div id="tabata-total-remaining" style="font-size:15px;font-weight:400;color:inherit;opacity:0.35;margin-bottom:1.5rem;font-family:'Barlow',sans-serif;text-align:center;width:100%;">--:--</div>
       <div class="workout-btns">
         <button id="tabata-pause-btn" onclick="toggleTabataPause()">Pause</button>
         <button onclick="skipTabata()">Skip</button>
