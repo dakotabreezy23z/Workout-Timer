@@ -1390,18 +1390,38 @@ function deleteFromReview(){if(!confirm('Delete "'+savedWorkouts[activeWorkoutIn
 // AUDIO
 function initAudio(){
   if(audioCtx)return;
-  audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-  const buf=audioCtx.createBuffer(1,1,22050);
-  const src=audioCtx.createBufferSource();
-  src.buffer=buf;src.connect(audioCtx.destination);src.start(0);
+  try{
+    audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    // iOS: play a silent buffer immediately while still in gesture handler
+    const buf=audioCtx.createBuffer(1,audioCtx.sampleRate*0.001,audioCtx.sampleRate);
+    const src=audioCtx.createBufferSource();
+    src.buffer=buf;src.connect(audioCtx.destination);src.start(0);
+    // Force resume synchronously — critical for iOS
+    if(audioCtx.state==='suspended')audioCtx.resume();
+  }catch(e){}
 }
-
 
 function ensureAudio(){
   if(!audioCtx)initAudio();
-  if(audioCtx.state!=='running')return audioCtx.resume();
+  try{
+    if(audioCtx.state==='suspended'||audioCtx.state!=='running'){
+      audioCtx.resume();
+    }
+  }catch(e){}
   return Promise.resolve();
 }
+
+// Belt-and-suspenders: unlock audio on ANY first touch (iOS Safari)
+(function(){
+  function unlockAudio(){
+    initAudio();
+    ensureAudio();
+    document.removeEventListener('touchend',unlockAudio,true);
+    document.removeEventListener('click',unlockAudio,true);
+  }
+  document.addEventListener('touchend',unlockAudio,{capture:true,once:true,passive:true});
+  document.addEventListener('click',unlockAudio,{capture:true,once:true,passive:true});
+})();
 function beep(freq, dur, delay) {
   if (!appSettings.sound) return;
   try {
@@ -1457,7 +1477,7 @@ function playStartBeep(){beep(1047,0.3,0);}
 
 
 // COUNTDOWN
-function startCountdown(mode){pendingMode=mode;initAudio();try{if(noSleep)noSleep.enable();}catch(e){}let count=appSettings.countdownDuration;const cdArc=document.getElementById('countdown-arc');cdArc.style.strokeDasharray=CIRCUMFERENCE;cdArc.style.strokeDashoffset=0;document.getElementById('countdown-number').textContent=count;setArcEl('countdown-arc',count,appSettings.countdownDuration);
+function startCountdown(mode){pendingMode=mode;ensureAudio();let count=appSettings.countdownDuration;const cdArc=document.getElementById('countdown-arc');cdArc.style.strokeDasharray=CIRCUMFERENCE;cdArc.style.strokeDashoffset=0;document.getElementById('countdown-number').textContent=count;setArcEl('countdown-arc',count,appSettings.countdownDuration);
   // Show first exercise name
   const firstEx = mode==='interval' ? (currentExerciseNames.length>0&&currentExerciseNames[0] ? currentExerciseNames[0] : (settings.exercises>0?'Exercise 1':'')) : mode==='emom' ? '' : mode==='tabata' ? '20s Work' : mode==='amrap' ? 'As Many Rounds' : '';
   document.getElementById('countdown-next-name').textContent=firstEx;
@@ -1624,14 +1644,14 @@ function stopAmrap(){clearInterval(amrapTicker);stopAudioKeepalive();showSplash(
 function finishAmrap(){clearInterval(amrapTicker);stopAudioKeepalive();document.getElementById('done-duration').textContent=fmtTime(amrapTotalSeconds);showScreen('done-screen');playFanfare();}
 
 function enterApp(target){
+  // Must call synchronously inside gesture handler for iOS audio unlock
   ensureAudio();
+  try{if(noSleep)noSleep.enable();}catch(e){}
   const splash=document.getElementById('splash-screen');
   splash.classList.add('fade-out');
   const dest = target || 'home-screen';
   setTimeout(()=>{
-    // Hide splash then cleanly show destination
     splash.classList.add('hidden');
-    // Small extra frame gap to ensure splash is fully hidden
     requestAnimationFrame(()=>requestAnimationFrame(()=>showScreen(dest)));
   },580);
 }
@@ -1647,10 +1667,12 @@ function showSplash(){
 }
 function restart(){showSplash();}
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible' && audioCtx && audioCtx.state === 'suspended') {
-    audioCtx.resume();
+  if (document.visibilityState === 'visible' && audioCtx) {
+    audioCtx.resume().catch(()=>{});
   }
 });
+// iOS: resume audio after page focus (e.g. returning from lock screen)
+window.addEventListener('pageshow', ()=>{ if(audioCtx&&audioCtx.state!=='running') audioCtx.resume().catch(()=>{}); });
 // Load default workouts on first launch
 if(savedWorkouts.length===0){
   savedWorkouts=[{"name":"Push 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Floor Press","KB Push Press","KB Single Arm Press","KB Tricep Extension","KB Chest Fly"]},{"name":"Push 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Push Press","KB Arnold Press","KB Close Grip Press","KB Chest Fly","KB Tricep Extension","KB Floor Press"]},{"name":"Push 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Arnold Press","KB Push Press","KB Skull Crusher","KB Tricep Kickback","KB Single Arm Press"]},{"name":"Pull 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Single Arm Row","KB Renegade Row","KB High Pull","KB Bent Over Row","KB Snatch"]},{"name":"Pull 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Bent Over Row","KB Upright Row","KB Single Arm Row","KB Snatch","KB High Pull","KB Clean"]},{"name":"Pull 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Clean","KB High Pull","KB Renegade Row","KB Single Arm Row","KB Bent Over Row"]},{"name":"Legs 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Goblet Squat","KB Romanian Deadlift","KB Swing","KB Lunge","KB Step Up"]},{"name":"Legs 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Sumo Squat","KB Single Leg Deadlift","KB Lunge","KB Step Up","KB Swing","KB Jump Squat"]},{"name":"Legs 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Swing","KB Goblet Squat","KB Jump Squat","KB Romanian Deadlift","KB Sumo Squat"]},{"name":"Arms 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Curl","KB Hammer Curl","KB Tricep Extension","KB Overhead Tricep","KB Skull Crusher"]},{"name":"Arms 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Single Arm Curl","KB Skull Crusher","KB Concentration Curl","KB Hammer Curl","KB Tricep Kickback","KB Reverse Curl"]},{"name":"Arms 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Hammer Curl","KB Tricep Kickback","KB Reverse Curl","KB Close Grip Press","KB Overhead Tricep"]},{"name":"Shoulders 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Overhead Press","KB Lateral Raise","KB Front Raise","KB Arnold Press","KB Rear Delt Fly"]},{"name":"Shoulders 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Arnold Press","KB Upright Row","KB Face Pull","KB Shrug","KB Lateral Raise","KB Push Press"]},{"name":"Shoulders 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Push Press","KB Lateral Raise","KB Rear Delt Fly","KB Front Raise","KB Shrug"]},{"name":"Back 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Deadlift","KB Bent Over Row","KB Good Morning","KB Single Arm Row","KB Reverse Fly"]},{"name":"Back 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Single Arm Row","KB Romanian Deadlift","KB Reverse Fly","KB Shrug","KB Renegade Row","KB Good Morning"]},{"name":"Back 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Swing","KB Deadlift","KB Renegade Row","KB Good Morning","KB Bent Over Row"]},{"name":"Core 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Russian Twist","KB Windmill","KB Sit Up & Press","KB Halo","KB Side Bend"]},{"name":"Core 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Halo","KB Side Bend","KB Dead Bug","KB Turkish Get Up","KB Russian Twist","KB Plank Pull Through"]},{"name":"Core 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Russian Twist","KB Plank Pull Through","KB Windmill","KB Side Bend","KB Sit Up & Press"]},{"name":"Full Body 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Swing","KB Goblet Squat","KB Push Press","KB Bent Over Row","KB Turkish Get Up"]},{"name":"Full Body 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Deadlift","KB Push Press","KB Single Arm Row","KB Goblet Squat","KB High Pull","KB Russian Twist"]},{"name":"Full Body 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Swing","KB Clean","KB Push Press","KB Lunge","KB Windmill"]}];
