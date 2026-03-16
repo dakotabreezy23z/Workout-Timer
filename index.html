@@ -228,8 +228,8 @@
     display: none;
   }
   .splash-logo {
-    width: 176px;
-    height: 176px;
+    width: 211px;
+    height: 211px;
     margin-bottom: 14px;
     animation: splashLogoIn 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards;
     opacity: 0;
@@ -936,11 +936,135 @@
         </div>
       </div>
 
-          <div class="review-meta-row" style="cursor:pointer;" onclick="showScreen('audio-debug-screen')">
-        <span class="review-meta-label">Audio Debug</span>
-        <span class="review-meta-val">→</span>
+        </div>
+  </div>
+
+  <!-- EMOM NAMES -->
+  <div id="emom-names-screen" class="screen">
+    <div class="top-bar">
+      <button class="icon-btn" onclick="ensureAudio();showScreen('emom-screen')">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h2>Workouts</h2>
+      <div style="width:34px"></div>
+    </div>
+    <div class="names-list" id="emom-names-list"></div>
+    <button class="names-done-btn" onclick="ensureAudio();showScreen('emom-screen')">Done</button>
+  </div>
+
+
+
+  <!-- COUNTDOWN -->
+  <div id="countdown-screen" class="screen">
+    <div id="countdown-label">Get Ready</div>
+    <div class="circle-wrap" style="margin-bottom:1rem;">
+      <svg width="280" height="280" viewBox="0 0 280 280">
+        <circle class="circle-bg" cx="140" cy="140" r="126" style="stroke:rgba(255,255,255,0.15);"/>
+        <circle class="circle-progress" id="countdown-arc" cx="140" cy="140" r="126" style="stroke:rgba(255,255,255,0.6);"/>
+      </svg>
+      <div id="countdown-number" class="circle-num" style="color:#fff;font-size:138px;">10</div>
+    </div>
+    <div id="countdown-sub">Workout starts soon</div>
+    <div style="margin-top:1.5rem;text-align:center;">
+      <div id="countdown-next-label" style="font-size:16px;font-weight: 400;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:0.3rem;font-family:'Barlow',sans-serif;">Next up</div>
+      <div id="countdown-next-name" style="font-size:28px;font-weight: 400;letter-spacing:0.06em;text-transform:uppercase;color:#fff;font-family:'Barlow Condensed',sans-serif;"></div>
+    </div>
+    <button id="countdown-skip" onclick="skipCountdown()">Skip</button>
+  </div>
+
+  <!-- INTERVAL WORKOUT -->
+  <div id="workout-screen" class="screen workout-texture">
+    <div id="phase-label">Work</div>
+    <div class="circle-wrap">
+      <svg width="280" height="280" viewBox="0 0 280 280">
+        <circle class="circle-bg" cx="140" cy="140" r="126"/>
+        <circle class="circle-progress" id="circle-arc" cx="140" cy="140" r="126"/>
+      </svg>
+      <div id="timer-display" class="circle-num">40</div>
+    </div>
+    <div id="next-up-label" style="font-size:13px;font-weight: 400;letter-spacing:0.12em;color:inherit;opacity:0.45;margin-bottom:0.15rem;text-transform:uppercase;font-family:'Barlow',sans-serif;display:none;">Next up</div>
+    <div class="workout-info-col">
+    <div id="exercise-name-display">Exercise 1</div>
+    <div id="round-info">Round 1 of 3</div>
+    <div id="total-time-remaining">--:--</div>
+    <div class="workout-btns">
+      <button id="pause-btn" onclick="togglePause()">Pause</button>
+      <button onclick="skipInterval()">Skip</button>
+      <button onclick="stopWorkout()">Stop</button>
+    </div>
+    </div>
+  </div>
+
+  <!-- EMOM WORKOUT -->
+  <div id="emom-workout-screen" class="screen workout-texture">
+    <div id="emom-phase-label" style="font-size:32px;font-weight:400;letter-spacing:0.08em;color:#fff;margin-bottom:1rem;">1/10</div>
+    <div class="circle-wrap">
+      <svg width="280" height="280" viewBox="0 0 280 280">
+        <circle class="circle-bg" cx="140" cy="140" r="126"/>
+        <circle class="circle-progress" id="emom-arc" cx="140" cy="140" r="126"/>
+      </svg>
+      <div id="emom-timer-display" class="circle-num">60</div>
+    </div>
+    <div class="workout-info-col">
+      <div id="emom-exercise-list" style="display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:0.5rem;"></div>
+      <div id="emom-total-remaining" style="font-size:15px;font-weight:400;color:rgba(255,255,255,0.4);margin-bottom:1.5rem;font-family:'Barlow',sans-serif;text-align:center;width:100%;">10:00 remaining</div>
+      <div class="workout-btns">
+        <button id="emom-pause-btn" onclick="toggleEmomPause()">Pause</button>
+        <button onclick="stopEmom()">Stop</button>
       </div>
     </div>
+  </div>
+
+  <!-- TABATA WORKOUT -->
+  <div id="tabata-workout-screen" class="screen workout-texture">
+    <div id="tabata-phase-label">Work</div>
+    <div class="circle-wrap">
+      <svg width="280" height="280" viewBox="0 0 280 280">
+        <circle class="circle-bg" cx="140" cy="140" r="126"/>
+        <circle class="circle-progress" id="tabata-arc" cx="140" cy="140" r="126"/>
+      </svg>
+      <div id="tabata-timer-display" class="circle-num">20</div>
+    </div>
+    <div class="workout-info-col">
+      <div id="tabata-exercise-name" style="font-size:clamp(16px,7vw,39px);font-weight:400;color:inherit;margin-bottom:0.2rem;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap;overflow:hidden;width:90%;text-align:center;">Round 1</div>
+      <div id="tabata-set-display" style="display:none;">45s work</div>
+      <div id="tabata-round-display" style="font-size:15px;font-weight:400;color:inherit;opacity:0.5;margin-bottom:0.2rem;font-family:'Barlow',sans-serif;"></div>
+      <div id="tabata-total-remaining" style="font-size:15px;font-weight:400;color:inherit;opacity:0.35;margin-bottom:1.5rem;font-family:'Barlow',sans-serif;text-align:center;width:100%;">--:--</div>
+      <div class="workout-btns">
+        <button id="tabata-pause-btn" onclick="toggleTabataPause()">Pause</button>
+        <button onclick="skipTabata()">Skip</button>
+        <button onclick="stopTabata()">Stop</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AMRAP WORKOUT -->
+  <div id="amrap-workout-screen" class="screen workout-texture">
+    <div id="amrap-label">A.M.R.A.P.</div>
+    <div class="circle-wrap">
+      <svg width="280" height="280" viewBox="0 0 280 280">
+        <circle class="circle-bg" cx="140" cy="140" r="126"/>
+        <circle class="circle-progress" id="amrap-arc" cx="140" cy="140" r="126"/>
+      </svg>
+      <div id="amrap-timer-display" class="circle-num" style="font-size:88px;">10:00</div>
+    </div>
+    <div id="amrap-rounds-display">Rounds: 0</div>
+    <div class="workout-btns">
+      <button id="amrap-pause-btn" onclick="toggleAmrapPause()">Pause</button>
+      <button onclick="stopAmrap()">Stop</button>
+    </div>
+    <div style="display:flex;gap:12px;width:100%;margin-top:1rem;padding:0 0.5rem;">
+      <button onclick="amrapRound(-1)" style="flex:1;padding:1.5rem;font-size:28px;font-weight:400;font-family:'Anton',sans-serif;border-radius:14px;border:2px solid rgba(255,255,255,0.4);background:transparent;color:#fff;cursor:pointer;letter-spacing:0.04em;">- Round</button>
+      <button onclick="amrapRound(1)" style="flex:1;padding:1.5rem;font-size:28px;font-weight:400;font-family:'Anton',sans-serif;border-radius:14px;border:2px solid rgba(255,255,255,0.4);background:transparent;color:#fff;cursor:pointer;letter-spacing:0.04em;">+ Round</button>
+    </div>
+  </div>
+
+  <!-- DONE -->
+  <div id="done-screen" class="screen">
+    <h2>Workout Complete</h2>
+    <div id="done-duration">0:00</div>
+    <div id="done-label">total time</div>
+    <button id="restart-btn" onclick="restart()">New Workout</button>
   </div>
 
   <!-- EMOM NAMES -->
@@ -1686,74 +1810,6 @@ if(savedWorkouts.length===0){
 renderLibrary();
 updateHomePreview();
 // Icon is embedded directly in splash img src
-// ── AUDIO DEBUG FUNCTIONS ──
-function dbgLog(msg){ 
-  var el=document.getElementById('dbg-log'); 
-  if(el) el.textContent += msg+'\n'; 
-  console.log(msg); 
-}
-function dbg_A(){
-  try{
-    var c=new(window.AudioContext||window.webkitAudioContext)();
-    dbgLog('A: ctx state='+c.state);
-    var o=c.createOscillator(),g=c.createGain();
-    o.connect(g);g.connect(c.destination);
-    o.frequency.value=440;
-    g.gain.setValueAtTime(0.3,c.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.5);
-    o.start(c.currentTime);o.stop(c.currentTime+0.5);
-    dbgLog('A: done — did you hear it?');
-  }catch(e){dbgLog('A ERROR: '+e);}
-}
-function dbg_B(){
-  dbgLog('B: audioCtx='+(audioCtx?audioCtx.state:'null'));
-  if(!audioCtx){dbgLog('B: no ctx — tap a home button first');return;}
-  try{
-    var o=audioCtx.createOscillator(),g=audioCtx.createGain();
-    o.connect(g);g.connect(audioCtx.destination);
-    o.frequency.value=550;
-    g.gain.setValueAtTime(0.3,audioCtx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.5);
-    o.start(audioCtx.currentTime);o.stop(audioCtx.currentTime+0.5);
-    dbgLog('B: done (direct, no .then) — did you hear it?');
-  }catch(e){dbgLog('B ERROR: '+e);}
-}
-function dbg_C(){
-  dbgLog('C: audioCtx='+(audioCtx?audioCtx.state:'null'));
-  if(!audioCtx){dbgLog('C: no ctx');return;}
-  ensureAudio().then(function(){
-    try{
-      var o=audioCtx.createOscillator(),g=audioCtx.createGain();
-      o.connect(g);g.connect(audioCtx.destination);
-      o.frequency.value=660;
-      g.gain.setValueAtTime(0.3,audioCtx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.5);
-      o.start(audioCtx.currentTime);o.stop(audioCtx.currentTime+0.5);
-      dbgLog('C: done (via .then) — did you hear it?');
-    }catch(e){dbgLog('C ERROR: '+e);}
-  });
-}
-document.getElementById('dbg_btn_D').addEventListener('touchstart',function(){
-  try{
-    var c=new(window.AudioContext||window.webkitAudioContext)();
-    dbgLog('D: ctx state='+c.state);
-    var o=c.createOscillator(),g=c.createGain();
-    o.connect(g);g.connect(c.destination);
-    o.frequency.value=880;
-    g.gain.setValueAtTime(0.3,c.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.5);
-    o.start(c.currentTime);o.stop(c.currentTime+0.5);
-    dbgLog('D: done (touchstart) — did you hear it?');
-  }catch(e){dbgLog('D ERROR: '+e);}
-},{passive:true});
-function dbg_E(){
-  dbgLog('--- STATE ---');
-  dbgLog('audioCtx: '+(audioCtx?audioCtx.state:'null'));
-  dbgLog('sound setting: '+appSettings.sound);
-  dbgLog('iOS: '+(/iPhone|iPad|iPod/.test(navigator.userAgent)));
-  dbgLog('-------------');
-}
-
 </script>
 </body>
 </html>
