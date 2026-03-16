@@ -167,9 +167,9 @@
   /* WORKOUT */
   #workout-screen { align-items: center; justify-content: center; padding: 2rem; transition: background 0.35s ease, color 0.35s ease; }
   #phase-label { font-size: 18.0px; font-weight: 400; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 1rem; opacity: 0.75; color: inherit; }
-  #exercise-name-display { font-size: 46.8px; font-weight: 400; color: inherit; margin-bottom: 0.2rem; letter-spacing: 0.06em; text-transform: uppercase; }
-  #round-info { font-size: 20.4px; font-weight: 400; color: inherit; opacity: 0.65; margin-bottom: 0.2rem; font-family: 'Barlow', sans-serif; }
-  #total-time-remaining { font-size: 18.0px; font-weight: 400; color: inherit; opacity: 0.5; margin-bottom: 1.5rem; font-family: 'Barlow', sans-serif; }
+  #exercise-name-display { font-size: 46.8px; font-weight: 400; color: inherit; margin-bottom: 0.2rem; letter-spacing: 0.06em; text-transform: uppercase; text-align: center; width: 100%; display: block; }
+  #round-info { font-size: 20.4px; font-weight: 400; color: inherit; opacity: 0.65; margin-bottom: 0.2rem; font-family: 'Barlow', sans-serif; text-align: center; width: 100%; display: block; }
+  #total-time-remaining { font-size: 18.0px; font-weight: 400; color: inherit; opacity: 0.5; margin-bottom: 1.5rem; font-family: 'Barlow', sans-serif; text-align: center; width: 100%; display: block; }
   .workout-btns { display: flex; gap: 12px; }
   .workout-btns button { padding: 0.65rem 1.6rem; border-radius: 999px; border: 1.5px solid rgba(255,255,255,0.4); background: transparent; font-size: 19px; font-weight: 400; cursor: pointer; color: #fff; font-family: 'Anton', sans-serif; letter-spacing: 0.06em; text-transform: uppercase; }
   .workout-btns button:active { }
@@ -211,9 +211,9 @@
     #phase-label { display: none !important; }
     .workout-info-col { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; text-align: center; }
     #phase-label { margin-bottom: 0; }
-    #exercise-name-display { text-align: left !important; }
-    #round-info { text-align: left; }
-    #total-time-remaining { margin-bottom: 0.5rem; }
+    #exercise-name-display { text-align: left !important; width: auto; }
+    #round-info { text-align: left; width: auto; }
+    #total-time-remaining { margin-bottom: 0.5rem; text-align: left; width: auto; }
     .workout-btns { justify-content: flex-start; }
 
     #emom-workout-screen { flex-direction: row !important; align-items: center; justify-content: center; gap: 2rem; padding: 1rem 2rem; }
