@@ -13,7 +13,7 @@
 <script src="https://cdn.jsdelivr.net/npm/nosleep.js@0.12.0/dist/NoSleep.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; cursor: pointer; }
   body { font-family: 'Anton', sans-serif; min-height: 100dvh; display: flex; flex-direction: column; background: #111; }
   #app { flex: 1; display: flex; flex-direction: column; min-height: 100dvh; }
 
@@ -308,7 +308,12 @@
     width: 100%;
     text-align: left;
   }
-  .splash-menu-btn:active { transform: scale(0.93) !important; opacity: 0.75 !important; }
+  .splash-menu-btn:active,
+  .splash-menu-btn.pressed {
+    transform: scale(0.93) !important;
+    background: rgba(255,255,255,0.18) !important;
+    border-color: rgba(255,255,255,0.5) !important;
+  }
   .splash-menu-btn.primary {
     background: #fff;
     color: #0a0a0a;
@@ -1799,6 +1804,20 @@ document.addEventListener('touchstart', function iosUnlock(){
   document.removeEventListener('touchstart', iosUnlock);
 }, {once:true, passive:true});
 
+
+// iOS :active fix — add pressed class on touchstart for splash buttons
+document.addEventListener('touchstart', function(e){
+  var btn = e.target.closest('.splash-menu-btn');
+  if(btn) btn.classList.add('pressed');
+}, {passive:true});
+document.addEventListener('touchend', function(e){
+  var btn = e.target.closest('.splash-menu-btn');
+  if(btn) setTimeout(function(){ btn.classList.remove('pressed'); }, 150);
+}, {passive:true});
+document.addEventListener('touchcancel', function(e){
+  var btn = e.target.closest('.splash-menu-btn');
+  if(btn) btn.classList.remove('pressed');
+}, {passive:true});
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && audioCtx) audioCtx.resume().catch(()=>{});
 });
