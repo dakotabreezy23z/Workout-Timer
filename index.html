@@ -529,7 +529,7 @@
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <h2 id="review-title">Legs Day</h2>
-      <button class="icon-btn" id="review-star" onclick="toggleFavoriteFromReview()" style="font-size:35px;color:rgba(255,255,255,0.3);background:none;border:none;cursor:pointer;padding:6px;margin-right:10px;">☆</button>
+      <button class="icon-btn" id="review-star" onclick="toggleFavoriteFromReview()" style="font-size:20px;color:rgba(255,255,255,0.3);background:none;border:none;cursor:pointer;padding:12px;margin-right:6px;">☆</button>
     </div>
     <div class="review-content">
       <div class="review-meta" id="review-meta"></div>
@@ -1042,7 +1042,7 @@ function renderFavorites() {
     const btn = document.createElement('button');
     btn.className = 'workout-card';
     const meta = w.type==='emom' ? w.minutes+' min' : w.type==='tabata' ? w.rounds+' rounds · '+w.work+'s work' : w.type==='amrap' ? w.minutes+' min' : w.rounds+' rounds · '+w.exercises+' exercises · '+fmtTime(calcTotalSeconds(w));
-    btn.innerHTML=`<div class="workout-card-info"><span class="workout-card-name">${w.name}</span><span class="workout-card-meta">${meta}</span></div><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:32px;color:rgba(255,255,255,0.9);cursor:pointer;padding:8px;line-height:1;" onclick="toggleFavorite(event,${i})">★</span><svg class="workout-card-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>`;
+    btn.innerHTML=`<div class="workout-card-info"><span class="workout-card-name">${w.name}</span><span class="workout-card-meta">${meta}</span></div><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:18px;color:rgba(255,255,255,0.9);cursor:pointer;padding:12px;line-height:1;" onclick="toggleFavorite(event,${i})">★</span><svg class="workout-card-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>`;
     btn.onclick = (e) => { if(e.target.tagName!=='SPAN') openReview(i); };
     list.appendChild(btn);
   });
@@ -1062,7 +1062,7 @@ function renderLibrary(){
 
     const starFilled = w.favorite ? '★' : '☆';
     const starColor = w.favorite ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.3)';
-    btn.innerHTML=`<div class="workout-card-info"><span class="workout-card-name">${w.name}</span><span class="workout-card-meta">${meta}</span></div><div style="display:flex;align-items:center;gap:6px;"><span data-idx="${i}" style="font-size:32px;color:${starColor};cursor:pointer;padding:8px;line-height:1;" onclick="toggleFavorite(event,${i})">${starFilled}</span><svg class="workout-card-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>`;
+    btn.innerHTML=`<div class="workout-card-info"><span class="workout-card-name">${w.name}</span><span class="workout-card-meta">${meta}</span></div><div style="display:flex;align-items:center;gap:6px;"><span data-idx="${i}" style="font-size:18px;color:${starColor};cursor:pointer;padding:12px;line-height:1;" onclick="toggleFavorite(event,${i})">${starFilled}</span><svg class="workout-card-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>`;
     btn.onclick=(e)=>{ if(e.target.tagName!=='SPAN') openReview(i); };
     // Long press to delete
     let pressTimer;
