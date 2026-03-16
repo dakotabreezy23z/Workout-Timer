@@ -1401,22 +1401,16 @@ function ensureAudio(){
   return Promise.resolve();
 }
 function beep(freq, dur, delay) {
-  if (!appSettings.sound) return;
+  if (!appSettings.sound || !audioCtx) return;
   try {
-    if (!audioCtx) return;
-    const play = () => {
-      try {
-        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-        o.connect(g); g.connect(audioCtx.destination);
-        o.frequency.value = freq; o.type = 'sine';
-        const t = audioCtx.currentTime + (delay || 0);
-        g.gain.setValueAtTime(0, t);
-        g.gain.linearRampToValueAtTime(0.35, t + 0.01);
-        g.gain.exponentialRampToValueAtTime(0.001, t + dur);
-        o.start(t); o.stop(t + dur + 0.05);
-      } catch(e) {}
-    };
-    ensureAudio().then(play).catch(()=>{});
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.connect(g); g.connect(audioCtx.destination);
+    o.frequency.value = freq; o.type = 'sine';
+    const t = audioCtx.currentTime + (delay || 0);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.35, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.start(t); o.stop(t + dur + 0.05);
   } catch(e) {}
 }
 
@@ -1647,6 +1641,18 @@ function showSplash(){
   });
 }
 function restart(){showSplash();}
+// iOS: create AudioContext on very first touch so it's ready for beep()
+document.addEventListener('touchstart', function iosUnlock(){
+  if(!audioCtx){
+    audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    const buf=audioCtx.createBuffer(1,1,22050);
+    const src=audioCtx.createBufferSource();
+    src.buffer=buf;src.connect(audioCtx.destination);src.start(0);
+  }
+  if(audioCtx.state==='suspended') audioCtx.resume();
+  document.removeEventListener('touchstart', iosUnlock);
+}, {once:true, passive:true});
+
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && audioCtx) audioCtx.resume().catch(()=>{});
 });
