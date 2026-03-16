@@ -202,6 +202,31 @@
   #done-label { font-size: 24.0px; color: rgba(255,255,255,0.6); margin-bottom: 3rem; opacity: 0.8; font-family: 'Barlow', sans-serif; }
   #restart-btn { padding: 0.85rem 2.5rem; border-radius: 999px; background: #fff; color: #444; font-size: 21.6px; font-weight: 400; border: none; cursor: pointer; font-family: 'Anton', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; }
   #restart-btn:active { }
+
+  @media (orientation: landscape) {
+    #workout-screen { flex-direction: row !important; align-items: center; justify-content: center; gap: 2rem; padding: 1rem 2rem; }
+    #workout-screen .circle-wrap { width: 220px; height: 220px; flex-shrink: 0; margin-bottom: 0; }
+    #workout-screen .circle-wrap svg { width: 220px; height: 220px; }
+    #timer-display { font-size: 80px !important; }
+    .workout-info-col { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 0.5rem; }
+    #phase-label { margin-bottom: 0; }
+    #exercise-name-display { text-align: left !important; }
+    #round-info { text-align: left; }
+    #total-time-remaining { margin-bottom: 0.5rem; }
+    .workout-btns { justify-content: flex-start; }
+
+    #emom-workout-screen { flex-direction: row !important; align-items: center; justify-content: center; gap: 2rem; padding: 1rem 2rem; }
+    #emom-workout-screen .circle-wrap { width: 220px; height: 220px; flex-shrink: 0; margin-bottom: 0; }
+    #emom-timer-display { font-size: 80px !important; }
+
+    #tabata-workout-screen { flex-direction: row !important; align-items: center; justify-content: center; gap: 2rem; padding: 1rem 2rem; }
+    #tabata-workout-screen .circle-wrap { width: 220px; height: 220px; flex-shrink: 0; margin-bottom: 0; }
+    #tabata-timer-display { font-size: 80px !important; }
+
+    #amrap-workout-screen { flex-direction: row !important; align-items: center; justify-content: center; gap: 2rem; padding: 1rem 2rem; }
+    #amrap-workout-screen .circle-wrap { width: 220px; height: 220px; flex-shrink: 0; margin-bottom: 0; }
+    #amrap-timer-display { font-size: 52px !important; }
+  }
 </style>
 </head>
 <body>
@@ -749,6 +774,7 @@
       <div id="timer-display" class="circle-num">40</div>
     </div>
     <div id="next-up-label" style="font-size:13px;font-weight: 400;letter-spacing:0.12em;color:inherit;opacity:0.45;margin-bottom:0.15rem;text-transform:uppercase;font-family:'Barlow',sans-serif;display:none;">Next up</div>
+    <div class="workout-info-col">
     <div id="exercise-name-display">Exercise 1</div>
     <div id="round-info">Round 1 of 3</div>
     <div id="total-time-remaining">--:--</div>
@@ -756,6 +782,7 @@
       <button id="pause-btn" onclick="togglePause()">Pause</button>
       <button onclick="skipInterval()">Skip</button>
       <button onclick="stopWorkout()">Stop</button>
+    </div>
     </div>
   </div>
 
@@ -809,13 +836,13 @@
       <div id="amrap-timer-display" class="circle-num" style="font-size:88px;">10:00</div>
     </div>
     <div id="amrap-rounds-display">Rounds: 0</div>
-    <div id="amrap-round-btns">
-      <button onclick="amrapRound(1)">+ Round</button>
-      <button onclick="amrapRound(-1)">- Round</button>
-    </div>
     <div class="workout-btns">
       <button id="amrap-pause-btn" onclick="toggleAmrapPause()">Pause</button>
       <button onclick="stopAmrap()">Stop</button>
+    </div>
+    <div style="display:flex;gap:12px;width:100%;margin-top:1rem;padding:0 0.5rem;">
+      <button onclick="amrapRound(1)" style="flex:1;padding:1.5rem;font-size:28px;font-weight:400;font-family:'Anton',sans-serif;border-radius:14px;border:2px solid rgba(255,255,255,0.4);background:transparent;color:#fff;cursor:pointer;letter-spacing:0.04em;">+ Round</button>
+      <button onclick="amrapRound(-1)" style="flex:1;padding:1.5rem;font-size:28px;font-weight:400;font-family:'Anton',sans-serif;border-radius:14px;border:2px solid rgba(255,255,255,0.4);background:transparent;color:#fff;cursor:pointer;letter-spacing:0.04em;">- Round</button>
     </div>
   </div>
 
@@ -1145,6 +1172,23 @@ function initAudio(){
   const buf=audioCtx.createBuffer(1,1,22050);
   const src=audioCtx.createBufferSource();
   src.buffer=buf;src.connect(audioCtx.destination);src.start(0);
+  startSilentLoop();
+}
+
+function startSilentLoop(){
+  try {
+    if(!audioCtx)return;
+    const bufSize=audioCtx.sampleRate*2;
+    const silentBuf=audioCtx.createBuffer(1,bufSize,audioCtx.sampleRate);
+    const silentSrc=audioCtx.createBufferSource();
+    silentSrc.buffer=silentBuf;
+    silentSrc.loop=true;
+    const gain=audioCtx.createGain();
+    gain.gain.value=0.001;
+    silentSrc.connect(gain);
+    gain.connect(audioCtx.destination);
+    silentSrc.start(0);
+  } catch(e){}
 }
 
 function ensureAudio(){
