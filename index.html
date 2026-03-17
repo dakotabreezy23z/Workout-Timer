@@ -1572,7 +1572,7 @@ function beep(freq, dur, delay) {
     o.frequency.value = freq; o.type = 'sine';
     const t = audioCtx.currentTime + (delay || 0);
     g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(2.8, t + 0.01);
+    g.gain.linearRampToValueAtTime(4.2, t + 0.01);
     g.gain.exponentialRampToValueAtTime(0.001, t + dur);
     o.start(t); o.stop(t + dur + 0.05);
   } catch(e) {}
@@ -1595,13 +1595,14 @@ function sliderTick(){
     src.connect(hp);hp.connect(g);g.connect(audioCtx.destination);
     const t=audioCtx.currentTime;
     g.gain.setValueAtTime(0,t);
-    g.gain.linearRampToValueAtTime(0.012,t+0.001);
+    g.gain.linearRampToValueAtTime(0.007,t+0.001);
     g.gain.exponentialRampToValueAtTime(0.001,t+0.006);
     src.start(t);src.stop(t+0.007);
   }catch(e){}
 }
 function scheduleBeeps(){
-  beep(880,0.15,0);beep(880,0.15,1.0);beep(880,0.15,2.0);beep(1320,0.25,3.0);
+  const fire=()=>{beep(880,0.15,0);beep(880,0.15,1.0);beep(880,0.15,2.0);beep(1320,0.25,3.0);};
+  if(audioCtx&&audioCtx.state==='suspended'){audioCtx.resume().then(fire);}else{fire();}
   if(appSettings.vibration&&navigator.vibrate){
     navigator.vibrate([80,800,80,800,150]);
   }
@@ -1620,7 +1621,7 @@ function startCountdown(mode){pendingMode=mode;initAudio();try{if(noSleep)noSlee
   document.getElementById('countdown-next-name').textContent=firstEx;
   document.getElementById('countdown-next-label').style.display=firstEx?'block':'none';
   document.getElementById('countdown-next-name').style.display=firstEx?'block':'none';
-  showScreen('countdown-screen');countdownTicker=setInterval(()=>{count--;if(count<=0){clearInterval(countdownTicker);launchMode();}else{document.getElementById('countdown-number').textContent=count;setArcEl('countdown-arc',count,appSettings.countdownDuration);if(count<=3){ if(count===1)beep(1100,0.15,0);else beep(760,0.1,0); }}},1000);}
+  showScreen('countdown-screen');countdownTicker=setInterval(()=>{count--;if(count<=0){clearInterval(countdownTicker);launchMode();}else{document.getElementById('countdown-number').textContent=count;setArcEl('countdown-arc',count,appSettings.countdownDuration);if(count===3)scheduleBeeps();}},1000);}
 
 function skipCountdown(){clearInterval(countdownTicker);playStartBeep();launchMode();}
 function launchMode(){if(pendingMode==='interval')startWorkout();else if(pendingMode==='emom')startEmomWorkout();else if(pendingMode==='tabata')startTabataWorkout();else if(pendingMode==='amrap')startAmrapWorkout();}
@@ -1672,7 +1673,7 @@ function updateDisplay(){
   setArcEl('circle-arc',timeLeft,phaseDuration);
   applyColors();
 }
-function tick(){if(paused)return;totalSecondsRemaining--;if(timeLeft<=0){advance();return;}if(timeLeft===4)scheduleBeeps();updateDisplay();timeLeft--;}
+function tick(){if(paused)return;totalSecondsRemaining--;if(timeLeft<=0){advance();return;}if(timeLeft===3)scheduleBeeps();updateDisplay();timeLeft--;}
 function advance(fromSkip){const isLastEx=currentExercise>=settings.exercises,isLastRound=currentRound>=settings.rounds;if(phase==='work'){if(isLastEx&&isLastRound){finishWorkout();return;}if(isLastEx){phase='roundRest';phaseDuration=settings.roundRest;timeLeft=settings.roundRest;}else{phase='rest';phaseDuration=settings.rest;timeLeft=settings.rest;}}else if(phase==='rest'){currentExercise++;phase='work';phaseDuration=settings.work;timeLeft=settings.work;}else if(phase==='roundRest'){currentRound++;currentExercise=1;phase='work';phaseDuration=settings.work;timeLeft=settings.work;}updateDisplay();if(fromSkip)return;timeLeft--;}
 
 let keepaliveTicker = null;
@@ -1717,7 +1718,7 @@ function updateEmomDisplay(){
   document.getElementById('emom-total-remaining').textContent=fmtTime(Math.max(0,emomTotalSeconds-emomElapsed))+' remaining';
   setArcEl('emom-arc',emomSecondsLeft,60);
 }
-function emomTick(){if(emomPaused)return;emomElapsed++;if(emomElapsed>=emomTotalSeconds){finishEmom();return;}emomSecondsLeft--;if(emomSecondsLeft<=0){emomCurrentMinute++;emomSecondsLeft=60;}if(emomSecondsLeft===4)scheduleBeeps();updateEmomDisplay();}
+function emomTick(){if(emomPaused)return;emomElapsed++;if(emomElapsed>=emomTotalSeconds){finishEmom();return;}emomSecondsLeft--;if(emomSecondsLeft<=0){emomCurrentMinute++;emomSecondsLeft=60;}if(emomSecondsLeft===3)scheduleBeeps();updateEmomDisplay();}
 function toggleEmomPause(){emomPaused=!emomPaused;document.getElementById('emom-pause-btn').textContent=emomPaused?'Resume':'Pause';}
 function stopEmom(){clearInterval(emomTicker);stopAudioKeepalive();emomExerciseNames=[];showSplash();}
 function finishEmom(){clearInterval(emomTicker);stopAudioKeepalive();document.getElementById('done-duration').textContent=fmtTime(emomTotalSeconds);showScreen('done-screen');playFanfare();}
@@ -1752,7 +1753,7 @@ function updateTabataDisplay(){
   setArcEl('tabata-arc',tabataSecondsLeft,tabataPhase==='work'?tabataWork:tabataRest);
   applyTabataColors();
 }
-function tabataTick(){if(tabataPaused)return;tabataElapsedTime++;if(tabataSecondsLeft<=0){advanceTabata();return;}if(tabataSecondsLeft===4)scheduleBeeps();updateTabataDisplay();tabataSecondsLeft--;}
+function tabataTick(){if(tabataPaused)return;tabataElapsedTime++;if(tabataSecondsLeft<=0){advanceTabata();return;}if(tabataSecondsLeft===3)scheduleBeeps();updateTabataDisplay();tabataSecondsLeft--;}
 function advanceTabata(){
   if(tabataPhase==='work'){tabataPhase='rest';tabataSecondsLeft=tabataRest;}
   else{
@@ -1774,7 +1775,7 @@ function finishTabata(){clearInterval(tabataTicker);stopAudioKeepalive();documen
 // AMRAP
 function startAmrapWorkout(){amrapTotalSeconds=amrapMinutes*60;amrapSecondsLeft=amrapTotalSeconds;amrapRounds=0;amrapPaused=false;document.getElementById('amrap-pause-btn').textContent='Pause';document.getElementById('amrap-rounds-display').textContent='Rounds: 0';showScreen('amrap-workout-screen');updateAmrapDisplay();amrapTicker=setInterval(amrapTick,1000);startAudioKeepalive();}
 function updateAmrapDisplay(){const m=Math.floor(amrapSecondsLeft/60),s=amrapSecondsLeft%60;document.getElementById('amrap-timer-display').textContent=m+':'+String(s).padStart(2,'0');document.getElementById('amrap-rounds-display').textContent='Rounds: '+amrapRounds;setArcEl('amrap-arc',amrapSecondsLeft,amrapTotalSeconds);}
-function amrapTick(){if(amrapPaused)return;if(amrapSecondsLeft===4)scheduleBeeps();amrapSecondsLeft--;if(amrapSecondsLeft<=0){finishAmrap();return;}updateAmrapDisplay();}
+function amrapTick(){if(amrapPaused)return;if(amrapSecondsLeft===3)scheduleBeeps();amrapSecondsLeft--;if(amrapSecondsLeft<=0){finishAmrap();return;}updateAmrapDisplay();}
 function amrapRound(delta){amrapRounds=Math.max(0,amrapRounds+delta);document.getElementById('amrap-rounds-display').textContent='Rounds: '+amrapRounds;}
 function toggleAmrapPause(){amrapPaused=!amrapPaused;document.getElementById('amrap-pause-btn').textContent=amrapPaused?'Resume':'Pause';}
 function stopAmrap(){clearInterval(amrapTicker);stopAudioKeepalive();showSplash();}
