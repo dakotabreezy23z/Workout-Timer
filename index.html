@@ -35,14 +35,14 @@
 
 
   .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.5rem 0.5rem; position: relative; }
-  .top-bar h2 { font-size: clamp(18px, 7vw, 48px); font-weight: 400; color: #fff; letter-spacing: 0.10em; text-transform: uppercase; position: absolute; left: 50%; transform: translateX(-50%); white-space: nowrap; overflow: hidden; max-width: 65vw; text-align: center; }
+  .top-bar h2 { font-size: clamp(28px, 10vw, 72px); font-weight: 400; color: #fff; letter-spacing: 0.10em; text-transform: uppercase; position: absolute; left: 50%; transform: translateX(-50%); white-space: nowrap; overflow: hidden; max-width: 65vw; text-align: center; }
   .icon-btn { background: none; border: none; cursor: pointer; padding: 6px; display: flex; align-items: center; justify-content: center; }
   .icon-btn svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; }
 
   /* SLIDERS */
   .setting-row { margin-bottom: 1.3rem; }
-  .setting-row label { display: block; font-size: 27px; font-weight: 400; color: rgba(255,255,255,0.55); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.3rem; text-align: center; font-family: 'Barlow', sans-serif; }
-  .slider-val { font-size: 32px; font-weight: 400; color: #fff; margin-bottom: 0.5rem; text-align: center; letter-spacing: 0.02em; }
+  .setting-row label { display: block; font-size: 17px; font-weight: 400; color: rgba(255,255,255,0.55); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.3rem; text-align: center; font-family: 'Barlow', sans-serif; }
+  .slider-val { font-size: 22px; font-weight: 400; color: #fff; margin-bottom: 0.5rem; text-align: center; letter-spacing: 0.02em; }
   input[type=range] { -webkit-appearance: none; width: 92%; display: block; margin: 0 auto; height: 2px; border-radius: 1px; background: rgba(255,255,255,0.15); outline: none; cursor: pointer; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 36px; height: 20px; border-radius: 6px; background: #fff; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.5); }
 
@@ -122,6 +122,7 @@
 
   /* EMOM */
   #emom-screen { }
+  #emom-screen .slider-val, #save-emom-screen .slider-val { font-size: 30px; }
   .emom-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; padding-bottom: 5%; padding-top: 0; margin-top: 1rem; }
   .emom-total-preview { font-size: 16px; font-weight: 400; color: rgba(255,255,255,0.4); margin-top: 1rem; font-family: 'Barlow', sans-serif; }
   .emom-btns { padding: 0 1.5rem 2rem; display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
@@ -437,12 +438,12 @@
       </button>
     </div>
   </div>
-  <div id="home-screen" class="screen">
+  <div id="home-screen" class="screen" style="padding-top: 15%;">
     <div class="top-bar">
       <button class="icon-btn" onclick="showScreen('workout-types-screen')">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
-      <h2 style="font-size:clamp(16px,6vw,36px);">Interval</h2>
+      <h2>Interval</h2>
       <div style="width:34px"></div>
     </div>
     <div class="content" style="flex:1;display:flex;flex-direction:column;padding:0.5rem 1.5rem 0;justify-content:center;padding-bottom:5%;padding-top:8%;">
@@ -513,7 +514,7 @@
   </div>
 
   <!-- WORKOUT TYPES -->
-  <div id="workout-types-screen" class="screen">
+  <div id="workout-types-screen" class="screen" style="padding-top: 15%;">
     <div class="top-bar">
       <button class="icon-btn" onclick="showSplash()">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
@@ -555,7 +556,7 @@
 
   <!-- LIBRARY -->
   <!-- FAVORITES -->
-  <div id="favorites-screen" class="screen">
+  <div id="favorites-screen" class="screen" style="padding-top: 15%;">
     <div class="top-bar">
       <button class="icon-btn" onclick="showSplash()">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
@@ -571,7 +572,7 @@
     </div>
   </div>
 
-  <div id="saved-screen" class="screen">
+  <div id="saved-screen" class="screen" style="padding-top: 15%;">
     <div class="top-bar">
       <button class="icon-btn" onclick="showSplash()">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
@@ -591,7 +592,7 @@
   </div>
 
   <!-- TYPE PICKER -->
-  <div id="type-picker-screen" class="screen">
+  <div id="type-picker-screen" class="screen" style="padding-top: 15%;">
     <div class="top-bar">
       <button class="icon-btn" onclick="showSplash()">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
@@ -795,7 +796,7 @@
   </div>
 
   <!-- REVIEW -->
-  <div id="review-screen" class="screen">
+  <div id="review-screen" class="screen" style="padding-top: 15%;">
     <div class="top-bar">
       <button class="icon-btn" onclick="showScreen('saved-screen')">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
@@ -921,7 +922,7 @@
   </div>
 
   <!-- SETTINGS -->
-  <div id="settings-screen" class="screen">
+  <div id="settings-screen" class="screen" style="padding-top: 15%;">
     <div class="top-bar">
       <button class="icon-btn" onclick="showSplash()">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
