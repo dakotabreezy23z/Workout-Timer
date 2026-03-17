@@ -148,7 +148,7 @@
   .amrap-btns { padding: 0 1.5rem 2rem; display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
 
   /* COUNTDOWN */
-  #countdown-screen { background: #FF6B00; align-items: center; justify-content: center; text-align: center; padding: 2rem; flex-direction: column; }
+  #countdown-screen { background: #6B6B6B; align-items: center; justify-content: center; text-align: center; padding: 2rem; flex-direction: column; }
   #countdown-label { font-size: 23px; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.7); opacity: 0.7; margin-bottom: 1.5rem; }
   #countdown-sub { font-size: 23px; font-weight: 400; color: rgba(255,255,255,0.5); opacity: 0.6; margin-top: 1.5rem; }
   #countdown-skip { margin-top: 2rem; padding: 0.65rem 1.8rem; border-radius: 999px; border: 1.5px solid rgba(255,255,255,0.3); background: transparent; font-size: 20px; font-weight: 400; cursor: pointer; color: rgba(255,255,255,0.5); font-family: 'Anton', sans-serif; letter-spacing: 0.12em; text-transform: uppercase; }
@@ -197,7 +197,7 @@
   #amrap-round-btns button { padding: 0.5rem 1.2rem; border-radius: 999px; border: 1.5px solid rgba(255,255,255,0.35); background: transparent; font-size: 15px; font-weight: 400; cursor: pointer; color: #fff; font-family: 'Anton', sans-serif; letter-spacing: 0.10em; }
 
   /* DONE */
-  #done-screen { background: #FF6B00; align-items: center; justify-content: center; text-align: center; padding: 2rem; overflow: hidden; }
+  #done-screen { background: #6B6B6B; align-items: center; justify-content: center; text-align: center; padding: 2rem; overflow: hidden; }
 
   .rating-label { font-size: 14px; color: rgba(255,255,255,0.5); margin-bottom: 0.75rem; font-family: 'Barlow', sans-serif; letter-spacing: 0.12em; text-transform: uppercase; }
   #done-screen h2 { font-size: 26.4px; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 1rem; opacity: 0.7; }
@@ -1632,18 +1632,18 @@ function applyColors(){
   const isRoundRest=phase==='roundRest';
   const isWork=phase==='work';
   // work=dark  rest=light  roundRest=grey+white (matches countdown/done screens)
-  const bg=isWork?'#f0f0f0':isRoundRest?'#050505':'#050505';
-  const fg=isWork?'#0a0a0a':isRoundRest?'#fff':'#fff';
+  const bg=isWork?'#FF6B00':isRoundRest?'#050505':'#050505';
+  const fg=isWork?'#fff':isRoundRest?'#fff':'#fff';
   ws.style.background=bg;
   ws.style.color=fg;
   const arcEl=document.getElementById('circle-arc');
   const bgEl=arcEl.previousElementSibling;
-  const arcStroke=isWork?'rgba(0,0,0,0.55)':isRoundRest?'rgba(255,255,255,0.9)':'rgba(255,255,255,0.9)';
-  const bgStroke=isWork?'rgba(0,0,0,0.18)':isRoundRest?'rgba(255,255,255,0.15)':'rgba(255,255,255,0.15)';
+  const arcStroke=isWork?'rgba(255,255,255,0.92)':isRoundRest?'rgba(255,255,255,0.9)':'rgba(255,255,255,0.9)';
+  const bgStroke=isWork?'rgba(255,255,255,0.25)':isRoundRest?'rgba(255,255,255,0.15)':'rgba(255,255,255,0.15)';
   arcEl.style.stroke=arcStroke;
   bgEl.style.stroke=bgStroke;
   document.querySelectorAll('#workout-screen .workout-btns button').forEach(b=>{
-    b.style.borderColor=isWork?'rgba(0,0,0,0.3)':isRoundRest?'rgba(255,255,255,0.4)':'rgba(255,255,255,0.4)';
+    b.style.borderColor=isWork?'rgba(255,255,255,0.5)':isRoundRest?'rgba(255,255,255,0.4)':'rgba(255,255,255,0.4)';
     b.style.color=fg;
   });
 }
@@ -1732,7 +1732,7 @@ function startTabataWorkout(){
 function applyTabataColors(){
   const tws=document.getElementById('tabata-workout-screen');
   const isWork=tabataPhase==='work';
-  tws.style.background=isWork?'#f0f0f0':'#FF6B00';
+  tws.style.background=isWork?'#f0f0f0':'#6B6B6B';
   tws.style.color=isWork?'#0a0a0a':'#fff';
   const arcEl=document.getElementById('tabata-arc');
   const bgEl=arcEl.previousElementSibling;
