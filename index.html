@@ -29,6 +29,7 @@
   }
 
   .screen { flex: 1; display: none; flex-direction: column; min-height: 100dvh; }
+  .workout-info-col { display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%; }
   .screen.active { display: flex; }
 
 
@@ -214,7 +215,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding-top: 10dvh;
+    padding-top: 5dvh;
     padding-bottom: 2rem;
     transition: opacity 0.55s ease, transform 0.55s ease;
     overflow-y: auto;
@@ -228,8 +229,8 @@
     display: none;
   }
   .splash-logo {
-    width: 248px;
-    height: 248px;
+    width: 298px;
+    height: 298px;
     margin-bottom: 14px;
     animation: splashLogoIn 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards;
     opacity: 0;
@@ -373,7 +374,8 @@
     #tabata-workout-screen .circle-wrap svg { width: 260px; height: 260px; }
     #tabata-timer-display { font-size: 100px !important; }
     #tabata-phase-label { display: none !important; }
-    #tabata-workout-screen .workout-info-col { align-items: flex-start; text-align: left; }
+    #tabata-workout-screen .workout-info-col { align-items: center; text-align: center; }
+    #tabata-workout-screen .workout-btns { justify-content: center; }
 
     #amrap-workout-screen { flex-direction: row !important; align-items: center; justify-content: center; gap: 2rem; padding: 1rem 2rem; }
     #amrap-workout-screen .circle-wrap { width: 260px; height: 260px; flex-shrink: 0; margin-bottom: 0; }
@@ -1038,11 +1040,11 @@
       <div id="tabata-timer-display" class="circle-num">20</div>
     </div>
     <div class="workout-info-col">
-      <div id="tabata-exercise-name" style="font-size:clamp(16px,7vw,39px);font-weight:400;color:inherit;margin-bottom:0.2rem;letter-spacing:0.12em;text-transform:uppercase;white-space:nowrap;overflow:hidden;width:90%;text-align:center;">Round 1</div>
-      <div id="tabata-set-display" style="display:none;">45s work</div>
-      <div id="tabata-round-display" style="font-size:15px;font-weight:400;color:inherit;opacity:0.5;margin-bottom:0.2rem;font-family:'Barlow',sans-serif;text-align:center;width:100%;"></div>
+      <div id="tabata-exercise-name" style="font-size:clamp(16px,7vw,39px);font-weight:400;color:inherit;margin-bottom:0.2rem;letter-spacing:0.12em;text-transform:uppercase;white-space:nowrap;overflow:hidden;width:100%;text-align:center;">Round 1</div>
+      <div id="tabata-set-display" style="display:none;text-align:center;width:100%;">45s work</div>
+      <div id="tabata-round-display" style="font-size:15px;font-weight:400;color:inherit;opacity:0.5;margin-bottom:0.2rem;font-family:'Barlow',sans-serif;text-align:center;width:100%;display:block;"></div>
       <div id="tabata-total-remaining" style="font-size:15px;font-weight:400;color:inherit;opacity:0.35;margin-bottom:1.5rem;font-family:'Barlow',sans-serif;text-align:center;width:100%;">--:--</div>
-      <div class="workout-btns">
+      <div class="workout-btns" style="justify-content:center;">
         <button id="tabata-pause-btn" onclick="toggleTabataPause()">Pause</button>
         <button onclick="skipTabata()">Skip</button>
         <button onclick="stopTabata()">Stop</button>
@@ -1061,12 +1063,12 @@
       <div id="amrap-timer-display" class="circle-num" style="font-size:88px;">10:00</div>
     </div>
     <div class="workout-info-col">
-      <div id="amrap-rounds-display" style="font-size:22px;font-weight:400;color:#fff;margin-bottom:0.2rem;letter-spacing:0.04em;font-family:'Barlow',sans-serif;">Rounds: 0</div>
-      <div class="workout-btns" style="margin-bottom:0.75rem;">
+      <div id="amrap-rounds-display" style="font-size:22px;font-weight:400;color:#fff;margin-bottom:0.2rem;letter-spacing:0.04em;font-family:'Barlow',sans-serif;text-align:center;width:100%;">Rounds: 0</div>
+      <div class="workout-btns" style="margin-bottom:0.75rem;justify-content:center;">
         <button id="amrap-pause-btn" onclick="toggleAmrapPause()">Pause</button>
         <button onclick="stopAmrap()">Stop</button>
       </div>
-      <div style="display:flex;gap:12px;width:100%;">
+      <div style="display:flex;gap:12px;width:100%;justify-content:center;">
         <button onclick="amrapRound(-1)" style="flex:1;padding:1.2rem;font-size:26px;font-weight:400;font-family:'Anton',sans-serif;border-radius:14px;border:2px solid rgba(255,255,255,0.4);background:transparent;color:#fff;cursor:pointer;letter-spacing:0.04em;">- Round</button>
         <button onclick="amrapRound(1)" style="flex:1;padding:1.2rem;font-size:26px;font-weight:400;font-family:'Anton',sans-serif;border-radius:14px;border:2px solid rgba(255,255,255,0.4);background:transparent;color:#fff;cursor:pointer;letter-spacing:0.04em;">+ Round</button>
       </div>
@@ -1168,11 +1170,11 @@
       <div id="tabata-timer-display" class="circle-num">20</div>
     </div>
     <div class="workout-info-col">
-      <div id="tabata-exercise-name" style="font-size:clamp(16px,7vw,39px);font-weight:400;color:inherit;margin-bottom:0.2rem;letter-spacing:0.12em;text-transform:uppercase;white-space:nowrap;overflow:hidden;width:90%;text-align:center;">Round 1</div>
-      <div id="tabata-set-display" style="display:none;">45s work</div>
-      <div id="tabata-round-display" style="font-size:15px;font-weight:400;color:inherit;opacity:0.5;margin-bottom:0.2rem;font-family:'Barlow',sans-serif;text-align:center;width:100%;"></div>
+      <div id="tabata-exercise-name" style="font-size:clamp(16px,7vw,39px);font-weight:400;color:inherit;margin-bottom:0.2rem;letter-spacing:0.12em;text-transform:uppercase;white-space:nowrap;overflow:hidden;width:100%;text-align:center;">Round 1</div>
+      <div id="tabata-set-display" style="display:none;text-align:center;width:100%;">45s work</div>
+      <div id="tabata-round-display" style="font-size:15px;font-weight:400;color:inherit;opacity:0.5;margin-bottom:0.2rem;font-family:'Barlow',sans-serif;text-align:center;width:100%;display:block;"></div>
       <div id="tabata-total-remaining" style="font-size:15px;font-weight:400;color:inherit;opacity:0.35;margin-bottom:1.5rem;font-family:'Barlow',sans-serif;text-align:center;width:100%;">--:--</div>
-      <div class="workout-btns">
+      <div class="workout-btns" style="justify-content:center;">
         <button id="tabata-pause-btn" onclick="toggleTabataPause()">Pause</button>
         <button onclick="skipTabata()">Skip</button>
         <button onclick="stopTabata()">Stop</button>
@@ -1191,12 +1193,12 @@
       <div id="amrap-timer-display" class="circle-num" style="font-size:88px;">10:00</div>
     </div>
     <div class="workout-info-col">
-      <div id="amrap-rounds-display" style="font-size:22px;font-weight:400;color:#fff;margin-bottom:0.2rem;letter-spacing:0.04em;font-family:'Barlow',sans-serif;">Rounds: 0</div>
-      <div class="workout-btns" style="margin-bottom:0.75rem;">
+      <div id="amrap-rounds-display" style="font-size:22px;font-weight:400;color:#fff;margin-bottom:0.2rem;letter-spacing:0.04em;font-family:'Barlow',sans-serif;text-align:center;width:100%;">Rounds: 0</div>
+      <div class="workout-btns" style="margin-bottom:0.75rem;justify-content:center;">
         <button id="amrap-pause-btn" onclick="toggleAmrapPause()">Pause</button>
         <button onclick="stopAmrap()">Stop</button>
       </div>
-      <div style="display:flex;gap:12px;width:100%;">
+      <div style="display:flex;gap:12px;width:100%;justify-content:center;">
         <button onclick="amrapRound(-1)" style="flex:1;padding:1.2rem;font-size:26px;font-weight:400;font-family:'Anton',sans-serif;border-radius:14px;border:2px solid rgba(255,255,255,0.4);background:transparent;color:#fff;cursor:pointer;letter-spacing:0.04em;">- Round</button>
         <button onclick="amrapRound(1)" style="flex:1;padding:1.2rem;font-size:26px;font-weight:400;font-family:'Anton',sans-serif;border-radius:14px;border:2px solid rgba(255,255,255,0.4);background:transparent;color:#fff;cursor:pointer;letter-spacing:0.04em;">+ Round</button>
       </div>
@@ -1570,7 +1572,7 @@ function beep(freq, dur, delay) {
     o.frequency.value = freq; o.type = 'sine';
     const t = audioCtx.currentTime + (delay || 0);
     g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(0.7, t + 0.01);
+    g.gain.linearRampToValueAtTime(1.4, t + 0.01);
     g.gain.exponentialRampToValueAtTime(0.001, t + dur);
     o.start(t); o.stop(t + dur + 0.05);
   } catch(e) {}
@@ -1581,20 +1583,20 @@ function sliderTick(){
   if(!appSettings.sound||!audioCtx)return;
   try{
     const sr=audioCtx.sampleRate;
-    const len=Math.floor(sr*0.012);
+    const len=Math.floor(sr*0.006);
     const buf=audioCtx.createBuffer(1,len,sr);
     const data=buf.getChannelData(0);
     for(let i=0;i<len;i++) data[i]=(Math.random()*2-1);
     const src=audioCtx.createBufferSource();
     const g=audioCtx.createGain();
     const hp=audioCtx.createBiquadFilter();
-    hp.type='highpass';hp.frequency.value=2200;
+    hp.type='highpass';hp.frequency.value=5000;
     src.buffer=buf;
     src.connect(hp);hp.connect(g);g.connect(audioCtx.destination);
     const t=audioCtx.currentTime;
-    g.gain.setValueAtTime(0.05,t);
-    g.gain.exponentialRampToValueAtTime(0.001,t+0.012);
-    src.start(t);src.stop(t+0.014);
+    g.gain.setValueAtTime(0.012,t);
+    g.gain.exponentialRampToValueAtTime(0.001,t+0.006);
+    src.start(t);src.stop(t+0.007);
   }catch(e){}
 }
 function scheduleBeeps(){
