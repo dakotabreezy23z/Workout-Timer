@@ -254,7 +254,7 @@
   }
   .splash-title {
     font-family: 'Anton', sans-serif;
-    font-size: 54px;
+    font-size: 48px;
     font-weight: 400;
     color: #fff;
     letter-spacing: 0.28em;
@@ -1572,7 +1572,7 @@ function beep(freq, dur, delay) {
     o.frequency.value = freq; o.type = 'sine';
     const t = audioCtx.currentTime + (delay || 0);
     g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(4.2, t + 0.01);
+    g.gain.linearRampToValueAtTime(3.15, t + 0.01);
     g.gain.exponentialRampToValueAtTime(0.001, t + dur);
     o.start(t); o.stop(t + dur + 0.05);
   } catch(e) {}
