@@ -1572,7 +1572,7 @@ function beep(freq, dur, delay) {
     o.frequency.value = freq; o.type = 'sine';
     const t = audioCtx.currentTime + (delay || 0);
     g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(1.4, t + 0.01);
+    g.gain.linearRampToValueAtTime(2.8, t + 0.01);
     g.gain.exponentialRampToValueAtTime(0.001, t + dur);
     o.start(t); o.stop(t + dur + 0.05);
   } catch(e) {}
