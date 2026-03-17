@@ -231,7 +231,7 @@
   .splash-logo {
     width: 298px;
     height: 298px;
-    margin-bottom: 14px;
+    margin-bottom: 4px;
     animation: splashLogoIn 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards;
     opacity: 0;
     transform: scale(0.7) translateY(20px);
@@ -1586,24 +1586,14 @@ function sliderTick(){
   if(now-_tickLastTime<40)return;
   _tickLastTime=now;
   try{
-    const sr=audioCtx.sampleRate;
-    const len=Math.floor(sr*0.006);
-    const buf=audioCtx.createBuffer(1,len,sr);
-    const data=buf.getChannelData(0);
-    for(let i=0;i<len;i++) data[i]=(Math.random()*2-1);
-    const src=audioCtx.createBufferSource();
-    const g=audioCtx.createGain();
-    const hp=audioCtx.createBiquadFilter();
-    const comp=audioCtx.createDynamicsCompressor();
-    comp.threshold.value=-6;comp.ratio.value=20;comp.attack.value=0;comp.release.value=0.05;
-    hp.type='highpass';hp.frequency.value=5000;
-    src.buffer=buf;
-    src.connect(hp);hp.connect(g);g.connect(comp);comp.connect(audioCtx.destination);
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    o.connect(g);g.connect(audioCtx.destination);
+    o.type='sine';o.frequency.value=1200;
     const t=audioCtx.currentTime;
     g.gain.setValueAtTime(0,t);
-    g.gain.linearRampToValueAtTime(0.005,t+0.002);
-    g.gain.exponentialRampToValueAtTime(0.0001,t+0.006);
-    src.start(t);src.stop(t+0.007);
+    g.gain.linearRampToValueAtTime(0.08,t+0.002);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+0.04);
+    o.start(t);o.stop(t+0.045);
   }catch(e){}
 }
 function scheduleBeeps(){
