@@ -1579,8 +1579,12 @@ function beep(freq, dur, delay) {
 }
 
 
+let _tickLastTime=0;
 function sliderTick(){
   if(!appSettings.sound||!audioCtx)return;
+  const now=Date.now();
+  if(now-_tickLastTime<40)return;
+  _tickLastTime=now;
   try{
     const sr=audioCtx.sampleRate;
     const len=Math.floor(sr*0.006);
@@ -1590,13 +1594,15 @@ function sliderTick(){
     const src=audioCtx.createBufferSource();
     const g=audioCtx.createGain();
     const hp=audioCtx.createBiquadFilter();
+    const comp=audioCtx.createDynamicsCompressor();
+    comp.threshold.value=-6;comp.ratio.value=20;comp.attack.value=0;comp.release.value=0.05;
     hp.type='highpass';hp.frequency.value=5000;
     src.buffer=buf;
-    src.connect(hp);hp.connect(g);g.connect(audioCtx.destination);
+    src.connect(hp);hp.connect(g);g.connect(comp);comp.connect(audioCtx.destination);
     const t=audioCtx.currentTime;
     g.gain.setValueAtTime(0,t);
-    g.gain.linearRampToValueAtTime(0.007,t+0.001);
-    g.gain.exponentialRampToValueAtTime(0.001,t+0.006);
+    g.gain.linearRampToValueAtTime(0.005,t+0.002);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+0.006);
     src.start(t);src.stop(t+0.007);
   }catch(e){}
 }
