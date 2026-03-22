@@ -241,10 +241,11 @@
     justify-content: center;
     position: relative;
   }
-  .splash-logo img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+ .splash-logo img {
+  width: 85%;
+  height: 85%;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 20px rgba(0,0,0,0.25));
     display: block;
     mix-blend-mode: lighten;
     -webkit-mask-image: radial-gradient(ellipse 72% 72% at 50% 54%, black 58%, transparent 82%);
@@ -396,7 +397,7 @@
   <!-- SPLASH / HOME SCREEN -->
   <div id="splash-screen">
     <div class="splash-logo">
-      <img id="splash-icon" src="" alt="Round Zero">
+      <img id="splash-icon" src="logo.png" alt="Round Zero">
     </div>
     <div class="splash-title">ROUND ZERO</div>
     <div class="splash-sub">Kettlebell Timer</div>
