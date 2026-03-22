@@ -197,7 +197,7 @@
   #amrap-round-btns button { padding: 0.5rem 1.2rem; border-radius: 999px; border: 1.5px solid rgba(255,255,255,0.35); background: transparent; font-size: 15px; font-weight: 400; cursor: pointer; color: #fff; font-family: 'Anton', sans-serif; letter-spacing: 0.10em; }
 
   /* DONE */
-  #done-screen { background: #6B6B6B; align-items: center; justify-content: center; text-align: center; padding: 2rem; overflow: hidden; }
+  #done-screen { background: #ce7e00; align-items: center; justify-content: center; text-align: center; padding: 2rem; overflow: hidden; }
 
   .rating-label { font-size: 14px; color: rgba(255,255,255,0.5); margin-bottom: 0.75rem; font-family: 'Barlow', sans-serif; letter-spacing: 0.12em; text-transform: uppercase; }
   #done-screen h2 { font-size: 26.4px; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 1rem; opacity: 0.7; }
@@ -220,38 +220,6 @@
     padding-bottom: 2rem;
     transition: opacity 0.55s ease, transform 0.55s ease;
     overflow-y: auto;
-  }
-  #splash-screen.fade-out {
-    opacity: 0;
-    transform: scale(1.03);
-    pointer-events: none;
-  }
-  #splash-screen.hidden {
-    display: none;
-  }
-  .splash-logo {
-    width: 298px;
-    height: 298px;
-    margin-bottom: 4px;
-    animation: splashLogoIn 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards;
-    opacity: 0;
-    transform: scale(0.7) translateY(20px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-  }
-  .splash-logo img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-    mix-blend-mode: lighten;
-    -webkit-mask-image: radial-gradient(ellipse 72% 72% at 50% 54%, black 58%, transparent 82%);
-    mask-image: radial-gradient(ellipse 72% 72% at 50% 54%, black 58%, transparent 82%);
-  }
-  @keyframes splashLogoIn {
-    to { opacity: 1; transform: scale(1) translateY(0); }
   }
   .splash-title {
     font-family: 'Anton', sans-serif;
