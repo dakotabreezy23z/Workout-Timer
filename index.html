@@ -57,15 +57,23 @@
   .btn-danger:active { }
   .total-time-preview { text-align: center; font-size: 16px; font-weight: 400; color: rgba(255,255,255,0.4); margin-bottom: 8px; letter-spacing: 0.10em; font-family: 'Barlow', sans-serif; }
 
-  /* HOME */
-  #home-screen { padding-bottom: 2rem; position: relative; background: #050505; }
+  /* INTERVAL */
+  #home-screen { padding-bottom: 2rem; position: relative; background: #003333; }
   #home-screen .content { flex: 1; display: flex; flex-direction: column; padding: 0.5rem 1.5rem 0; justify-content: center; padding-bottom: 10%; }
   .home-btns { padding: 0 1.5rem 0; display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
 
-    /* LIBRARY */
+  /* MENU */
+  #menu-screen { }
+  .menu-list { flex: 1; padding: 1rem 1.5rem; display: flex; flex-direction: column; gap: 10px; }
+  .menu-card { background: rgba(255,255,255,0.06); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 1.1rem 1.25rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer; font-family: 'Anton', sans-serif; width: 100%; }
+  .menu-card:active { }
+  .menu-card span { font-size: 22px; font-weight: 400; color: #fff; letter-spacing: 0.12em; text-transform: uppercase; }
+  .menu-card svg { stroke: rgba(255,255,255,0.3); fill: none; stroke-width: 2; stroke-linecap: round; width: 18px; height: 18px; }
+
+  /* LIBRARY */
   #library-screen { }
   .library-list { flex: 1; padding: 1rem 1.5rem; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; }
-  .create-card { background: #fff; border-radius: 14px; padding: 1.1rem 1.25rem; display: flex; align-items: center; gap: 12px; cursor: pointer; border: none; font-family: 'Anton', sans-serif; width: 100%; }
+  .create-card { background: #003333; border-radius: 14px; padding: 1.1rem 1.25rem; display: flex; align-items: center; gap: 12px; cursor: pointer; border: none; font-family: 'Anton', sans-serif; width: 100%; }
   .create-card:active { }
   .create-card span { font-size: 20px; font-weight: 400; color: #111; letter-spacing: 0.12em; text-transform: uppercase; }
   .create-card svg { width: 20px; height: 20px; stroke: #111; fill: none; stroke-width: 2.5; stroke-linecap: round; flex-shrink: 0; }
@@ -82,7 +90,7 @@
   #create-screen { }
   .create-content { flex: 1; display: flex; flex-direction: column; padding: 0.5rem 1.5rem 0; overflow-y: auto; }
   .workout-title-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 1.25rem; }
-  .workout-title-input { background: none; border: none; font-family: 'Anton', sans-serif; font-size: 26px; font-weight: 400; color: #fff; text-align: center; outline: none; width: 220px; border-bottom: 2px solid rgba(255,255,255,0.2); padding-bottom: 4px; letter-spacing: 0.10em; text-transform: uppercase; }
+  .workout-title-input { background: none; border: none; font-family: 'Anton', sans-serif; font-size: 26px; font-weight: 400; color: #003333; text-align: center; outline: none; width: 220px; border-bottom: 2px solid rgba(255,255,255,0.2); padding-bottom: 4px; letter-spacing: 0.10em; text-transform: uppercase; }
   .workout-title-input:focus { border-bottom-color: rgba(255,255,255,0.6); }
   .pencil-btn { background: none; border: none; cursor: pointer; padding: 4px; }
   .pencil-btn svg { width: 18px; height: 18px; stroke: rgba(255,255,255,0.45); fill: none; stroke-width: 2; stroke-linecap: round; }
@@ -97,7 +105,7 @@
   .name-row span { font-size: 14px; font-weight: 400; color: rgba(255,255,255,0.35); min-width: 24px; letter-spacing: 0.10em; }
   .name-row input { flex: 1; background: none; border: none; font-family: 'Anton', sans-serif; font-size: 18px; font-weight: 400; color: #fff; outline: none; letter-spacing: 0.10em; text-transform: uppercase; }
   .name-row input::placeholder { color: rgba(255,255,255,0.2); text-transform: none; }
-  .names-done-btn { margin: 0 1.5rem 2rem; padding: 1rem; border-radius: 14px; border: none; background: #fff; color: #111; font-size: 18px; font-weight: 400; cursor: pointer; font-family: 'Anton', sans-serif; letter-spacing: 0.12em; text-transform: uppercase; }
+  .names-done-btn { margin: 0 1.5rem 2rem; padding: 1rem; border-radius: 14px; border: none; background: #003333; color: #111; font-size: 18px; font-weight: 400; cursor: pointer; font-family: 'Anton', sans-serif; letter-spacing: 0.12em; text-transform: uppercase; }
 
   /* REVIEW */
   #review-screen { }
