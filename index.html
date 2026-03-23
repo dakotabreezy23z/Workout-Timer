@@ -1462,7 +1462,19 @@ function renderLibrary(){
   renderFavorites();
   const container=document.getElementById('saved-workouts-list');
   container.innerHTML='';container.style.display='flex';container.style.flexDirection='column';container.style.gap='8px';
-  if(savedWorkouts.length===0){container.innerHTML='<div class="empty-state"><span>No saved workouts yet</span></div>';return;}
+ // Add default workouts only if the library is truly empty (first time user opens app)
+if (savedWorkouts.length === 0) {
+  savedWorkouts = [
+    {"name":"Push 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Floor Press","KB Push Press","KB Single Arm Press","KB Tricep Extension","KB Chest Fly"]},
+    // ... paste ALL your other default workouts here (copy from wherever they were originally) ...
+    {"name":"Full Body 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Swing","KB Clean","KB Push Press","KB Lunge","KB Windmill"]}
+  ];
+  localStorage.setItem('workouts', JSON.stringify(savedWorkouts));
+}
+ // if(savedWorkouts.length===0){
+//   container.innerHTML='<div class="empty-state"><span>No saved workouts yet</span></div>';
+//   return;
+// }
   const indexed=savedWorkouts.map((w,i)=>({w,i}));
   indexed.sort((a,b)=>a.w.name.localeCompare(b.w.name));
   indexed.forEach(({w,i})=>{
