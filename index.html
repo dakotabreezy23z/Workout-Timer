@@ -1469,9 +1469,31 @@ function renderLibrary(){
  // Add default workouts only if the library is truly empty (first time user opens app)
 if (savedWorkouts.length === 0) {
   savedWorkouts = [
-    {"name":"Push 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Floor Press","KB Push Press","KB Single Arm Press","KB Tricep Extension","KB Chest Fly"]},
-    // ... paste ALL your other default workouts here (copy from wherever they were originally) ...
-    {"name":"Full Body 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Swing","KB Clean","KB Push Press","KB Lunge","KB Windmill"]}
+    savedWorkouts = [
+  {"name":"Push 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Floor Press","KB Push Press","KB Single Arm Press","KB Tricep Extension","KB Chest Fly"]},
+  {"name":"Push 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Push Press","KB Arnold Press","KB Close Grip Press","KB Chest Fly","KB Tricep Extension","KB Floor Press"]},
+  {"name":"Push 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Arnold Press","KB Push Press","KB Skull Crusher","KB Tricep Kickback","KB Single Arm Press"]},
+  {"name":"Pull 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Single Arm Row","KB Renegade Row","KB High Pull","KB Bent Over Row","KB Snatch"]},
+  {"name":"Pull 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Bent Over Row","KB Upright Row","KB Single Arm Row","KB Snatch","KB High Pull","KB Clean"]},
+  {"name":"Pull 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Clean","KB High Pull","KB Renegade Row","KB Single Arm Row","KB Bent Over Row"]},
+  {"name":"Legs 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Goblet Squat","KB Romanian Deadlift","KB Swing","KB Lunge","KB Step Up"]},
+  {"name":"Legs 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Sumo Squat","KB Single Leg Deadlift","KB Lunge","KB Step Up","KB Swing","KB Jump Squat"]},
+  {"name":"Legs 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Swing","KB Goblet Squat","KB Jump Squat","KB Romanian Deadlift","KB Sumo Squat"]},
+  {"name":"Arms 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Curl","KB Hammer Curl","KB Tricep Extension","KB Overhead Tricep","KB Skull Crusher"]},
+  {"name":"Arms 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Single Arm Curl","KB Skull Crusher","KB Concentration Curl","KB Hammer Curl","KB Tricep Kickback","KB Reverse Curl"]},
+  {"name":"Arms 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Hammer Curl","KB Tricep Kickback","KB Reverse Curl","KB Close Grip Press","KB Overhead Tricep"]},
+  {"name":"Shoulders 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Overhead Press","KB Lateral Raise","KB Front Raise","KB Arnold Press","KB Rear Delt Fly"]},
+  {"name":"Shoulders 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Arnold Press","KB Upright Row","KB Face Pull","KB Shrug","KB Lateral Raise","KB Push Press"]},
+  {"name":"Shoulders 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Push Press","KB Lateral Raise","KB Rear Delt Fly","KB Front Raise","KB Shrug"]},
+  {"name":"Back 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Deadlift","KB Bent Over Row","KB Good Morning","KB Single Arm Row","KB Reverse Fly"]},
+  {"name":"Back 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Single Arm Row","KB Romanian Deadlift","KB Reverse Fly","KB Shrug","KB Renegade Row","KB Good Morning"]},
+  {"name":"Back 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Swing","KB Deadlift","KB Renegade Row","KB Good Morning","KB Bent Over Row"]},
+  {"name":"Core 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Russian Twist","KB Windmill","KB Sit Up & Press","KB Halo","KB Side Bend"]},
+  {"name":"Core 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Halo","KB Side Bend","KB Dead Bug","KB Turkish Get Up","KB Russian Twist","KB Plank Pull Through"]},
+  {"name":"Core 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Russian Twist","KB Plank Pull Through","KB Windmill","KB Side Bend","KB Sit Up & Press"]},
+  {"name":"Full Body 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Swing","KB Goblet Squat","KB Push Press","KB Bent Over Row","KB Turkish Get Up"]},
+  {"name":"Full Body 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Deadlift","KB Push Press","KB Single Arm Row","KB Goblet Squat","KB High Pull","KB Russian Twist"]},
+  {"name":"Full Body 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Swing","KB Clean","KB Push Press","KB Lunge","KB Windmill"]}
   ];
   localStorage.setItem('workouts', JSON.stringify(savedWorkouts));
 }
