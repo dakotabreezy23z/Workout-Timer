@@ -1457,7 +1457,11 @@ function renderFavorites() {
     list.appendChild(btn);
   });
 }
-
+console.log("renderLibrary() called");
+console.log("savedWorkouts length:", savedWorkouts ? savedWorkouts.length : "undefined");
+if (savedWorkouts && savedWorkouts.length > 0) {
+  console.log("First workout name:", savedWorkouts[0].name);
+}
 function renderLibrary(){
   renderFavorites();
   const container=document.getElementById('saved-workouts-list');
