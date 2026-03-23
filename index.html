@@ -1288,6 +1288,9 @@ function showScreen(id){
   next.style.display='';
   // rAF ensures the display:'' is painted before adding active
   requestAnimationFrame(()=>next.classList.add('active'));
+ // ← NEW: re-render when user opens Library or Favorites
+  if (id === 'saved-screen') renderLibrary();
+  if (id === 'favorites-screen') renderFavorites();
 }
 function fmtTime(s){const m=Math.floor(s/60),sc=s%60;return m+':'+String(sc).padStart(2,'0');}
 function calcTotalSeconds(s){const roundTime=s.exercises*s.work+(s.exercises-1)*s.rest;return (s.rounds-1)*(roundTime+s.roundRest)+roundTime;}
@@ -1414,7 +1417,33 @@ function saveTypedWorkout(type) {
 
 
 function randomWorkout() {
-  if (savedWorkouts.length === 0) { alert('No saved workouts yet!'); return; }
+  if (savedWorkouts.length === 0) 
+   savedWorkouts = [
+  {"name":"Push 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Floor Press","KB Push Press","KB Single Arm Press","KB Tricep Extension","KB Chest Fly"]},
+  {"name":"Push 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Push Press","KB Arnold Press","KB Close Grip Press","KB Chest Fly","KB Tricep Extension","KB Floor Press"]},
+  {"name":"Push 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Arnold Press","KB Push Press","KB Skull Crusher","KB Tricep Kickback","KB Single Arm Press"]},
+  {"name":"Pull 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Single Arm Row","KB Renegade Row","KB High Pull","KB Bent Over Row","KB Snatch"]},
+  {"name":"Pull 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Bent Over Row","KB Upright Row","KB Single Arm Row","KB Snatch","KB High Pull","KB Clean"]},
+  {"name":"Pull 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Clean","KB High Pull","KB Renegade Row","KB Single Arm Row","KB Bent Over Row"]},
+  {"name":"Legs 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Goblet Squat","KB Romanian Deadlift","KB Swing","KB Lunge","KB Step Up"]},
+  {"name":"Legs 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Sumo Squat","KB Single Leg Deadlift","KB Lunge","KB Step Up","KB Swing","KB Jump Squat"]},
+  {"name":"Legs 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Swing","KB Goblet Squat","KB Jump Squat","KB Romanian Deadlift","KB Sumo Squat"]},
+  {"name":"Arms 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Curl","KB Hammer Curl","KB Tricep Extension","KB Overhead Tricep","KB Skull Crusher"]},
+  {"name":"Arms 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Single Arm Curl","KB Skull Crusher","KB Concentration Curl","KB Hammer Curl","KB Tricep Kickback","KB Reverse Curl"]},
+  {"name":"Arms 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Hammer Curl","KB Tricep Kickback","KB Reverse Curl","KB Close Grip Press","KB Overhead Tricep"]},
+  {"name":"Shoulders 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Overhead Press","KB Lateral Raise","KB Front Raise","KB Arnold Press","KB Rear Delt Fly"]},
+  {"name":"Shoulders 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Arnold Press","KB Upright Row","KB Face Pull","KB Shrug","KB Lateral Raise","KB Push Press"]},
+  {"name":"Shoulders 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Push Press","KB Lateral Raise","KB Rear Delt Fly","KB Front Raise","KB Shrug"]},
+  {"name":"Back 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Deadlift","KB Bent Over Row","KB Good Morning","KB Single Arm Row","KB Reverse Fly"]},
+  {"name":"Back 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Single Arm Row","KB Romanian Deadlift","KB Reverse Fly","KB Shrug","KB Renegade Row","KB Good Morning"]},
+  {"name":"Back 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Swing","KB Deadlift","KB Renegade Row","KB Good Morning","KB Bent Over Row"]},
+  {"name":"Core 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Russian Twist","KB Windmill","KB Sit Up & Press","KB Halo","KB Side Bend"]},
+  {"name":"Core 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Halo","KB Side Bend","KB Dead Bug","KB Turkish Get Up","KB Russian Twist","KB Plank Pull Through"]},
+  {"name":"Core 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Russian Twist","KB Plank Pull Through","KB Windmill","KB Side Bend","KB Sit Up & Press"]},
+  {"name":"Full Body 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Swing","KB Goblet Squat","KB Push Press","KB Bent Over Row","KB Turkish Get Up"]},
+  {"name":"Full Body 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Deadlift","KB Push Press","KB Single Arm Row","KB Goblet Squat","KB High Pull","KB Russian Twist"]},
+  {"name":"Full Body 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Swing","KB Clean","KB Push Press","KB Lunge","KB Windmill"]}
+];
   const i = Math.floor(Math.random() * savedWorkouts.length);
   openReview(i);
 }
@@ -1457,45 +1486,40 @@ function renderFavorites() {
     list.appendChild(btn);
   });
 }
-console.log("renderLibrary() called");
-console.log("savedWorkouts length:", savedWorkouts ? savedWorkouts.length : "undefined");
-if (savedWorkouts && savedWorkouts.length > 0) {
-  console.log("First workout name:", savedWorkouts[0].name);
-}
 function renderLibrary(){
   renderFavorites();
   const container=document.getElementById('saved-workouts-list');
-  container.innerHTML='';container.style.display='flex';container.style.flexDirection='column';container.style.gap='8px';
- // Add default workouts only if the library is truly empty (first time user opens app)
-if (savedWorkouts.length === 0) {
-  savedWorkouts = [
-    savedWorkouts = [
-  {"name":"Push 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Floor Press","KB Push Press","KB Single Arm Press","KB Tricep Extension","KB Chest Fly"]},
-  {"name":"Push 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Push Press","KB Arnold Press","KB Close Grip Press","KB Chest Fly","KB Tricep Extension","KB Floor Press"]},
-  {"name":"Push 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Arnold Press","KB Push Press","KB Skull Crusher","KB Tricep Kickback","KB Single Arm Press"]},
-  {"name":"Pull 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Single Arm Row","KB Renegade Row","KB High Pull","KB Bent Over Row","KB Snatch"]},
-  {"name":"Pull 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Bent Over Row","KB Upright Row","KB Single Arm Row","KB Snatch","KB High Pull","KB Clean"]},
-  {"name":"Pull 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Clean","KB High Pull","KB Renegade Row","KB Single Arm Row","KB Bent Over Row"]},
-  {"name":"Legs 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Goblet Squat","KB Romanian Deadlift","KB Swing","KB Lunge","KB Step Up"]},
-  {"name":"Legs 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Sumo Squat","KB Single Leg Deadlift","KB Lunge","KB Step Up","KB Swing","KB Jump Squat"]},
-  {"name":"Legs 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Swing","KB Goblet Squat","KB Jump Squat","KB Romanian Deadlift","KB Sumo Squat"]},
-  {"name":"Arms 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Curl","KB Hammer Curl","KB Tricep Extension","KB Overhead Tricep","KB Skull Crusher"]},
-  {"name":"Arms 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Single Arm Curl","KB Skull Crusher","KB Concentration Curl","KB Hammer Curl","KB Tricep Kickback","KB Reverse Curl"]},
-  {"name":"Arms 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Hammer Curl","KB Tricep Kickback","KB Reverse Curl","KB Close Grip Press","KB Overhead Tricep"]},
-  {"name":"Shoulders 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Overhead Press","KB Lateral Raise","KB Front Raise","KB Arnold Press","KB Rear Delt Fly"]},
-  {"name":"Shoulders 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Arnold Press","KB Upright Row","KB Face Pull","KB Shrug","KB Lateral Raise","KB Push Press"]},
-  {"name":"Shoulders 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Push Press","KB Lateral Raise","KB Rear Delt Fly","KB Front Raise","KB Shrug"]},
-  {"name":"Back 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Deadlift","KB Bent Over Row","KB Good Morning","KB Single Arm Row","KB Reverse Fly"]},
-  {"name":"Back 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Single Arm Row","KB Romanian Deadlift","KB Reverse Fly","KB Shrug","KB Renegade Row","KB Good Morning"]},
-  {"name":"Back 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Swing","KB Deadlift","KB Renegade Row","KB Good Morning","KB Bent Over Row"]},
-  {"name":"Core 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Russian Twist","KB Windmill","KB Sit Up & Press","KB Halo","KB Side Bend"]},
-  {"name":"Core 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Halo","KB Side Bend","KB Dead Bug","KB Turkish Get Up","KB Russian Twist","KB Plank Pull Through"]},
-  {"name":"Core 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Russian Twist","KB Plank Pull Through","KB Windmill","KB Side Bend","KB Sit Up & Press"]},
-  {"name":"Full Body 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Swing","KB Goblet Squat","KB Push Press","KB Bent Over Row","KB Turkish Get Up"]},
-  {"name":"Full Body 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Deadlift","KB Push Press","KB Single Arm Row","KB Goblet Squat","KB High Pull","KB Russian Twist"]},
-  {"name":"Full Body 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Swing","KB Clean","KB Push Press","KB Lunge","KB Windmill"]}
-  ];
-  localStorage.setItem('workouts', JSON.stringify(savedWorkouts));
+  container.innerHTML='';
+  container.style.display='flex';
+  container.style.flexDirection='column';
+  container.style.gap='8px';
+
+  const indexed=savedWorkouts.map((w,i)=>({w,i}));
+  indexed.sort((a,b)=>a.w.name.localeCompare(b.w.name));
+  indexed.forEach(({w,i})=>{
+    const btn=document.createElement('button');
+    btn.className='workout-card';
+    const meta = w.type==='emom' ? w.minutes+' min' : w.type==='tabata' ? w.rounds+' rounds · '+w.work+'s work' : w.type==='amrap' ? w.minutes+' min' : w.rounds+' rounds · '+w.exercises+' exercises · '+fmtTime(calcTotalSeconds(w));
+
+    const starFilled = w.favorite ? '★' : '☆';
+    const starColor = w.favorite ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.3)';
+    btn.innerHTML=`<div class="workout-card-info"><span class="workout-card-name">${w.name}</span><span class="workout-card-meta">${meta}</span></div><div style="display:flex;align-items:center;gap:6px;"><span data-idx="${i}" style="font-size:18px;color:${starColor};cursor:pointer;padding:12px;line-height:1;" onclick="toggleFavorite(event,${i})">${starFilled}</span><svg class="workout-card-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>`;
+    btn.onclick=(e)=>{ if(e.target.tagName!=='SPAN') openReview(i); };
+    // Long press to delete
+    let pressTimer;
+    btn.addEventListener('touchstart', () => {
+      pressTimer = setTimeout(() => {
+        if(confirm('Delete "' + w.name + '"?')) {
+          savedWorkouts.splice(i, 1);
+          localStorage.setItem('workouts', JSON.stringify(savedWorkouts));
+          renderLibrary();
+        }
+      }, 600);
+    }, {passive: true});
+    btn.addEventListener('touchend', () => clearTimeout(pressTimer));
+    btn.addEventListener('touchmove', () => clearTimeout(pressTimer));
+    container.appendChild(btn);
+  });
 }
  // if(savedWorkouts.length===0){
 //   container.innerHTML='<div class="empty-state"><span>No saved workouts yet</span></div>';
@@ -1871,10 +1895,9 @@ document.addEventListener('visibilitychange', () => {
 });
 window.addEventListener('pageshow', ()=>{ if(audioCtx&&audioCtx.state!=='running') audioCtx.resume().catch(()=>{}); });
 // Load default workouts on first launch
-if(savedWorkouts.length===0){
-  savedWorkouts=[{"name":"Push 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Floor Press","KB Push Press","KB Single Arm Press","KB Tricep Extension","KB Chest Fly"]},{"name":"Push 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Push Press","KB Arnold Press","KB Close Grip Press","KB Chest Fly","KB Tricep Extension","KB Floor Press"]},{"name":"Push 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Arnold Press","KB Push Press","KB Skull Crusher","KB Tricep Kickback","KB Single Arm Press"]},{"name":"Pull 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Single Arm Row","KB Renegade Row","KB High Pull","KB Bent Over Row","KB Snatch"]},{"name":"Pull 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Bent Over Row","KB Upright Row","KB Single Arm Row","KB Snatch","KB High Pull","KB Clean"]},{"name":"Pull 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Clean","KB High Pull","KB Renegade Row","KB Single Arm Row","KB Bent Over Row"]},{"name":"Legs 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Goblet Squat","KB Romanian Deadlift","KB Swing","KB Lunge","KB Step Up"]},{"name":"Legs 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Sumo Squat","KB Single Leg Deadlift","KB Lunge","KB Step Up","KB Swing","KB Jump Squat"]},{"name":"Legs 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Swing","KB Goblet Squat","KB Jump Squat","KB Romanian Deadlift","KB Sumo Squat"]},{"name":"Arms 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Curl","KB Hammer Curl","KB Tricep Extension","KB Overhead Tricep","KB Skull Crusher"]},{"name":"Arms 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Single Arm Curl","KB Skull Crusher","KB Concentration Curl","KB Hammer Curl","KB Tricep Kickback","KB Reverse Curl"]},{"name":"Arms 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Hammer Curl","KB Tricep Kickback","KB Reverse Curl","KB Close Grip Press","KB Overhead Tricep"]},{"name":"Shoulders 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Overhead Press","KB Lateral Raise","KB Front Raise","KB Arnold Press","KB Rear Delt Fly"]},{"name":"Shoulders 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Arnold Press","KB Upright Row","KB Face Pull","KB Shrug","KB Lateral Raise","KB Push Press"]},{"name":"Shoulders 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Push Press","KB Lateral Raise","KB Rear Delt Fly","KB Front Raise","KB Shrug"]},{"name":"Back 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Deadlift","KB Bent Over Row","KB Good Morning","KB Single Arm Row","KB Reverse Fly"]},{"name":"Back 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Single Arm Row","KB Romanian Deadlift","KB Reverse Fly","KB Shrug","KB Renegade Row","KB Good Morning"]},{"name":"Back 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Swing","KB Deadlift","KB Renegade Row","KB Good Morning","KB Bent Over Row"]},{"name":"Core 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Russian Twist","KB Windmill","KB Sit Up & Press","KB Halo","KB Side Bend"]},{"name":"Core 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Halo","KB Side Bend","KB Dead Bug","KB Turkish Get Up","KB Russian Twist","KB Plank Pull Through"]},{"name":"Core 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Russian Twist","KB Plank Pull Through","KB Windmill","KB Side Bend","KB Sit Up & Press"]},{"name":"Full Body 1","type":"interval","exercises":5,"rounds":4,"work":45,"rest":15,"roundRest":60,"exerciseNames":["KB Swing","KB Goblet Squat","KB Push Press","KB Bent Over Row","KB Turkish Get Up"]},{"name":"Full Body 2","type":"interval","exercises":6,"rounds":4,"work":45,"rest":15,"roundRest":45,"exerciseNames":["KB Deadlift","KB Push Press","KB Single Arm Row","KB Goblet Squat","KB High Pull","KB Russian Twist"]},{"name":"Full Body 3","type":"interval","exercises":5,"rounds":5,"work":30,"rest":10,"roundRest":60,"exerciseNames":["KB Swing","KB Clean","KB Push Press","KB Lunge","KB Windmill"]}];
-  localStorage.setItem('workouts',JSON.stringify(savedWorkouts));
-}
+/* Old defaults block removed — handled automatically now
+if(savedWorkouts.length===0){ ... }
+*/
 // Set icon everywhere from single source
 document.getElementById("splash-icon").src=logo.jpg;
 document.querySelectorAll('link[rel="apple-touch-icon"],link[rel="icon"]').forEach(function(l){l.href=ICON_SRC;});
