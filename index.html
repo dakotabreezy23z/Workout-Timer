@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Round Zero">
+<meta name="theme-color" content="#009999" id="theme-color-meta">
 <title>Round Zero</title>
 <link rel="apple-touch-icon" sizes="180x180" href="logo.jpg">
 <link rel="icon" type="image/png" sizes="32x32" href="logo.jpg">
@@ -14,9 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; cursor: pointer; }
-  body { font-family: 'Anton', sans-serif; min-height: 100dvh; display: flex; flex-direction: row; background: #009999; }
-  #app { flex: 1; display: flex; flex-direction: column; min-height: 100dvh; }
-  
+
   :root {
     --teal: #009999;
     --card: rgba(255,255,255,0.12);
@@ -26,10 +25,12 @@
     --faint: rgba(255,255,255,0.55);
     --danger: #FF4444;
   }
+  html {
+    height: 100%;
+    background: var(--teal);
+  }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-  html, body {
+  body {
     height: 100%;
     font-family: 'Anton', sans-serif;
     background: var(--teal);
@@ -58,7 +59,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: 55px 28px 52px;
+    padding: calc(env(safe-area-inset-top, 0px) + 150px) 28px 52px;
   }
   .home-logo {
     font-size: 45px;
@@ -97,44 +98,16 @@
   .home-btn-sub { font-size: 13px; color: var(--faint); font-family: 'Barlow', sans-serif; }
   .home-btn-arrow { color: var(--faint); font-size: 22px; }
 
-  /* ── SELECT WORKOUT (Quick Start sub-screen) ── */
-  #screen-select {
-    display: flex;
-    flex-direction: column;
-  }
-  .select-menu {
-    padding: 8px 20px 48px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  .select-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 18px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    transition: background 0.12s, transform 0.1s;
-  }
-  .select-btn:active { background: var(--card-active); transform: scale(0.98); }
-  .select-btn-left { display: flex; flex-direction: column; gap: 4px; }
-  .select-btn-title { font-size: 28px; font-weight: 900; letter-spacing: 4px; color: var(--white); text-transform: uppercase; }
-  .select-btn-sub { font-size: 13px; color: var(--faint); font-family: 'Barlow', sans-serif; }
-  .select-btn-arrow { color: var(--faint); font-size: 24px; }
-
   /* ── HEADER ── */
   .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 30px 20px 16px;
+    padding: calc(env(safe-area-inset-top, 0px) + 16px) 20px 16px;
     position: relative;
     top: 0;
     z-index: 10;
-    background: #009999;
+    background: var(--teal);
   }
   .header-title {
     font-size: 44px;
@@ -233,10 +206,7 @@
     font-family: 'Anton', sans-serif;
     transition: background 0.12s, color 0.12s, border-color 0.12s, transform 0.1s;
   }
-  .background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 18px 24px;:active { background: var(--white); color: var(--teal); border-color: var(--white); transform: scale(0.97); }
+  .btn-start:active { background: var(--white); color: var(--teal); border-color: var(--white); transform: scale(0.97); }
 
   .btn-secondary {
     width: 100%;
@@ -356,16 +326,13 @@
   .modal-sub { font-size: 14px; color: var(--faint); text-align: center; font-family: 'Barlow', sans-serif; margin-bottom: 28px; }
   .modal-btns { display: flex; flex-direction: column; gap: 10px; }
 
-  /* coming soon modal */
-  .coming-soon-icon { font-size: 48px; text-align: center; margin-bottom: 16px; }
-
   /* ── TIMER SCREEN ── */
   #screen-timer {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    padding: 72px 32px 52px;
+    padding: calc(env(safe-area-inset-top, 0px) + 40px) 32px 52px;
     transition: background 0.35s ease;
   }
   .timer-phase {
@@ -462,16 +429,17 @@
 </style>
 </head>
 <body>
+<div id="status-fill" style="position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,54px);background:#009999;z-index:999;pointer-events:none;transition:background 0.35s ease;"></div>
 
 <!-- HOME -->
 <div id="screen-home" class="screen active">
   <div class="home-logo">ROUND ZERO</div>
   <div class="home-sub">KETTLEBELL TIMER</div>
   <div class="home-menu">
-    <div class="home-btn" ontouchstart="unlockAudio()" onclick="showScreen('screen-select')">
+    <div class="home-btn" ontouchstart="unlockAudio()" onclick="showScreen('screen-quickstart')">
       <div class="home-btn-left">
         <div class="home-btn-title">Quick Start</div>
-        <div class="home-btn-sub">Interval · E.M.O.M. · Calisthenics</div>
+        <div class="home-btn-sub">Interval timer</div>
       </div>
       <div class="home-btn-arrow">›</div>
     </div>
@@ -495,38 +463,6 @@
         <div class="home-btn-sub">Build a custom workout</div>
       </div>
       <div class="home-btn-arrow">›</div>
-    </div>
-  </div>
-</div>
-
-<!-- SELECT WORKOUT TYPE -->
-<div id="screen-select" class="screen">
-  <div class="header">
-    <button class="header-back" onclick="showScreen('screen-home')">‹</button>
-    <div class="header-title">Quick Start</div>
-    <div style="width:40px"></div>
-  </div>
-  <div class="select-menu">
-    <div class="select-btn" onclick="showScreen('screen-quickstart')">
-      <div class="select-btn-left">
-        <div class="select-btn-title">Interval</div>
-        <div class="select-btn-sub">Work · Rest · Repeat</div>
-      </div>
-      <div class="select-btn-arrow">›</div>
-    </div>
-    <div class="select-btn" onclick="showComingSoon('E.M.O.M.')">
-      <div class="select-btn-left">
-        <div class="select-btn-title">E.M.O.M.</div>
-        <div class="select-btn-sub">Every Minute On the Minute</div>
-      </div>
-      <div class="select-btn-arrow">›</div>
-    </div>
-    <div class="select-btn" onclick="showComingSoon('Calisthenics')">
-      <div class="select-btn-left">
-        <div class="select-btn-title">Calisthenics</div>
-        <div class="select-btn-sub">Bodyweight training</div>
-      </div>
-      <div class="select-btn-arrow">›</div>
     </div>
   </div>
 </div>
@@ -580,7 +516,7 @@
 <!-- INTERVAL SETUP (Quick Start) -->
 <div id="screen-quickstart" class="screen">
   <div class="header">
-    <button class="header-back" onclick="showScreen('screen-select')">‹</button>
+    <button class="header-back" onclick="showScreen('screen-home')">‹</button>
     <div class="header-title">Interval</div>
     <div style="width:40px"></div>
   </div>
@@ -681,16 +617,6 @@
   </div>
 </div>
 
-<!-- COMING SOON MODAL -->
-<div class="modal-overlay" id="coming-soon-modal">
-  <div class="modal-sheet" style="text-align:center">
-    <div class="coming-soon-icon">🚧</div>
-    <div class="modal-title" id="coming-soon-title">Coming Soon</div>
-    <div class="modal-sub" id="coming-soon-sub"></div>
-    <button class="btn-secondary" onclick="closeComingSoon()">Got It</button>
-  </div>
-</div>
-
 <script>
 // ── AUDIO ─────────────────────────────────────────────────────
 let audioCtx = null;
@@ -710,7 +636,7 @@ function sliderBeep() {
     osc.connect(gain); gain.connect(ctx.destination);
     osc.type = 'sine';
     osc.frequency.value = 180;
-    gain.gain.setValueAtTime(0.18, ctx.currentTime);
+    gain.gain.setValueAtTime(0.06, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.07);
     osc.start(ctx.currentTime);
     osc.stop(ctx.currentTime + 0.07);
@@ -762,22 +688,24 @@ function saveCustom() { localStorage.setItem('rz_custom', JSON.stringify(customW
 function allWorkouts() { return [...BUILT_IN, ...customWorkouts]; }
 function isBuiltIn(id) { return BUILT_IN.some(w => w.id === id); }
 
+// ── THEME COLOR ───────────────────────────────────────────────
+let currentScreenColor = '#009999';
+
+function updateThemeColor() {
+  const isLandscape = window.innerWidth > window.innerHeight;
+  const color = isLandscape ? currentScreenColor : '#009999';
+  document.getElementById('theme-color-meta').setAttribute('content', color);
+}
+
+window.addEventListener('resize', updateThemeColor);
+window.addEventListener('orientationchange', updateThemeColor);
+
 // ── NAV ───────────────────────────────────────────────────────
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const el = document.getElementById(id);
   el.classList.add('active');
   el.scrollTop = 0;
-}
-
-// ── COMING SOON ───────────────────────────────────────────────
-function showComingSoon(name) {
-  document.getElementById('coming-soon-title').textContent = name;
-  document.getElementById('coming-soon-sub').textContent = `${name} mode is on its way. Check back soon!`;
-  document.getElementById('coming-soon-modal').classList.add('open');
-}
-function closeComingSoon() {
-  document.getElementById('coming-soon-modal').classList.remove('open');
 }
 
 // ── LIBRARY ───────────────────────────────────────────────────
@@ -867,7 +795,7 @@ const PHASE_COLORS = {
   done:      '#006666'
 };
 
-const CIRCUMFERENCE = 2 * Math.PI * 145; // 791.7
+const CIRCUMFERENCE = 2 * Math.PI * 145; // 911.06
 
 let timerSequence   = [];
 let timerIndex      = 0;
@@ -876,16 +804,17 @@ let timerInterval   = null;
 let timerPaused     = false;
 let timerStartEpoch = 0;
 let noSleep         = null;
+let activeWorkout   = null;
 
 function buildSequence(workout, countdown) {
   const seq   = [];
   const names = workout.exerciseNames;
-  seq.push({ type:'getready', duration:countdown, exercise:names[0], round:1 });
+  seq.push({ type:'getready', duration:countdown, exercise:names[0], round:1, exerciseIndex:0 });
   for (let r = 0; r < workout.rounds; r++) {
     for (let e = 0; e < workout.exercises; e++) {
-      seq.push({ type:'work',  duration:workout.work,      exercise:names[e],     round:r+1 });
+      seq.push({ type:'work',  duration:workout.work,  exercise:names[e],   round:r+1, exerciseIndex:e });
       if (e < workout.exercises - 1)
-        seq.push({ type:'rest', duration:workout.rest,     exercise:names[e+1],   round:r+1 });
+        seq.push({ type:'rest', duration:workout.rest, exercise:names[e+1], round:r+1, exerciseIndex:e+1 });
     }
     if (r < workout.rounds - 1)
       seq.push({ type:'roundrest', duration:workout.roundRest, exercise:names[0], round:r+2 });
@@ -895,6 +824,7 @@ function buildSequence(workout, countdown) {
 
 function launchTimer(workout, countdown) {
   timerSequence   = buildSequence(workout, countdown);
+  activeWorkout   = workout;
   timerIndex      = 0;
   timerPaused     = false;
   timerStartEpoch = Date.now();
@@ -913,6 +843,10 @@ function loadPhase(idx) {
   const phaseColor = PHASE_COLORS[phase.type] || PHASE_COLORS.work;
   document.getElementById('screen-timer').style.background = phaseColor;
   document.body.style.background = phaseColor;
+  document.documentElement.style.background = phaseColor;
+  document.getElementById('status-fill').style.background = phaseColor;
+  currentScreenColor = phaseColor;
+  updateThemeColor();
 
   // Dark text on yellow round rest, white on everything else
   const textColor = phase.type === 'roundrest' ? '#1a1a1a' : 'rgba(255,255,255,0.65)';
@@ -940,7 +874,7 @@ function loadPhase(idx) {
   if (phase.type === 'work') {
     nextLabel.textContent = '';
     exName.textContent    = phase.exercise;
-    roundInfo.textContent = `Round ${phase.round} of ${totalRounds}`;
+    roundInfo.textContent = `Round ${phase.round} of ${totalRounds}  ·  Exercise ${phase.exerciseIndex + 1} of ${activeWorkout.exercises}`;
   } else if (phase.type === 'getready') {
     nextLabel.textContent = 'Next Up';
     exName.textContent    = phase.exercise;
@@ -1007,6 +941,10 @@ function timerStop() {
   clearInterval(timerInterval);
   try { if (noSleep) noSleep.disable(); } catch(e) {}
   document.body.style.background = 'var(--teal)';
+  document.documentElement.style.background = 'var(--teal)';
+  document.getElementById('status-fill').style.background = '#009999';
+  currentScreenColor = '#009999';
+  updateThemeColor();
   showScreen('screen-home');
 }
 
@@ -1014,6 +952,8 @@ function finishTimer() {
   clearInterval(timerInterval);
   try { if (noSleep) noSleep.disable(); } catch(e) {}
   document.body.style.background = PHASE_COLORS.done;
+  document.documentElement.style.background = PHASE_COLORS.done;
+  document.getElementById('status-fill').style.background = PHASE_COLORS.done;
   const elapsed = Math.round((Date.now() - timerStartEpoch) / 1000);
   document.getElementById('done-time').textContent = formatTime(elapsed);
   showScreen('screen-done');
@@ -1021,6 +961,10 @@ function finishTimer() {
 
 function timerDone() {
   document.body.style.background = 'var(--teal)';
+  document.documentElement.style.background = 'var(--teal)';
+  document.getElementById('status-fill').style.background = '#009999';
+  currentScreenColor = '#009999';
+  updateThemeColor();
   showScreen('screen-home');
 }
 
